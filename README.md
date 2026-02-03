@@ -1,4 +1,8 @@
 # improov
+<<<<<<< HEAD
+=======
+A to-do and habit tracker hybrid app to get stuff done.
+>>>>>>> temp-fix
 
 A new Flutter project.
 
