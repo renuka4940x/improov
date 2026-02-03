@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:improov/database/habit_database.dart';
 import 'package:improov/theme/dark_mode.dart';
 import 'package:improov/theme/light_mode.dart';
 import 'package:improov/theme/theme_provider.dart';
 import 'package:improov/util/page_nav.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  //initialzing isar database
+  await HabitDatabase.initialize();
+  await HabitDatabase().saveFirstLaunchDate();
+
   runApp(
     MultiProvider(
       providers: [

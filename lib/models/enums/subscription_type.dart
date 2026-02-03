@@ -1,0 +1,1 @@
+enum SubscriptionType { none, monthly, yearly }
