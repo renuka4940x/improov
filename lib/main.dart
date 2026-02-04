@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:improov/components/modal.dart';
-import 'package:improov/database/habit_database.dart';
-import 'package:improov/theme/dark_mode.dart';
-import 'package:improov/theme/light_mode.dart';
-import 'package:improov/theme/theme_provider.dart';
-import 'package:improov/util/page_nav.dart';
+import 'package:improov/data/database/habit_database.dart';
+import 'package:improov/presentation/theme/dark_mode.dart';
+import 'package:improov/presentation/theme/light_mode.dart';
+import 'package:improov/presentation/theme/theme_provider.dart';
+import 'package:improov/presentation/util/page_nav.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -32,7 +31,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: PageNav(),
-      theme: lightMode,
+      theme: darkMode,
     );
   }
 }
+
+//domain
+//data
+//application
+//presentation

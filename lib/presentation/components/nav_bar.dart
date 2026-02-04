@@ -41,7 +41,7 @@ class NavBar extends StatelessWidget {
             )
           ),
 
-          //fab
+          //space for fab
           const SizedBox(width: 40),
 
           //streak

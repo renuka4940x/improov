@@ -1,4 +1,4 @@
-import 'package:improov/models/enums/priority.dart';
+import 'package:improov/data/models/enums/priority.dart';
 import 'package:isar/isar.dart';
 
 part 'habit.g.dart';

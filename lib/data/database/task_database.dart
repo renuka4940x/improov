@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:improov/database/habit_database.dart';
-import 'package:improov/models/enums/priority.dart';
+import 'package:improov/data/database/habit_database.dart';
+import 'package:improov/data/models/enums/priority.dart';
 import 'package:isar/isar.dart';
 
 import '../models/task.dart';

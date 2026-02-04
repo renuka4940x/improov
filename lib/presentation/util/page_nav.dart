@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:improov/components/nav_bar.dart';
-import 'package:improov/pages/calendar_page.dart';
-import 'package:improov/pages/home_page.dart';
-import 'package:improov/pages/profile_page.dart';
-import 'package:improov/pages/streak_page.dart';
+import 'package:improov/presentation/components/nav_bar.dart';
+import 'package:improov/presentation/pages/calendar_page.dart';
+import 'package:improov/presentation/pages/home_page.dart';
+import 'package:improov/presentation/pages/profile_page.dart';
+import 'package:improov/presentation/pages/streak_page.dart';
+import 'package:improov/presentation/util/modals/modal.dart';
 
 class PageNav extends StatefulWidget {
   const PageNav({super.key});
@@ -35,17 +36,27 @@ class _PageNavState extends State<PageNav> {
     //profile
     ProfilePage(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //returns specific page for the selected index
       body: _pages[_selectedIndex],
 
+      //fab in the middle of navbar
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
         padding: EdgeInsets.only(top: 20),
         child: FloatingActionButton(
           shape: const CircleBorder(),
-          onPressed: () {},
+          onPressed: () {
+            showModalBottomSheet<void> (
+              context: context, 
+              builder: (context) => Modal(),
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+            );
+          },
           backgroundColor: Theme.of(context).colorScheme.tertiary,
           child: Icon(
             Icons.add, 
@@ -54,6 +65,7 @@ class _PageNavState extends State<PageNav> {
         ),
       ),
 
+      //the navigation bar
       bottomNavigationBar: NavBar(
         currentIndex: _selectedIndex,
         onTap: (index) => _navigateBottomBar(index),

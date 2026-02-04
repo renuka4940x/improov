@@ -97,6 +97,6 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "lib/images/temporary_logo.jpg" 
+  image_path: "assets/logo/temporary_logo.jpg" 
   adaptive_icon_background: "#FFFFFF" # Your 80% Background
-  adaptive_icon_foreground: "lib/images/temporary_logo.jpg"
+  adaptive_icon_foreground: "assets/logo/temporary_logo.jpg"

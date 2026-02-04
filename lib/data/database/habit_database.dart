@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:improov/models/app_settings.dart';
-import 'package:improov/models/habit.dart';
-import 'package:improov/models/task.dart';
+import 'package:improov/data/models/app_settings.dart';
+import 'package:improov/data/models/habit.dart';
+import 'package:improov/data/models/task.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
