@@ -45,17 +45,24 @@ class HabitDatabase extends ChangeNotifier {
 
   // C R E A T E
   Future<void> addHabit(
-      String habitName, {
-      String? description = "", 
+      String habitName, 
+      bool isHabitMode,{
+      String? description = "",
+      DateTime? startDate,
       Priority priority = Priority.low,
       int goalDays = 3,
       DateTime? reminderTime,
     }) async {
+      // if dueDate is null -> use today's date
+      final now = DateTime.now();
+      final today = startDate ?? DateTime(now.year, now.month, now.day);
 
       //create a new habit
       final newHabit = Habit()
         ..name = habitName
+        ..isHabitMode = isHabitMode
         ..description = description
+        ..startDate = today
         ..priority =priority
         ..reminderTime= reminderTime
         ..goalDaysPerWeek = goalDays

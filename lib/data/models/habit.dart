@@ -14,6 +14,11 @@ class Habit {
   //habit description
   String? description;
 
+  bool isHabitMode = true;
+
+  //starting time
+  DateTime startDate = DateTime.now();
+
   //habit goal
   int goalDaysPerWeek = 7;
 
