@@ -17,8 +17,11 @@ class Button extends StatelessWidget {
 
     final Color buttonColor = isSave 
       ? Theme.of(context).colorScheme.inversePrimary
-      : Colors.red.shade400;
+      : Colors.red.shade300;
 
+    final Color textColor = isSave
+      ? Theme.of(context).colorScheme.primary
+      : Colors.white;
 
     return GestureDetector(
       onTap: onTap,
@@ -33,7 +36,7 @@ class Button extends StatelessWidget {
           child: Text(
             text,
             style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
+              color: textColor,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),

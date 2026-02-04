@@ -86,6 +86,8 @@ class _ModalState extends State<Modal> {
             },
           ),
 
+          const SizedBox(height: 30),
+
           //cross
           GestureDetector(
             onTap: () => Navigator.pop(context),
@@ -100,7 +102,7 @@ class _ModalState extends State<Modal> {
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 30),
         ],
       ),
     );
