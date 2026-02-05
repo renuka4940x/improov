@@ -70,7 +70,7 @@ class TaskDatabase extends ChangeNotifier {
 
       //save to db
       await isar.writeTxn(() async { 
-        isar.tasks.put(task);
+        await isar.tasks.put(task);
       });
     }
 

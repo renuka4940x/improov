@@ -1,8 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/presentation/util/modals/widgets/input/build_row.dart';
+import 'package:improov/src/data/models/enums/priority.dart';
+import 'package:improov/src/presentation/util/modals/widgets/UI/build_row.dart';
+import 'package:improov/src/presentation/util/modals/widgets/pickers/date_time_picker.dart';
+import 'package:improov/src/presentation/util/modals/widgets/pickers/goal_picker.dart';
+import 'package:improov/src/presentation/util/modals/widgets/pickers/priority_picker.dart';
 
 class BuildHabitForm extends StatelessWidget {
-  const BuildHabitForm({super.key});
+  //variables
+  final Priority currentPriority;
+  final int currentGoal;
+  final DateTime? currentReminder;
+
+  //function callbacks
+  final Function(Priority) onPriorityChanged;
+  final Function(int) onGoalChanged;
+  final Function(DateTime?) onDateTimeSelected;
+
+  const BuildHabitForm({
+    super.key,
+    required this.currentPriority,
+    required this.currentGoal,
+    required this.currentReminder,
+    required this.onPriorityChanged,
+    required this.onGoalChanged,
+    required this.onDateTimeSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -11,19 +33,30 @@ class BuildHabitForm extends StatelessWidget {
         //times of the week
         BuildRow(
           label: "Goal",
-          trailing: Text("3 times"),
+          trailing: GoalPicker(
+            selectedGoal: currentGoal, 
+            onChanged: onGoalChanged
+          ),
         ),
 
         //priority
         BuildRow(
           label: "Priority",
-          trailing: Text("Low"),
+          trailing: PriorityPicker(
+            selectedPriority: currentPriority, 
+            onChanged: onPriorityChanged,
+          ),
         ),
 
         //reminders
         BuildRow(
           label: "Reminder", 
-          trailing: Text("Off"), isPro: true
+          trailing: DateTimePicker(
+            selectedDateTime: currentReminder,
+            label: "Off", 
+            onDateTimeSelected: onDateTimeSelected,
+          ), 
+          isPro: true
         ),
       ]
     );
