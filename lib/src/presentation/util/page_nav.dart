@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:improov/src/presentation/components/nav_bar.dart';
 import 'package:improov/src/presentation/pages/calendar_page.dart';
-import 'package:improov/src/presentation/pages/home_page.dart';
+import 'package:improov/src/presentation/pages/home/home_page.dart';
 import 'package:improov/src/presentation/pages/profile_page.dart';
 import 'package:improov/src/presentation/pages/streak_page.dart';
 import 'package:improov/src/presentation/util/modals/modal.dart';
