@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:improov/data/database/habit_database.dart';
-import 'package:improov/presentation/theme/dark_mode.dart';
-import 'package:improov/presentation/theme/light_mode.dart';
-import 'package:improov/presentation/theme/theme_provider.dart';
-import 'package:improov/presentation/util/page_nav.dart';
+import 'package:improov/src/data/database/habit_database.dart';
+import 'package:improov/src/presentation/theme/dark_mode.dart';
+import 'package:improov/src/presentation/theme/light_mode.dart';
+import 'package:improov/src/presentation/theme/theme_provider.dart';
+import 'package:improov/src/presentation/util/page_nav.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

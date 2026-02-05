@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:improov/presentation/util/modals/widgets/toggle_label.dart';
+import 'package:improov/src/presentation/util/modals/widgets/toggle/toggle_label.dart';
 
 class BuildToggle extends StatelessWidget {
   final bool isHabitMode;

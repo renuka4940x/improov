@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:improov/presentation/components/pro_badge.dart';
+import 'package:improov/src/presentation/components/pro_badge.dart';
 
 class BuildRow extends StatelessWidget {
   final String label;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:improov/presentation/components/nav_bar.dart';
-import 'package:improov/presentation/pages/calendar_page.dart';
-import 'package:improov/presentation/pages/home_page.dart';
-import 'package:improov/presentation/pages/profile_page.dart';
-import 'package:improov/presentation/pages/streak_page.dart';
-import 'package:improov/presentation/util/modals/modal.dart';
+import 'package:improov/src/presentation/components/nav_bar.dart';
+import 'package:improov/src/presentation/pages/calendar_page.dart';
+import 'package:improov/src/presentation/pages/home_page.dart';
+import 'package:improov/src/presentation/pages/profile_page.dart';
+import 'package:improov/src/presentation/pages/streak_page.dart';
+import 'package:improov/src/presentation/util/modals/modal.dart';
 
 class PageNav extends StatefulWidget {
   const PageNav({super.key});

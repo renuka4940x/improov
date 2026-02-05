@@ -1,4 +1,4 @@
-import 'package:improov/data/models/enums/subscription_type.dart';
+import 'package:improov/src/data/models/enums/subscription_type.dart';
 import 'package:isar/isar.dart';
 
 part 'app_settings.g.dart';

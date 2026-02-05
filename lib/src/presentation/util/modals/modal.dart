@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:improov/presentation/components/button.dart';
-import 'package:improov/presentation/util/modals/forms/build_habit_form.dart';
-import 'package:improov/presentation/util/modals/forms/build_task_form.dart';
-import 'package:improov/presentation/util/modals/widgets/build_text_field.dart';
-import 'package:improov/presentation/util/modals/widgets/build_toggle.dart';
+import 'package:improov/src/presentation/components/button.dart';
+import 'package:improov/src/presentation/util/modals/forms/build_habit_form.dart';
+import 'package:improov/src/presentation/util/modals/forms/build_task_form.dart';
+import 'package:improov/src/presentation/util/modals/widgets/UI/build_cross.dart';
+import 'package:improov/src/presentation/util/modals/widgets/input/build_text_field.dart';
+import 'package:improov/src/presentation/util/modals/widgets/toggle/build_toggle.dart';
 
 class Modal extends StatefulWidget {
   const Modal({super.key});
@@ -89,19 +90,8 @@ class _ModalState extends State<Modal> {
           const SizedBox(height: 30),
 
           //cross
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              radius: 25,
-              child: Icon(
-                Icons.close_rounded,
-                color: Theme.of(context).colorScheme.inversePrimary,
-                size: 35,
-              ),
-            ),
-          ),
-
+          BuildCross(),
+          
           const SizedBox(height: 30),
         ],
       ),

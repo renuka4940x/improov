@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:improov/presentation/util/modals/widgets/build_row.dart';
+import 'package:improov/src/presentation/util/modals/widgets/input/build_row.dart';
 
-class BuildHabitForm extends StatelessWidget {
-  const BuildHabitForm({super.key});
+class BuildTaskForm extends StatelessWidget {
+  const BuildTaskForm({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        //times of the week
+        //date
         BuildRow(
-          label: "Goal",
-          trailing: Text("3 times"),
+          label: "Date",  
+          trailing: Text("Today, 15 Oct"),
         ),
 
         //priority
@@ -23,9 +23,10 @@ class BuildHabitForm extends StatelessWidget {
         //reminders
         BuildRow(
           label: "Reminder", 
-          trailing: Text("Off"), isPro: true
+          trailing: Text("Off"), 
+          isPro: true
         ),
-      ]
+      ],
     );
   }
 }
