@@ -20,6 +20,28 @@ class DateTimePicker extends StatelessWidget {
       initialDate: selectedDateTime ?? DateTime.now(),
       firstDate: DateTime.now(), 
       lastDate: DateTime(2030),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              //header &selected day bg
+              primary: Theme.of(context).colorScheme.tertiary,
+              //text on top of selection
+              onPrimary: Theme.of(context).colorScheme.onTertiary,
+              //dialog bg
+              surface: Theme.of(context).colorScheme.primary,
+              onSurface: Theme.of(context).colorScheme.inversePrimary,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                textStyle: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (date == null ) return;
@@ -30,14 +52,38 @@ class DateTimePicker extends StatelessWidget {
     final TimeOfDay? time = await showTimePicker(
       context: context, 
       initialTime: TimeOfDay.fromDateTime(selectedDateTime ?? DateTime.now()),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: Theme.of(context).colorScheme.tertiary,
+              onPrimary: Theme.of(context).colorScheme.onTertiary,
+              surface: Theme.of(context).colorScheme.primary,
+              onSurface: Theme.of(context).colorScheme.inversePrimary,
+            ),
+
+            //ok 
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                textStyle: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (time == null) return;
 
     //combine above two to make a datetime object
     final DateTime combined = DateTime(
-      date.year, date.month, date.day,
-      time.hour, time.minute,
+      date.year, 
+      date.month,
+      date.day,
+      time.hour, 
+      time.minute,
     );
 
     onDateTimeSelected(combined);
@@ -49,11 +95,6 @@ class DateTimePicker extends StatelessWidget {
       onTap: () => _pickDateTime(context),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(12),
-        ),
 
         child: Text(
           selectedDateTime == null 
@@ -61,9 +102,11 @@ class DateTimePicker extends StatelessWidget {
               : DateFormat('MMM d, h:mm a').format(selectedDateTime!),
 
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
             color: Theme.of(context).colorScheme.inversePrimary,
-          ),
+            fontSize: 14,
+            letterSpacing: 0.5,
+          )
         ),
       ),
     );

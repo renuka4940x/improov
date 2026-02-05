@@ -16,6 +16,28 @@ class DatePicker extends StatelessWidget {
       context: context, 
       firstDate: DateTime.now().subtract(const Duration(days: 365)), 
       lastDate: DateTime(2030),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              //header &selected day bg
+              primary: Theme.of(context).colorScheme.tertiary,
+              //text on top of selection
+              onPrimary: Theme.of(context).colorScheme.onTertiary,
+              //dialog bg
+              surface: Theme.of(context).colorScheme.primary,
+              onSurface: Theme.of(context).colorScheme.inversePrimary,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                textStyle: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null) {
@@ -30,17 +52,15 @@ class DatePicker extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
 
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(12),
-        ),
-
         child: Text(
           DateFormat('MMM d, yyyy').format(selectedDate),
+
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
             color: Theme.of(context).colorScheme.inversePrimary,
-          ),
+            fontSize: 14,
+            letterSpacing: 0.5,
+          )
         ),
       ),
     );
