@@ -16,11 +16,13 @@ class HabitDatabase extends ChangeNotifier {
   static Future<void> initialize() async {
     final dir = await getApplicationDocumentsDirectory();
     isar = await Isar.open([
-      HabitSchema,
-      AppSettingsSchema,
-      TaskSchema,
-    ], 
-    directory: dir.path);
+        HabitSchema,
+        AppSettingsSchema,
+        TaskSchema,
+      ], 
+    directory: dir.path,
+    inspector: false,
+    );
   }
 
   // save first date of app startup (for heatmap)
@@ -77,6 +79,11 @@ class HabitDatabase extends ChangeNotifier {
 
   // R E A D
   Future<void> readHabits() async {
+    //make sure isar is open
+    if (Isar.instanceNames.isEmpty){
+      return;
+    } 
+
     //fetch all habits from db
     final fetechedHabits = await isar.habits.where().findAll();
 
@@ -92,14 +99,15 @@ class HabitDatabase extends ChangeNotifier {
   Future<void> updateHabitCompletion(int id, bool isCompleted) async {
     //find the specific habit
     final habit = await isar.habits.get(id);
+    final now = DateTime.now();
 
     //update completion status
     if (habit != null) {
       await isar.writeTxn(() async {
       //if habit is completed -> add the current date to the completedDays list
-        if (isCompleted && !habit.completedDays.contains(DateTime.now())) {
+        if (isCompleted && !habit.completedDays.contains(now)) {
           //today
-          final today = DateTime.now();
+          final today = now;
 
           //add current date if it's not already in the list
           habit.completedDays.add(
@@ -115,9 +123,9 @@ class HabitDatabase extends ChangeNotifier {
         else {
           //remove the current date if the habit is marked as not completed
           habit.completedDays.removeWhere((date) =>
-            date.year == DateTime.now().year &&
-            date.month == DateTime.now().month &&
-            date.day == DateTime.now().day
+            date.year == now.year &&
+            date.month == now.month &&
+            date.day == now.day
           );
         }
 
@@ -170,5 +178,39 @@ class HabitDatabase extends ChangeNotifier {
 
     //re-read from db
     readHabits();
+  }
+
+  //handles save habits
+  Future<void> handleSaveHabit({
+    Habit? existingHabit,
+    required String name,
+    required String description,
+    required Priority priority,
+    required int goal,
+    required DateTime startDate,
+    DateTime? reminderTime,
+  }) async {
+    if (existingHabit != null ) {
+      //update habit
+      await updateHabit(
+        existingHabit.id, 
+        name, 
+        description, 
+        priority, 
+        goal, 
+        reminderTime
+      );
+    } else {
+      await addHabit(
+        //create habit
+        name,
+        true,
+        description: description,
+        priority: priority,
+        goalDays: goal,
+        startDate: startDate,
+        reminderTime: reminderTime,
+      );
+    }
   }
 }

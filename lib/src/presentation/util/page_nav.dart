@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:improov/src/data/database/habit_database.dart';
+import 'package:improov/src/data/database/task_database.dart';
 import 'package:improov/src/presentation/components/nav_bar.dart';
 import 'package:improov/src/presentation/pages/calendar_page.dart';
 import 'package:improov/src/presentation/pages/home/home_page.dart';
 import 'package:improov/src/presentation/pages/profile_page.dart';
 import 'package:improov/src/presentation/pages/streak_page.dart';
 import 'package:improov/src/presentation/util/modals/modal.dart';
+import 'package:provider/provider.dart';
 
 class PageNav extends StatefulWidget {
   const PageNav({super.key});
@@ -38,6 +41,16 @@ class _PageNavState extends State<PageNav> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TaskDatabase>(context, listen: false).readTask();
+      Provider.of<HabitDatabase>(context, listen: false).readHabits();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       //returns specific page for the selected index
@@ -50,10 +63,19 @@ class _PageNavState extends State<PageNav> {
         child: FloatingActionButton(
           shape: const CircleBorder(),
           onPressed: () {
-            showModalBottomSheet<void> (
+            FocusScope.of(context).unfocus();
+
+            if (!mounted) return; 
+
+            showModalBottomSheet<void>(
               context: context, 
-              builder: (context) => Modal(),
+              builder: (context) => Modal(
+                isUpdating: false,
+                taskToEdit: null,
+                habitToEdit: null,
+              ),
               isScrollControlled: true,
+              useSafeArea: true,
               backgroundColor: Colors.transparent,
             );
           },

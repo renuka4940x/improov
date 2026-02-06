@@ -47,6 +47,9 @@ class TaskDatabase extends ChangeNotifier {
 
   // R E A D
   Future<void> readTask() async {
+    //make sure isar is open
+    if (Isar.instanceNames.isEmpty) return;
+    
     //fetch all tasks from db
     final fetchedTasks = await isar.tasks.where().findAll();
 
@@ -72,16 +75,16 @@ class TaskDatabase extends ChangeNotifier {
       await isar.writeTxn(() async { 
         await isar.tasks.put(task);
       });
+      
+      //re-read from db
+      readTask();
     }
-
-    //re-read from db
-    readTask();
   }
 
   // U P D A T E - update task
   Future<void> updateTask(
     int id,
-    String newName,
+    String newTitle,
     String newDesc,
     Priority newPriority,
     DateTime newDueDate,
@@ -94,7 +97,7 @@ class TaskDatabase extends ChangeNotifier {
     if (task != null) {
       //update field
       await isar.writeTxn(() async {
-        task.title = newName;
+        task.title = newTitle;
         task.description = newDesc;
         task.priority = newPriority;
         task.dueDate = newDueDate;
@@ -118,5 +121,36 @@ class TaskDatabase extends ChangeNotifier {
 
     //re-read from db
     readTask();
+  }
+
+  //Handle Task Save
+  Future<void> handleSaveTask({
+    Task? existingTask,
+    required String title,
+    required String description,
+    required Priority priority,
+    required DateTime dueDate,
+    DateTime? reminder,
+  }) async {
+    if (existingTask != null) {
+      // Update logic
+      await updateTask(
+        existingTask.id, 
+        title, 
+        description, 
+        priority, 
+        dueDate, 
+        reminder
+      );
+    } else {
+      // Create logic
+      await addTask(
+        title, 
+        description: description, 
+        priority: priority,
+        dueDate: dueDate, 
+        reminderTime: reminder
+      );
+    }
   }
 }

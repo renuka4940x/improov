@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:improov/src/data/database/habit_database.dart';
 import 'package:improov/src/data/database/task_database.dart';
 import 'package:improov/src/presentation/components/Tiles/habit_tile.dart';
+import 'package:improov/src/presentation/components/Tiles/task_tile.dart';
 import 'package:improov/src/presentation/pages/home/states/empty_state_home.dart';
 import 'package:improov/src/presentation/pages/home/states/filled_state_home.dart';
 import 'package:provider/provider.dart';
@@ -22,36 +23,17 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: CustomScrollView(
         slivers: [
-          //header
-          SliverAppBar(
-            expandedHeight: 70,
-            floating: false,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                "I M P R O O V",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.inversePrimary,
-                  fontSize: 16,
-                  letterSpacing: 2,
-                ),
-              ),
-              centerTitle: true,
-              background: Container(
-                color: Theme.of(context).colorScheme.surface,
-              ),
-            ),
-          ),
-
+          
           //empty state
           if (habitDatabase.currentHabits.isEmpty && taskDatabase.currentTasks.isEmpty)
-            SliverFillRemaining(
-              child: EmptyStateHome(),
-            ),
+            const SliverToBoxAdapter(child: EmptyStatePage(),),
 
           //habit section
           if (habitDatabase.currentHabits.isNotEmpty) ...[
-            FilledStateHome(title: "H A B I T S"),
+            const SliverToBoxAdapter(
+              child: FilledStateHome(title: "Habits")
+            ),
+
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
@@ -62,11 +44,36 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
                 childCount: habitDatabase.currentHabits.length,
-              )
-            )
-          ]
+              ),
+            ),
+          ],
 
           //task section
+          if (taskDatabase.currentTasks.isNotEmpty) ...[
+            const SliverToBoxAdapter(
+              child: FilledStateHome(
+                title: "Tasks",
+              ),
+            ),
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final task = taskDatabase.currentTasks[index];
+                  return TaskTile(
+                    task: task,
+                    isCompleted: task.isCompleted,
+                    onChanged: (val) {
+                      taskDatabase.updateTaskCompletion(task.id);
+                    },
+                  );
+                },
+                childCount: taskDatabase.currentTasks.length,
+              ),
+            ),
+          ],
+
+          //padding to not let fab cover last item
+          const SliverToBoxAdapter(child: SizedBox(height: 70),),
         ],
       ),
     );

@@ -11,7 +11,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //initialzing isar database
   await HabitDatabase.initialize();
-  await HabitDatabase().saveFirstLaunchDate();
+
+  final habitDatabase = HabitDatabase();
+  final taskDatabase = TaskDatabase();
+
+  await habitDatabase.saveFirstLaunchDate();
+
+  await habitDatabase.readHabits();
+  await taskDatabase.readTask();
 
   runApp(
     MultiProvider(
@@ -20,8 +27,8 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
 
         //database providers
-        ChangeNotifierProvider(create: (context) => TaskDatabase()),
-        ChangeNotifierProvider(create: (context) => HabitDatabase()),
+        ChangeNotifierProvider.value(value: taskDatabase,),
+        ChangeNotifierProvider.value(value: habitDatabase),
       ],
       child: const MyApp(),
     ),
@@ -33,10 +40,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //start initial fetch of data
-    Provider.of<TaskDatabase>(context, listen: false).readTask();
-    Provider.of<HabitDatabase>(context, listen: false).readHabits();
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: PageNav(),
