@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
-class FilledStateHome extends StatelessWidget {
+class BuildTitle extends StatelessWidget {
   final String title;
 
-  const FilledStateHome({
-    super.key,
-    required this.title,
-  });
+  const BuildTitle({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +15,7 @@ class FilledStateHome extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 24, 
+              fontSize: 24,
               fontWeight: FontWeight.bold,
               color: Theme.of(context).colorScheme.inversePrimary,
             ),

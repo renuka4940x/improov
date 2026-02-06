@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class EmptyStatePage extends StatelessWidget {
-  const EmptyStatePage({super.key});
+class EmptyState extends StatelessWidget {
+  const EmptyState({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,36 +15,6 @@ class EmptyStatePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 50),
-          
-          // Habits Header
-          const Text(
-            "Habits",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const Divider(thickness: 1),
-          const Text(
-            "none, for now~", 
-            style: TextStyle(
-              color: Colors.grey,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-
-          const SizedBox(height: 40),
-
-          // Tasks Header
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Tasks",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          const Divider(thickness: 1),
-
           const SizedBox(height: 50),
 
           // The Illustration
@@ -69,8 +39,6 @@ class EmptyStatePage extends StatelessWidget {
               ],
             ),
           ),
-          
-          const SizedBox(height: 100),
         ],
       ),
     );

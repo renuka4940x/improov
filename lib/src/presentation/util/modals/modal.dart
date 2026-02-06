@@ -4,7 +4,7 @@ import 'package:improov/src/data/database/task_database.dart';
 import 'package:improov/src/data/models/enums/priority.dart';
 import 'package:improov/src/data/models/habit.dart';
 import 'package:improov/src/data/models/task.dart';
-import 'package:improov/src/presentation/components/button.dart';
+import 'package:improov/src/presentation/components/UI/button.dart';
 import 'package:improov/src/presentation/util/modals/forms/build_habit_form.dart';
 import 'package:improov/src/presentation/util/modals/forms/build_task_form.dart';
 import 'package:improov/src/presentation/util/modals/widgets/UI/build_cross.dart';
