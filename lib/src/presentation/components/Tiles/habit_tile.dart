@@ -46,7 +46,7 @@ class HabitTile extends StatelessWidget {
     final int streakCount = habit.completedDays.length;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Slidable(
         endActionPane: ActionPane(
           motion: const StretchMotion(), 
