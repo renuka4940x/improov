@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:improov/src/data/models/enums/priority.dart';
+import 'package:improov/src/data/enums/priority.dart';
 import 'package:isar/isar.dart';
 
 import '../../../data/models/task.dart';

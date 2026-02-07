@@ -4,7 +4,7 @@ import 'package:improov/src/features/habits/provider/habit_database.dart';
 import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/features/habits/widgets/habit_tile.dart';
 import 'package:improov/src/features/tasks/widget/task_tile.dart';
-import 'package:improov/src/presentation/components/UI/build_title.dart';
+import 'package:improov/src/core/widgets/build_title.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {

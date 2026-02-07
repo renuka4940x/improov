@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:improov/src/core/util/formatters/date_formatter.dart';
 import 'package:improov/src/data/models/task.dart';
-import 'package:improov/src/presentation/components/UI/popup_row.dart';
+import 'package:improov/src/core/widgets/popup_row.dart';
 
 class TaskPopup extends StatelessWidget {
   final Task task;

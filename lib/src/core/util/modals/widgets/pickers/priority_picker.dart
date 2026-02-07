@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/data/models/enums/priority.dart';
+import 'package:improov/src/data/enums/priority.dart';
 
 class PriorityPicker extends StatelessWidget {
   final Priority selectedPriority;

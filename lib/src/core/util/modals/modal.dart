@@ -6,10 +6,10 @@ import 'package:improov/src/core/util/modals/widgets/UI/build_text_field.dart';
 import 'package:improov/src/core/util/modals/widgets/toggle/build_toggle.dart';
 import 'package:improov/src/features/habits/provider/habit_database.dart';
 import 'package:improov/src/features/tasks/provider/task_database.dart';
-import 'package:improov/src/data/models/enums/priority.dart';
+import 'package:improov/src/data/enums/priority.dart';
 import 'package:improov/src/data/models/habit.dart';
 import 'package:improov/src/data/models/task.dart';
-import 'package:improov/src/presentation/components/UI/button.dart';
+import 'package:improov/src/core/widgets/button.dart';
 import 'package:provider/provider.dart';
 
 class Modal extends StatefulWidget {
