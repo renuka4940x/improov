@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:improov/src/data/database/habit_database.dart';
 import 'package:improov/src/data/database/task_database.dart';
-import 'package:improov/src/presentation/components/Tiles/habit_tile.dart';
-import 'package:improov/src/presentation/components/Tiles/task_tile.dart';
+import 'package:improov/src/presentation/components/tiles/habit_tile.dart';
+import 'package:improov/src/presentation/components/tiles/task_tile.dart';
 import 'package:improov/src/presentation/components/UI/build_title.dart';
 import 'package:provider/provider.dart';
 

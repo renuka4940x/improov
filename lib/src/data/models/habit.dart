@@ -31,4 +31,13 @@ class Habit {
 
   //completed days
   List<DateTime> completedDays = [];
+
+  bool get isCompleted {
+    final today = DateTime.now();
+    return completedDays.any((date) => 
+      date.year == today.year &&
+      date.month == today.month &&
+      date.day == today.day
+    );
+  }
 }

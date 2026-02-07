@@ -87,6 +87,27 @@ class HabitDatabase extends ChangeNotifier {
     //fetch all habits from db
     final fetechedHabits = await isar.habits.where().findAll();
 
+    fetechedHabits.sort((a,b) {
+      final bool aDone = a.isCompleted;
+      final bool bDone = b.isCompleted;
+
+      if (aDone != bDone) { 
+        return a.isCompleted ? 1 : -1;
+      }
+
+      //sort them based on priority
+      final priorityMap = {
+        Priority.high: 0,
+        Priority.medium: 1,
+        Priority.low: 2,
+      };
+
+      int valA = priorityMap[a.priority] ?? 3;
+      int valB = priorityMap[b.priority] ?? 3;
+
+      return valA.compareTo(valB);
+    });
+
     //give to current habits
     currentHabits.clear();
     currentHabits.addAll(fetechedHabits);

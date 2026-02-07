@@ -53,6 +53,32 @@ class TaskDatabase extends ChangeNotifier {
     //fetch all tasks from db
     final fetchedTasks = await isar.tasks.where().findAll();
 
+    //sort
+    fetchedTasks.sort((a, b) {
+      //incomplete lowest
+      if (a.isCompleted != b.isCompleted) {
+        return a.isCompleted ? 1 : -1;
+      }
+
+      //priority
+      final priorityMap = {
+        Priority.high: 0,
+        Priority.medium: 1,
+        Priority.low: 2,
+      };
+      int valA = priorityMap[a.priority] ?? 3;
+      int valB = priorityMap[b.priority] ?? 3;
+
+      if(valA != valB) {
+        return valA.compareTo(valB);
+      }
+
+      //due date (earliest first)
+      DateTime dateA = a.dueDate ?? DateTime(2100);
+      DateTime dateB = b.dueDate ?? DateTime(2100);
+      return dateA.compareTo(dateB);
+    });
+
     //give to currentTasks
     currentTasks.clear();
     currentTasks.addAll(fetchedTasks);

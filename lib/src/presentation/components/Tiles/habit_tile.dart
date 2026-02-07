@@ -45,101 +45,118 @@ class HabitTile extends StatelessWidget {
     //calculate streak 
     final int streakCount = habit.completedDays.length;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Slidable(
-        endActionPane: ActionPane(
-          motion: const StretchMotion(), 
-          children: [
-            SlidableAction(
-              //edit
-              onPressed: (context) => onEditPressed(context),
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              foregroundColor: Colors.white,
-              icon: Icons.edit,
-              borderRadius: BorderRadius.circular(8),
-            ),
-      
-            //delete
-            SlidableAction(
-              onPressed: (context) => onDeletePressed(context),
-              backgroundColor: Colors.red.shade300,
-              foregroundColor: Colors.white,
-              icon: Icons.delete,
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ],
-        ),
-      
-        child: Row(
-          children: [
-            //checkbox
-            Transform.scale(
-              scale: 1.2,
-              child: Checkbox(
-                side: BorderSide(
-                  color: isCompletedToday
-                    ? Colors.transparent
-                    : Theme.of(context).colorScheme.inversePrimary,
-                  width: 1.5,
-                ),
-                value: isCompletedToday, 
-                onChanged: onChanged,
-                activeColor: Theme.of(context).colorScheme.tertiary,
-                checkColor: Theme.of(context).colorScheme.inversePrimary,
-                
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-              ),
-            ),
-              
-            const SizedBox(width: 12),
-              
-            //name & description
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    habit.name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: isCompletedToday 
-                        ? Colors.grey 
-                        : Theme.of(context).colorScheme.inversePrimary,
-                      decoration: isCompletedToday ? TextDecoration.lineThrough : null,
-                    ),
-                  ),
-                  if (habit.description != null && habit.description!.isNotEmpty)
-                    Text(
-                      habit.description!,
-                      style: TextStyle(
-                        fontSize: 12, 
-                        color: Colors.grey[600]
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            //streak
-            Row(
+    return GestureDetector(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: GestureDetector(
+          //long press for popup
+          onLongPress: () {},
+
+          //tap for check/uncheck
+          onTap: () {
+            context.read<HabitDatabase>().updateHabitCompletion(
+              habit.id, 
+              !habit.isCompleted,
+            );
+          },
+
+          //tile design
+          child: Slidable(
+            endActionPane: ActionPane(
+              motion: const StretchMotion(), 
               children: [
-                Icon(
-                  Icons.local_fire_department_outlined,
-                  size: 20,
-                  color: isCompletedToday ? Colors.grey : null,
+                SlidableAction(
+                  //edit
+                  onPressed: (context) => onEditPressed(context),
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  foregroundColor: Colors.white,
+                  icon: Icons.edit,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                Text(
-                  streakCount.toString(),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: isCompletedToday ? Colors.grey : null,
-                  ),
-                )
+          
+                //delete
+                SlidableAction(
+                  onPressed: (context) => onDeletePressed(context),
+                  backgroundColor: Colors.red.shade300,
+                  foregroundColor: Colors.white,
+                  icon: Icons.delete,
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ],
             ),
-          ],
+          
+            child: Row(
+              children: [
+                //checkbox
+                Transform.scale(
+                  scale: 1.2,
+                  child: Checkbox(
+                    side: BorderSide(
+                      color: isCompletedToday
+                        ? Colors.transparent
+                        : Theme.of(context).colorScheme.inversePrimary,
+                      width: 1.5,
+                    ),
+                    value: isCompletedToday, 
+                    onChanged: onChanged,
+                    activeColor: Theme.of(context).colorScheme.tertiary,
+                    checkColor: Theme.of(context).colorScheme.inversePrimary,
+                    
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                  ),
+                ),
+                  
+                const SizedBox(width: 12),
+                  
+                //name & description
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        habit.name,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: isCompletedToday 
+                            ? Colors.grey 
+                            : Theme.of(context).colorScheme.inversePrimary,
+                          decoration: isCompletedToday ? TextDecoration.lineThrough : null,
+                          fontStyle: isCompletedToday ? FontStyle.italic : null,
+                        ),
+                      ),
+                      if (habit.description != null && habit.description!.isNotEmpty)
+                        Text(
+                          habit.description!,
+                          style: TextStyle(
+                            fontSize: 12, 
+                            color: Colors.grey[600]
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                //streak
+                Row(
+                  children: [
+                    Icon(
+                      Icons.local_fire_department_outlined,
+                      size: 20,
+                      color: isCompletedToday ? Colors.grey : null,
+                    ),
+                    Text(
+                      streakCount.toString(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: isCompletedToday ? Colors.grey : null,
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
