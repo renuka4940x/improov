@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/data/enums/priority.dart';
 import 'package:isar/isar.dart';
 
 import '../../../data/models/task.dart';
 
 class TaskDatabase extends ChangeNotifier {
-  final Isar isar;
-  //getting isar instance from habit_db
-  TaskDatabase(this.isar);
+  final isar = IsarService().db;
 
   //list of tasks
   final List<Task> currentTasks = [];
@@ -128,8 +127,8 @@ class TaskDatabase extends ChangeNotifier {
         task.dueDate = newDueDate;
         task.reminderTime = newReminderTime;
 
-      //save updated task back to the db
-      await isar.tasks.put(task);
+        //save updated task back to the db
+        await isar.tasks.put(task);
       });
     }
 

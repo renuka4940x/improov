@@ -5,7 +5,7 @@ import 'package:improov/src/presentation/pages/streak_page.dart';
 import 'package:improov/src/core/routing/page_nav.dart';
 import 'package:improov/src/presentation/pages/profile_page.dart';
 
-final AppRouter = GoRouter(
+final appRouter = GoRouter(
   initialLocation: '/',
   routes: [
     StatefulShellRoute.indexedStack(

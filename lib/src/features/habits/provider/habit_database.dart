@@ -1,29 +1,15 @@
 import 'package:flutter/cupertino.dart';
+import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/data/models/app_settings.dart';
 import 'package:improov/src/data/models/habit.dart';
-import 'package:improov/src/data/models/task.dart';
 import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../../../data/enums/priority.dart';
 
 class HabitDatabase extends ChangeNotifier {
-  static late Isar isar;
+  final isar = IsarService().db;
 
   /*        S E T U P       */
-
-  // I N I T I A L I Z E - D A T A B A S E
-  static Future<void> initialize() async {
-    final dir = await getApplicationDocumentsDirectory();
-    isar = await Isar.open([
-        HabitSchema,
-        AppSettingsSchema,
-        TaskSchema,
-      ], 
-    directory: dir.path,
-    inspector: false,
-    );
-  }
 
   // save first date of app startup (for heatmap)
   Future<void> saveFirstLaunchDate() async {

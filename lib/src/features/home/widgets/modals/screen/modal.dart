@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/features/modals/forms/build_habit_form.dart';
-import 'package:improov/src/features/modals/forms/build_task_form.dart';
-import 'package:improov/src/features/modals/widgets/UI/build_cross.dart';
-import 'package:improov/src/features/modals/widgets/UI/build_text_field.dart';
-import 'package:improov/src/features/modals/widgets/toggle/build_toggle.dart';
+import 'package:improov/src/features/home/widgets/modals/forms/build_habit_form.dart';
+import 'package:improov/src/features/home/widgets/modals/forms/build_task_form.dart';
+import 'package:improov/src/features/home/widgets/modals/components/UI/build_cross.dart';
+import 'package:improov/src/features/home/widgets/modals/components/UI/build_text_field.dart';
+import 'package:improov/src/features/home/widgets/modals/components/toggle/build_toggle.dart';
 import 'package:improov/src/features/habits/provider/habit_database.dart';
 import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/data/enums/priority.dart';
@@ -32,12 +32,12 @@ class _ModalState extends State<Modal> {
   Priority _selectedHabitPriority = Priority.low;
   Priority _selectedTaskPriority = Priority.low;
 
-  DateTime? _habitReminder = null;
-  DateTime? _taskReminder = null;
+  DateTime? _habitReminder;
+  DateTime? _taskReminder;
 
   int _selectedGoal = 3;
   
-  bool isHabitMode = true;
+  bool isHabitMode = false;
   DateTime _selectedDate = DateTime.now();
 
   final TextEditingController _taskTitleController = TextEditingController();
@@ -222,7 +222,8 @@ class _ModalState extends State<Modal> {
                   }
           
                   //close modal
-                  if (mounted) Navigator.pop(context);
+                  if (!context.mounted) return;
+                  Navigator.pop(context);
                 },
               ),
           

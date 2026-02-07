@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:improov/src/features/modals/screen/modal.dart';
+import 'package:improov/src/features/home/widgets/modals/screen/modal.dart';
 import 'package:improov/src/features/habits/provider/habit_database.dart';
 import 'package:improov/src/data/models/habit.dart';
 import 'package:improov/src/features/habits/widgets/habit_popup.dart';
