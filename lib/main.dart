@@ -9,14 +9,18 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   //initialzing isar database
   await HabitDatabase.initialize();
 
+  await Future.delayed(const Duration(milliseconds: 100));
+
+  final isarInstance = HabitDatabase.isar;
+
   final habitDatabase = HabitDatabase();
-  final taskDatabase = TaskDatabase();
+  final taskDatabase = TaskDatabase(isarInstance);
 
   await habitDatabase.saveFirstLaunchDate();
-
   await habitDatabase.readHabits();
   await taskDatabase.readTask();
 
@@ -43,7 +47,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter,
-      theme: darkMode,
+      theme: lightMode,
     );
   }
 }

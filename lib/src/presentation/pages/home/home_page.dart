@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                     return TaskTile(
                       task: task,
                       onChanged: (val) =>
-                          taskDatabase.updateTaskCompletion(task.id),
+                          taskDatabase.updateTaskCompletion(task.id, val ?? false),
                       isCompleted: task.isCompleted,
                     );
                   }, childCount: taskDatabase.currentTasks.length),
@@ -83,6 +83,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const Spacer(),
                     SvgPicture.asset(
                       Theme.of(context).brightness == Brightness.dark
                           ? 'assets/images/dark_mode/doodle_laying_dark.svg'
@@ -97,8 +98,7 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.grey,
                       ),
                     ),
-
-                    const Spacer(flex: 1),
+                    const Spacer(),
                   ],
                 ),
               ),

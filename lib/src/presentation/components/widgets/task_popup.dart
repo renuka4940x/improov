@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/data/models/task.dart';
 import 'package:improov/src/presentation/components/UI/popup_row.dart';
 import 'package:improov/src/presentation/util/formatters/date_formatter.dart';
 
-class HabitPopup extends StatelessWidget {
-  final Habit habit;
+class TaskPopup extends StatelessWidget {
+  final Task task;
 
-  const HabitPopup({
-    super.key,
-    required this.habit,
-  });
+  const TaskPopup({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: 'habit_${habit.id}',
+      tag: 'task_${task.id}',
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(
@@ -32,37 +29,37 @@ class HabitPopup extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        habit.name,
+                        task.title,
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 6),
-                      if (habit.description != null && habit.description!.isNotEmpty)
-                        Text(habit.description!, style: TextStyle(color: Colors.grey[600])),
+                      if (task.description != null && task.description!.isNotEmpty)
+                        Text(task.description!, style: TextStyle(color: Colors.grey[600])),
                       const Divider(height: 32),
                       
-                      // Priority
+                      //priority
                       PopupRow(
                         icon: Icons.priority_high_outlined, 
                         label: "Priority", 
-                        value: habit.priority.name[0].toUpperCase() + habit.priority.name.substring(1).toLowerCase(),
+                        value: task.priority.name[0].toUpperCase() + task.priority.name.substring(1).toLowerCase(),
                       ),
-            
-                      //goal
+                      
+                      //due date
                       PopupRow(
-                        icon: Icons.local_fire_department_outlined, 
-                        label: "Goal", 
-                        value: "${habit.goalDaysPerWeek} days/week",
+                        icon: Icons.calendar_today_outlined, 
+                        label: "Due on", 
+                        value: "${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}",
                       ),
             
                       //reminder
                       PopupRow(
                         icon: Icons.alarm_outlined, 
                         label: "Reminder", 
-                        value: habit.reminderTime != null 
-                          ? DateFormatter.formatDateTime(habit.reminderTime!) 
+                        value: task.reminderTime != null 
+                          ? DateFormatter.formatDateTime(task.reminderTime!) 
                           : "Off",
                       ),
-                      
+            
                       const SizedBox(height: 16),
                       //done
                       Align(

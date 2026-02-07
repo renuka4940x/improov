@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:improov/src/data/database/habit_database.dart';
 import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/presentation/components/widgets/habit_popup.dart';
 import 'package:improov/src/presentation/util/modals/modal.dart';
+import 'package:improov/src/presentation/util/navigation/hero_dialog_route.dart';
 import 'package:provider/provider.dart';
 
 class HabitTile extends StatelessWidget {
@@ -45,22 +48,29 @@ class HabitTile extends StatelessWidget {
     //calculate streak 
     final int streakCount = habit.completedDays.length;
 
-    return GestureDetector(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: GestureDetector(
-          //long press for popup
-          onLongPress: () {},
-
-          //tap for check/uncheck
-          onTap: () {
-            context.read<HabitDatabase>().updateHabitCompletion(
-              habit.id, 
-              !habit.isCompleted,
-            );
-          },
-
-          //tile design
+    return Hero(
+      tag: 'habit_${habit.id}',
+      child: GestureDetector(
+        //long press for popup
+        onLongPress: () {
+          HapticFeedback.mediumImpact();
+          Navigator.push(
+            context,
+            HeroDialogRoute(
+              builder: (context) => HabitPopup(habit: habit,)
+            )
+          );
+        },
+                          
+        //tap for check/uncheck
+        onTap: () {
+          context.read<HabitDatabase>().updateHabitCompletion(
+            habit.id, 
+            !habit.isCompleted,
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Slidable(
             endActionPane: ActionPane(
               motion: const StretchMotion(), 
@@ -69,11 +79,11 @@ class HabitTile extends StatelessWidget {
                   //edit
                   onPressed: (context) => onEditPressed(context),
                   backgroundColor: Theme.of(context).colorScheme.surface,
-                  foregroundColor: Colors.white,
+                  foregroundColor: Colors.grey,
                   icon: Icons.edit,
                   borderRadius: BorderRadius.circular(8),
                 ),
-          
+                    
                 //delete
                 SlidableAction(
                   onPressed: (context) => onDeletePressed(context),
@@ -84,77 +94,79 @@ class HabitTile extends StatelessWidget {
                 ),
               ],
             ),
-          
-            child: Row(
-              children: [
-                //checkbox
-                Transform.scale(
-                  scale: 1.2,
-                  child: Checkbox(
-                    side: BorderSide(
-                      color: isCompletedToday
-                        ? Colors.transparent
-                        : Theme.of(context).colorScheme.inversePrimary,
-                      width: 1.5,
-                    ),
-                    value: isCompletedToday, 
-                    onChanged: onChanged,
-                    activeColor: Theme.of(context).colorScheme.tertiary,
-                    checkColor: Theme.of(context).colorScheme.inversePrimary,
-                    
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                  ),
-                ),
-                  
-                const SizedBox(width: 12),
-                  
-                //name & description
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        habit.name,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: isCompletedToday 
-                            ? Colors.grey 
-                            : Theme.of(context).colorScheme.inversePrimary,
-                          decoration: isCompletedToday ? TextDecoration.lineThrough : null,
-                          fontStyle: isCompletedToday ? FontStyle.italic : null,
-                        ),
+            child: Material(
+              type: MaterialType.transparency,
+              child: Row(
+                children: [
+                  //checkbox
+                  Transform.scale(
+                    scale: 1.2,
+                    child: Checkbox(
+                      side: BorderSide(
+                        color: isCompletedToday
+                          ? Colors.transparent
+                          : Theme.of(context).colorScheme.inversePrimary,
+                        width: 1.5,
                       ),
-                      if (habit.description != null && habit.description!.isNotEmpty)
+                      value: isCompletedToday, 
+                      onChanged: onChanged,
+                      activeColor: Theme.of(context).colorScheme.tertiary,
+                      checkColor: Theme.of(context).colorScheme.inversePrimary,
+                      
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    ),
+                  ),
+                    
+                  const SizedBox(width: 12),
+                    
+                  //name & description
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          habit.description!,
+                          habit.name,
                           style: TextStyle(
-                            fontSize: 12, 
-                            color: Colors.grey[600]
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: isCompletedToday 
+                              ? Colors.grey 
+                              : Theme.of(context).colorScheme.inversePrimary,
+                            decoration: isCompletedToday ? TextDecoration.lineThrough : null,
+                            fontStyle: isCompletedToday ? FontStyle.italic : null,
                           ),
                         ),
-                    ],
-                  ),
-                ),
-                //streak
-                Row(
-                  children: [
-                    Icon(
-                      Icons.local_fire_department_outlined,
-                      size: 20,
-                      color: isCompletedToday ? Colors.grey : null,
+                        if (habit.description != null && habit.description!.isNotEmpty)
+                          Text(
+                            habit.description!,
+                            style: TextStyle(
+                              fontSize: 12, 
+                              color: Colors.grey[600]
+                            ),
+                          ),
+                      ],
                     ),
-                    Text(
-                      streakCount.toString(),
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                  ),
+                  //streak
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.local_fire_department_outlined,
+                        size: 20,
                         color: isCompletedToday ? Colors.grey : null,
                       ),
-                    )
-                  ],
-                ),
-              ],
+                      Text(
+                        streakCount.toString(),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isCompletedToday ? Colors.grey : null,
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

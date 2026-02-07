@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
-import 'package:improov/src/data/database/habit_database.dart';
 import 'package:improov/src/data/models/enums/priority.dart';
 import 'package:isar/isar.dart';
 
 import '../models/task.dart';
 
 class TaskDatabase extends ChangeNotifier {
+  final Isar isar;
   //getting isar instance from habit_db
-  final isar = HabitDatabase.isar;
+  TaskDatabase(this.isar);
 
   //list of tasks
   final List<Task> currentTasks = [];
-
 
   /*             C R U D              */
 
@@ -88,14 +87,14 @@ class TaskDatabase extends ChangeNotifier {
   }
 
   // U P D A T E - task completion
-  Future<void> updateTaskCompletion(int id) async {
+  Future<void> updateTaskCompletion(int id, bool isCompleted) async {
     //find specific task
     final task = await isar.tasks.get(id);
 
     //update completion logic
     if(task != null) {
       //flip the status
-      task.isCompleted = !task.isCompleted;
+      task.isCompleted = isCompleted;
 
       //save to db
       await isar.writeTxn(() async { 
