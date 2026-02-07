@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:improov/src/presentation/components/UI/nav_bar.dart';
-import 'package:improov/src/presentation/util/modals/modal.dart';
+import 'package:improov/src/core/util/modals/modal.dart';
+import 'package:improov/src/features/home/widgets/nav_bar.dart';
 
 class PageNav extends StatelessWidget {
   final StatefulNavigationShell navigationShell;

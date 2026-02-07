@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:improov/src/data/database/habit_database.dart';
+import 'package:improov/src/core/util/modals/modal.dart';
+import 'package:improov/src/features/habits/provider/habit_database.dart';
 import 'package:improov/src/data/models/habit.dart';
-import 'package:improov/src/presentation/components/widgets/habit_popup.dart';
-import 'package:improov/src/presentation/util/modals/modal.dart';
-import 'package:improov/src/presentation/util/navigation/hero_dialog_route.dart';
+import 'package:improov/src/features/habits/widgets/habit_popup.dart';
+import 'package:improov/src/core/routing/hero_dialog_route.dart';
 import 'package:provider/provider.dart';
 
 class HabitTile extends StatelessWidget {

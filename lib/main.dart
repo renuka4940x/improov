@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/data/database/habit_database.dart';
-import 'package:improov/src/data/database/task_database.dart';
-import 'package:improov/src/presentation/theme/dark_mode.dart';
-import 'package:improov/src/presentation/theme/light_mode.dart';
-import 'package:improov/src/presentation/theme/theme_provider.dart';
-import 'package:improov/src/presentation/util/navigation/router.dart';
+import 'package:improov/src/features/habits/provider/habit_database.dart';
+import 'package:improov/src/features/tasks/provider/task_database.dart';
+import 'package:improov/src/core/theme/dark_mode.dart';
+import 'package:improov/src/core/theme/light_mode.dart';
+import 'package:improov/src/core/theme/theme_provider.dart';
+import 'package:improov/src/core/routing/router.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter,
-      theme: lightMode,
+      theme: darkMode,
     );
   }
 }

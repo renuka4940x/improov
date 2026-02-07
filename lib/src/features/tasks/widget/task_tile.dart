@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:improov/src/data/database/task_database.dart';
+import 'package:improov/src/core/util/modals/modal.dart';
+import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/data/models/task.dart';
-import 'package:improov/src/presentation/components/widgets/task_popup.dart';
-import 'package:improov/src/presentation/util/modals/modal.dart';
-import 'package:improov/src/presentation/util/navigation/hero_dialog_route.dart';
+import 'package:improov/src/features/tasks/widget/task_popup.dart';
+import 'package:improov/src/core/routing/hero_dialog_route.dart';
 import 'package:provider/provider.dart';
 
 class TaskTile extends StatelessWidget {

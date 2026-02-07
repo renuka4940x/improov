@@ -5,7 +5,7 @@ import 'package:improov/src/data/models/task.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../models/enums/priority.dart';
+import '../../../data/models/enums/priority.dart';
 
 class HabitDatabase extends ChangeNotifier {
   static late Isar isar;

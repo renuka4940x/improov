@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:improov/src/core/util/modals/widgets/UI/build_row.dart';
+import 'package:improov/src/core/util/modals/widgets/pickers/date_picker.dart';
+import 'package:improov/src/core/util/modals/widgets/pickers/date_time_picker.dart';
+import 'package:improov/src/core/util/modals/widgets/pickers/priority_picker.dart';
 import 'package:improov/src/data/models/enums/priority.dart';
-import 'package:improov/src/presentation/util/modals/widgets/UI/build_row.dart';
-import 'package:improov/src/presentation/util/modals/widgets/pickers/date_picker.dart';
-import 'package:improov/src/presentation/util/modals/widgets/pickers/date_time_picker.dart';
-import 'package:improov/src/presentation/util/modals/widgets/pickers/priority_picker.dart';
 
 class BuildTaskForm extends StatelessWidget {
   //variables

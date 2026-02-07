@@ -1,8 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:improov/src/presentation/pages/calendar_page.dart';
-import 'package:improov/src/presentation/pages/home/home_page.dart';
+import 'package:improov/src/features/home/screens/home_page.dart';
 import 'package:improov/src/presentation/pages/streak_page.dart';
-import 'package:improov/src/presentation/util/navigation/page_nav.dart';
+import 'package:improov/src/core/routing/page_nav.dart';
 import 'package:improov/src/presentation/pages/profile_page.dart';
 
 final AppRouter = GoRouter(

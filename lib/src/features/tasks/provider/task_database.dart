@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:improov/src/data/models/enums/priority.dart';
 import 'package:isar/isar.dart';
 
-import '../models/task.dart';
+import '../../../data/models/task.dart';
 
 class TaskDatabase extends ChangeNotifier {
   final Isar isar;
