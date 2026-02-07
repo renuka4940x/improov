@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:improov/src/core/util/modals/modal.dart';
+import 'package:improov/src/features/modals/screen/modal.dart';
 import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/data/models/task.dart';
 import 'package:improov/src/features/tasks/widget/task_popup.dart';

@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/core/util/modals/widgets/UI/build_row.dart';
-import 'package:improov/src/core/util/modals/widgets/pickers/date_time_picker.dart';
-import 'package:improov/src/core/util/modals/widgets/pickers/goal_picker.dart';
-import 'package:improov/src/core/util/modals/widgets/pickers/priority_picker.dart';
+import 'package:improov/src/features/modals/widgets/UI/build_row.dart';
+import 'package:improov/src/features/modals/widgets/pickers/date_picker.dart';
+import 'package:improov/src/features/modals/widgets/pickers/date_time_picker.dart';
+import 'package:improov/src/features/modals/widgets/pickers/priority_picker.dart';
 import 'package:improov/src/data/enums/priority.dart';
 
-class BuildHabitForm extends StatelessWidget {
+class BuildTaskForm extends StatelessWidget {
   //variables
+  final DateTime currentStartDate;
   final Priority currentPriority;
-  final int currentGoal;
   final DateTime? currentReminder;
 
-  //function callbacks
+  //callbacks
+  final Function(DateTime) onDateChanged;
   final Function(Priority) onPriorityChanged;
-  final Function(int) onGoalChanged;
   final Function(DateTime?) onDateTimeSelected;
 
-  const BuildHabitForm({
+  const BuildTaskForm({
     super.key,
+    required this.currentStartDate,
     required this.currentPriority,
-    required this.currentGoal,
     required this.currentReminder,
+    required this.onDateChanged,
     required this.onPriorityChanged,
-    required this.onGoalChanged,
     required this.onDateTimeSelected,
   });
 
@@ -30,12 +30,12 @@ class BuildHabitForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        //times of the week
+        //date
         BuildRow(
-          label: "Goal",
-          trailing: GoalPicker(
-            selectedGoal: currentGoal, 
-            onChanged: onGoalChanged
+          label: "Date",  
+          trailing:DatePicker(
+            selectedDate: currentStartDate,
+            onDateSelected: onDateChanged,
           ),
         ),
 
@@ -58,7 +58,7 @@ class BuildHabitForm extends StatelessWidget {
           ), 
           isPro: true
         ),
-      ]
+      ],
     );
   }
 }

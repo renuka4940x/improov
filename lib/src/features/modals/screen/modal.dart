@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/core/util/modals/forms/build_habit_form.dart';
-import 'package:improov/src/core/util/modals/forms/build_task_form.dart';
-import 'package:improov/src/core/util/modals/widgets/UI/build_cross.dart';
-import 'package:improov/src/core/util/modals/widgets/UI/build_text_field.dart';
-import 'package:improov/src/core/util/modals/widgets/toggle/build_toggle.dart';
+import 'package:improov/src/features/modals/forms/build_habit_form.dart';
+import 'package:improov/src/features/modals/forms/build_task_form.dart';
+import 'package:improov/src/features/modals/widgets/UI/build_cross.dart';
+import 'package:improov/src/features/modals/widgets/UI/build_text_field.dart';
+import 'package:improov/src/features/modals/widgets/toggle/build_toggle.dart';
 import 'package:improov/src/features/habits/provider/habit_database.dart';
 import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/data/enums/priority.dart';
