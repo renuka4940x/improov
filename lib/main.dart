@@ -34,16 +34,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeData = context.watch<ThemeProvider>().themeData;
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
-      theme: themeProvider.themeData,
+      theme: themeData,
+      builder: (context, child) {
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 5),
+          child: child!,
+        );
+      },
     );
   }
 }
-
-//domain
-//data
-//application
-//presentation

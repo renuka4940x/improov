@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 ThemeData lightMode = ThemeData(
   colorScheme: ColorScheme.light(
@@ -7,5 +8,20 @@ ThemeData lightMode = ThemeData(
     secondary: Color(0xFFE9E9E9),
     tertiary: Color(0xFF87EB82),
     inversePrimary: Color(0xFF1D1D1D),
-  )
+  ),
+  textSelectionTheme: const TextSelectionThemeData(
+    cursorColor: Colors.black,
+    selectionColor: Color(0xFF87EB82),
+    selectionHandleColor: Colors.black,
+  ),
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    surfaceTintColor: Colors.transparent,
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+    ),
+  ),
 );

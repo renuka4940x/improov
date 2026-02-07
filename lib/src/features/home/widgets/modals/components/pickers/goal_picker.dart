@@ -17,6 +17,7 @@ class GoalPicker extends StatelessWidget {
 
       child: DropdownButtonHideUnderline(
         child: DropdownButton<int>(
+          isDense: true,
           alignment: Alignment.centerRight,
           borderRadius: BorderRadius.circular(15),
 

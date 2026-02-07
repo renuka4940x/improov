@@ -26,7 +26,7 @@ class PageNav extends StatelessWidget {
             FocusScope.of(context).unfocus(); 
 
             showModalBottomSheet<void>(
-              context: context, 
+              context: Navigator.of(context, rootNavigator: true).context,
               builder: (context) => Modal(
                 isUpdating: false,
                 taskToEdit: null,

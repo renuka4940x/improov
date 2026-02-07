@@ -81,7 +81,7 @@ class _ModalState extends State<Modal> {
     } 
 
     else {
-      isHabitMode = true;
+      isHabitMode = false;
     }
   }
 
@@ -89,151 +89,146 @@ class _ModalState extends State<Modal> {
   Widget build(BuildContext context) {
     return RepaintBoundary(
       child: Container(
-        padding: EdgeInsets.only(
-          left: 24,
-          right: 24,
-          top: 20,
-      
-          //adjustment for keyboard
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-        ),
-      
+        padding: EdgeInsets.only(left: 24, right: 24, top: 20),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              //toggle
-              IgnorePointer(
-                ignoring: widget.isUpdating ?? false,
-                child: Opacity(
-                  opacity: (widget.isUpdating ?? false) ? 0.5 : 1.0,
-                  child: BuildToggle(
-                    isHabitMode: isHabitMode, 
-                    onToggle: (val) {
-                      setState(() {
-                        isHabitMode = val;
-                      });
-                    }
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                //toggle
+                IgnorePointer(
+                  ignoring: widget.isUpdating ?? false,
+                  child: Opacity(
+                    opacity: (widget.isUpdating ?? false) ? 0.5 : 1.0,
+                    child: BuildToggle(
+                      isHabitMode: isHabitMode, 
+                      onToggle: (val) {
+                        setState(() {
+                          isHabitMode = val;
+                        });
+                      }
+                    ),
                   ),
                 ),
-              ),
-          
-              const SizedBox(height: 40),
-          
-              //name text fields
-              BuildTextField(
-                controller: isHabitMode
-                  ? _habitNameController
-                  : _taskTitleController, 
-                placeholder: isHabitMode
-                  ? "e.g. Reading"
-                  : "e.g. Complete Maths Assignment",
-              ),
-          
-              const SizedBox(height: 20),
-          
-              //description text field
-              BuildTextField(
-                controller: isHabitMode
-                  ? _habitDescController
-                  : _taskDescController, 
-                placeholder: isHabitMode 
-                  ? "e.g. read for 15 mins"
-                  : "description",
-                isItalic: true,
-              ),
-          
-              const SizedBox(height: 30),
-          
-              //rest of the field based on the toggle
-              if (isHabitMode) 
-                BuildHabitForm(
-                  currentPriority: _selectedHabitPriority,
-                  currentGoal: _selectedGoal,
-                  currentReminder: _habitReminder,
-                  onPriorityChanged: (newPriority) {
-                    setState(() => _selectedHabitPriority = newPriority);
-                  },
-                  onGoalChanged: (newGoal) {
-                    setState(() => _selectedGoal = newGoal);
-                  },
-                  onDateTimeSelected: (newHabitTime) {
-                    setState(() => _habitReminder = newHabitTime);
-                  },
-                )
-              else
-                BuildTaskForm(
-                  currentStartDate: _selectedDate,
-                  currentPriority: _selectedTaskPriority,
-                  currentReminder: _taskReminder,
-                  onDateChanged: (newDate) {
-                    setState(() => _selectedDate = newDate);
-                  },
-                  onPriorityChanged: (newPriority) {
-                    setState(() => _selectedTaskPriority = newPriority);
-                  },
-                  onDateTimeSelected: (newTaskTime) {
-                    setState(() => _taskReminder = newTaskTime);
+            
+                const SizedBox(height: 40),
+            
+                //name text fields
+                BuildTextField(
+                  controller: isHabitMode
+                    ? _habitNameController
+                    : _taskTitleController, 
+                  placeholder: isHabitMode
+                    ? "e.g. Reading"
+                    : "e.g. Complete Maths Assignment",
+                ),
+            
+                const SizedBox(height: 20),
+            
+                //description text field
+                BuildTextField(
+                  controller: isHabitMode
+                    ? _habitDescController
+                    : _taskDescController, 
+                  placeholder: isHabitMode 
+                    ? "e.g. read for 15 mins"
+                    : "description",
+                  isItalic: true,
+                ),
+            
+                const SizedBox(height: 30),
+            
+                //rest of the field based on the toggle
+                if (isHabitMode) 
+                  BuildHabitForm(
+                    currentPriority: _selectedHabitPriority,
+                    currentGoal: _selectedGoal,
+                    currentReminder: _habitReminder,
+                    onPriorityChanged: (newPriority) {
+                      setState(() => _selectedHabitPriority = newPriority);
+                    },
+                    onGoalChanged: (newGoal) {
+                      setState(() => _selectedGoal = newGoal);
+                    },
+                    onDateTimeSelected: (newHabitTime) {
+                      setState(() => _habitReminder = newHabitTime);
+                    },
+                  )
+                else
+                  BuildTaskForm(
+                    currentStartDate: _selectedDate,
+                    currentPriority: _selectedTaskPriority,
+                    currentReminder: _taskReminder,
+                    onDateChanged: (newDate) {
+                      setState(() => _selectedDate = newDate);
+                    },
+                    onPriorityChanged: (newPriority) {
+                      setState(() => _selectedTaskPriority = newPriority);
+                    },
+                    onDateTimeSelected: (newTaskTime) {
+                      setState(() => _taskReminder = newTaskTime);
+                    },
+                  ),
+            
+                const SizedBox(height: 20),
+            
+                //save button
+                Button(
+                  text: (widget.taskToEdit != null || widget.habitToEdit != null)
+                    ? "Save"
+                    : "Create", 
+                  onTap: () async {
+                    //grab info from controller
+                    String taskTitle = _taskTitleController.text;
+                    String taskDesc = _taskDescController.text;
+                    String habitName = _habitNameController.text;
+                    String habitDesc = _habitDescController.text;
+            
+                    //make sure it's not empty
+                    if (isHabitMode && habitName.isEmpty) return;
+                    if (!isHabitMode && taskTitle.isEmpty) return;
+            
+                    // save info to db based on toggle mode
+                    if (isHabitMode) {
+                      await context.read<HabitDatabase>().handleSaveHabit(
+                        existingHabit: widget.habitToEdit,
+                        name: habitName, 
+                        description: habitDesc, 
+                        priority: _selectedHabitPriority, 
+                        goal: _selectedGoal, 
+                        startDate: _selectedDate,
+                        reminderTime: _habitReminder,
+                      );
+                    } else {
+                      await context.read<TaskDatabase>().handleSaveTask(
+                        existingTask: widget.taskToEdit,
+                        title: taskTitle, 
+                        description: taskDesc, 
+                        priority: _selectedTaskPriority, 
+                        dueDate: _selectedDate,
+                        reminder: _taskReminder,
+                      );
+                    }
+            
+                    //close modal
+                    if (!context.mounted) return;
+                    Navigator.pop(context);
                   },
                 ),
-          
-              const SizedBox(height: 20),
-          
-              //save button
-              Button(
-                text: (widget.taskToEdit != null || widget.habitToEdit != null)
-                  ? "Save"
-                  : "Create", 
-                onTap: () async {
-                  //grab info from controller
-                  String taskTitle = _taskTitleController.text;
-                  String taskDesc = _taskDescController.text;
-                  String habitName = _habitNameController.text;
-                  String habitDesc = _habitDescController.text;
-          
-                  //make sure it's not empty
-                  if (isHabitMode && habitName.isEmpty) return;
-                  if (!isHabitMode && taskTitle.isEmpty) return;
-          
-                  // save info to db based on toggle mode
-                  if (isHabitMode) {
-                    await context.read<HabitDatabase>().handleSaveHabit(
-                      existingHabit: widget.habitToEdit,
-                      name: habitName, 
-                      description: habitDesc, 
-                      priority: _selectedHabitPriority, 
-                      goal: _selectedGoal, 
-                      startDate: _selectedDate,
-                      reminderTime: _habitReminder,
-                    );
-                  } else {
-                    await context.read<TaskDatabase>().handleSaveTask(
-                      existingTask: widget.taskToEdit,
-                      title: taskTitle, 
-                      description: taskDesc, 
-                      priority: _selectedTaskPriority, 
-                      dueDate: _selectedDate,
-                      reminder: _taskReminder,
-                    );
-                  }
-          
-                  //close modal
-                  if (!context.mounted) return;
-                  Navigator.pop(context);
-                },
-              ),
-          
-              const SizedBox(height: 30),
-          
-              //cross
-              BuildCross(),
-              
-              const SizedBox(height: 30),
-            ],
+            
+                const SizedBox(height: 30),
+            
+                //cross
+                BuildCross(),
+                
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
       ),

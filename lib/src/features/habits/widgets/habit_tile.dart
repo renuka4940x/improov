@@ -21,7 +21,8 @@ class HabitTile extends StatelessWidget {
   //edit function
   void onEditPressed(BuildContext context) {
     showModalBottomSheet(
-      context: context,
+      context: Navigator.of(context, rootNavigator: true).context,
+      useSafeArea: true,
       isScrollControlled: true,
       builder: (context) => Modal(
         habitToEdit: habit,
