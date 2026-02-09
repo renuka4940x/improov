@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:improov/src/core/constants/app_colors.dart';
 import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/data/models/app_settings.dart';
 import 'package:improov/src/data/models/habit.dart';
@@ -34,12 +35,13 @@ class HabitDatabase extends ChangeNotifier {
   // C R E A T E
   Future<void> addHabit(
       String habitName, 
-      bool isHabitMode,{
+      bool isHabitMode, {
       String? description = "",
       DateTime? startDate,
       Priority priority = Priority.low,
       int goalDays = 3,
       DateTime? reminderTime,
+      int? colorHex
     }) async {
       // if dueDate is null -> use today's date
       final now = DateTime.now();
@@ -54,6 +56,7 @@ class HabitDatabase extends ChangeNotifier {
         ..priority =priority
         ..reminderTime= reminderTime
         ..goalDaysPerWeek = goalDays
+        ..colorHex = colorHex ?? AppColors.slayGreen.toARGB32()
         ..completedDays = [];
 
       //save to db
@@ -73,6 +76,9 @@ class HabitDatabase extends ChangeNotifier {
     //fetch all habits from db
     final fetechedHabits = await isar.habits.where().findAll();
 
+    final now = DateTime.now();
+    final daysLeftInWeek = 8 - now.weekday;
+
     fetechedHabits.sort((a,b) {
       final bool aDone = a.isCompleted;
       final bool bDone = b.isCompleted;
@@ -81,6 +87,24 @@ class HabitDatabase extends ChangeNotifier {
         return a.isCompleted ? 1 : -1;
       }
 
+      //pressure score
+      double getPressure(Habit h) {
+        //if goal is met pressure is 0
+        if (h.weeklyCount >= h.goalDaysPerWeek) return 0.0;
+
+        int needs = h.goalDaysPerWeek - h.weeklyCount;
+
+        //if needs > daysleft, score goes above 1.0 (cirtical
+        return needs / daysLeftInWeek.toDouble();
+      }
+
+      double pressureA = getPressure(a);
+      double pressureB = getPressure(b);
+
+      if (pressureA != pressureB) {
+        return pressureB.compareTo(pressureA);
+      }
+  
       //sort them based on priority
       final priorityMap = {
         Priority.high: 0,
@@ -111,23 +135,23 @@ class HabitDatabase extends ChangeNotifier {
     //update completion status
     if (habit != null) {
       await isar.writeTxn(() async {
-      //if habit is completed -> add the current date to the completedDays list
-        if (isCompleted && !habit.completedDays.contains(now)) {
-          //today
-          final today = now;
+        final today = DateTime(now.year, now.month, now.day);
+
+        //check if today already exists in the list
+        final alreadyExists = habit.completedDays.any((date) =>
+          date.year == today.year &&
+          date.month == today.month &&
+          date.day == today.day
+        );
+        //if habit is completed -> add the current date to the completedDays list
+        if (isCompleted && !alreadyExists) {
 
           //add current date if it's not already in the list
-          habit.completedDays.add(
-            DateTime(
-              today.year,
-              today.month,
-              today.day,
-            ),
-          );
+          habit.completedDays.add(today);
         } 
 
         //if habit is not completed -> remove the current date from the list
-        else {
+        else if (!isCompleted){
           //remove the current date if the habit is marked as not completed
           habit.completedDays.removeWhere((date) =>
             date.year == now.year &&
@@ -153,6 +177,7 @@ class HabitDatabase extends ChangeNotifier {
       Priority newPriority,
       int newGoal,
       DateTime? newReminderTime,
+      int newColor,
     ) async {
     //find the specific habit
     final habit = await isar.habits.get(id);
@@ -166,6 +191,7 @@ class HabitDatabase extends ChangeNotifier {
         habit.priority = newPriority;
         habit.goalDaysPerWeek = newGoal;
         habit.reminderTime = newReminderTime;
+        habit.colorHex = newColor;
 
         //save updated habit back to the db
         await isar.habits.put(habit);
@@ -196,7 +222,10 @@ class HabitDatabase extends ChangeNotifier {
     required int goal,
     required DateTime startDate,
     DateTime? reminderTime,
+    int? colorHex,
   }) async {
+    //if colorHex is null we assign slayGreen
+    final finalColor = colorHex ?? AppColors.slayGreen.toARGB32();
     if (existingHabit != null ) {
       //update habit
       await updateHabit(
@@ -205,7 +234,8 @@ class HabitDatabase extends ChangeNotifier {
         description, 
         priority, 
         goal, 
-        reminderTime
+        reminderTime,
+        finalColor,
       );
     } else {
       await addHabit(
@@ -217,6 +247,7 @@ class HabitDatabase extends ChangeNotifier {
         goalDays: goal,
         startDate: startDate,
         reminderTime: reminderTime,
+        colorHex: finalColor,
       );
     }
   }

@@ -49,6 +49,13 @@ class HabitTile extends StatelessWidget {
     //calculate streak 
     final int streakCount = habit.completedDays.length;
 
+    //calculating urgency
+    final now = DateTime.now();
+    final daysLeftInWeek = 8 - now.weekday;
+
+    final int needs = habit.goalDaysPerWeek - habit.weeklyCount;
+    final bool isUrgent = !isCompletedToday && (needs >= daysLeftInWeek) && needs > 0;
+
     return Hero(
       tag: 'habit_${habit.id}',
       child: GestureDetector(
@@ -97,76 +104,88 @@ class HabitTile extends StatelessWidget {
             ),
             child: Material(
               type: MaterialType.transparency,
-              child: Row(
-                children: [
-                  //checkbox
-                  Transform.scale(
-                    scale: 1.2,
-                    child: Checkbox(
-                      side: BorderSide(
-                        color: isCompletedToday
-                          ? Colors.transparent
-                          : Theme.of(context).colorScheme.inversePrimary,
-                        width: 1.5,
-                      ),
-                      value: isCompletedToday, 
-                      onChanged: onChanged,
-                      activeColor: Theme.of(context).colorScheme.tertiary,
-                      checkColor: Theme.of(context).colorScheme.inversePrimary,
-                      
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  border: Border(
+                    left: BorderSide(
+                      color: isUrgent ? Colors.red.shade300 : Colors.transparent,
+                      width: 4,
                     ),
                   ),
-                    
-                  const SizedBox(width: 12),
-                    
-                  //name & description
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          habit.name,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: isCompletedToday 
-                              ? Colors.grey 
-                              : Theme.of(context).colorScheme.inversePrimary,
-                            decoration: isCompletedToday ? TextDecoration.lineThrough : null,
-                            fontStyle: isCompletedToday ? FontStyle.italic : null,
-                          ),
+                ),
+                padding: isUrgent ? const EdgeInsets.only(left: 16) : EdgeInsets.all(0),
+                child: Row(
+                  children: [
+                    //checkbox
+                    Transform.scale(
+                      scale: 1.2,
+                      child: Checkbox(
+                        side: BorderSide(
+                          color: isCompletedToday
+                            ? Colors.transparent
+                            : Theme.of(context).colorScheme.inversePrimary,
+                          width: 1.5,
                         ),
-                        if (habit.description != null && habit.description!.isNotEmpty)
+                        value: isCompletedToday, 
+                        onChanged: onChanged,
+                        activeColor: Theme.of(context).colorScheme.tertiary,
+                        checkColor: Theme.of(context).colorScheme.inversePrimary,
+                        
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                      ),
+                    ),
+                      
+                    const SizedBox(width: 12),
+                      
+                    //name & description
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            habit.description!,
+                            habit.name,
                             style: TextStyle(
-                              fontSize: 12, 
-                              color: Colors.grey[600]
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: isCompletedToday 
+                                ? Colors.grey 
+                                : Theme.of(context).colorScheme.inversePrimary,
+                              decoration: isCompletedToday ? TextDecoration.lineThrough : null,
+                              fontStyle: isCompletedToday ? FontStyle.italic : null,
                             ),
                           ),
-                      ],
-                    ),
-                  ),
-                  //streak
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.local_fire_department_outlined,
-                        size: 20,
-                        color: isCompletedToday ? Colors.grey : null,
+                          if (habit.description != null && habit.description!.isNotEmpty)
+                            Text(
+                              habit.description!,
+                              style: TextStyle(
+                                fontSize: 12, 
+                                color: Colors.grey[600]
+                              ),
+                            ),
+                        ],
                       ),
-                      Text(
-                        streakCount.toString(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                    ),
+                    //streak
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.local_fire_department_outlined,
+                          size: 20,
                           color: isCompletedToday ? Colors.grey : null,
                         ),
-                      )
-                    ],
-                  ),
-                ],
+                        Text(
+                          streakCount.toString(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: isCompletedToday ? Colors.grey : null,
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
