@@ -22,7 +22,11 @@ void main() async {
 
         //database providers
         ChangeNotifierProvider(create: (context) => TaskDatabase()..readTask()),
-        ChangeNotifierProvider(create: (context) => HabitDatabase()..saveFirstLaunchDate()..readHabits()),
+        ChangeNotifierProvider(create: (context) => HabitDatabase()
+          ..saveFirstLaunchDate()
+          ..checkWeeklyReset()
+          ..readHabits()
+        ),
       ],
       child: const MyApp(),
     ),

@@ -46,9 +46,6 @@ class HabitTile extends StatelessWidget {
       date.day == today.day
     );
 
-    //calculate streak 
-    final int streakCount = habit.completedDays.length;
-
     //calculating urgency
     final now = DateTime.now();
     final daysLeftInWeek = 8 - now.weekday;
@@ -148,7 +145,7 @@ class HabitTile extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: isCompletedToday 
+                              color: isCompletedToday
                                 ? Colors.grey 
                                 : Theme.of(context).colorScheme.inversePrimary,
                               decoration: isCompletedToday ? TextDecoration.lineThrough : null,
@@ -172,14 +169,18 @@ class HabitTile extends StatelessWidget {
                         Icon(
                           Icons.local_fire_department_outlined,
                           size: 20,
-                          color: isCompletedToday ? Colors.grey : null,
+                          color: isCompletedToday 
+                            ? Theme.of(context).colorScheme.tertiary
+                            : (isUrgent ? Colors.red.shade300 : Colors.grey),
                         ),
                         Text(
-                          streakCount.toString(),
+                          habit.displayedStreak.toString(),
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: isCompletedToday ? Colors.grey : null,
+                            color: isCompletedToday 
+                            ? Theme.of(context).colorScheme.inversePrimary.withAlpha(190)
+                            : Colors.grey,
                           ),
                         )
                       ],

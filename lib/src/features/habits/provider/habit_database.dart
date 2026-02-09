@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:improov/src/core/constants/app_colors.dart';
 import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/data/models/app_settings.dart';
@@ -250,5 +251,37 @@ class HabitDatabase extends ChangeNotifier {
         colorHex: finalColor,
       );
     }
+  }
+
+  //A U T O M A T I C  W E E K L Y  R E S E T
+  Future<void> checkWeeklyReset() async {
+    final habits = await isar.habits.where().findAll();
+    final now = DateTime.now();
+
+    //find most recent monday
+    final startOfCurrentWeek = DateTime(now.year, now.month, now.day - (now.weekday - 1));
+
+    await isar.writeTxn(() async {
+      for (var habit in habits) {
+        //if lastresetdate is nullor it's from a previous week
+        if (habit.lastResetDate == null || habit.lastResetDate!.isBefore(startOfCurrentWeek)) {
+          //check if the user hit last week's goal
+          if (habit.weeklyCount >= habit.goalDaysPerWeek) {
+            habit.currentStreak++;
+            if (habit.currentStreak > habit.bestStreak) {
+              habit.bestStreak = habit.currentStreak;
+            } 
+          } else {
+            habit.currentStreak = 0;
+          }
+
+          habit.lastResetDate = startOfCurrentWeek;
+          await isar.habits.put(habit);
+        }
+      }
+    });
+
+    //reread from db
+    readHabits();
   }
 }
