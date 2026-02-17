@@ -55,6 +55,31 @@ class Habit {
 
   /*      L O G I C - G E T T E R S    */
 
+  int get calculateStreak {
+    if (completedDays.isEmpty) return 0;
+
+    final dates = completedDays
+        .map((d) => DateTime(d.year, d.month, d.day))
+        .toSet()
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+
+    if (!dates.contains(today) && !dates.contains(yesterday)) return 0;
+
+    int streak = 0;
+    DateTime checkDate = dates.contains(today) ? today : yesterday;
+
+    while (dates.contains(checkDate)) {
+      streak++;
+      checkDate = checkDate.subtract(const Duration(days: 1));
+    }
+    return streak;
+  }
+
   bool get isCompleted {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -70,14 +95,11 @@ class Habit {
     final now = DateTime.now();
     // Find Monday
     final monday = now.subtract(Duration(days: now.weekday - 1));
-    // Create a clean "Monday at 00:00:00"
     final startOfWeek = DateTime(monday.year, monday.month, monday.day);
 
     return completedDays.where((date) {
-      // Create a clean "Completion Date at 00:00:00"
       final checkDate = DateTime(date.year, date.month, date.day);
-      
-      // Check if it's the same day as Monday or after
+
       return checkDate.isAtSameMomentAs(startOfWeek) || checkDate.isAfter(startOfWeek);
     }).length;
   }
@@ -94,13 +116,10 @@ class Habit {
     return count/goal;
   }
 
+  int get realStreak => calculateStreak;
+
   int get displayedStreak {
-    //if they hit their goal, show current streak + this week
-    if (isCompleted) {
-      return currentStreak + 1;
-    }
-    //else show the completed past weeks
-    return currentStreak;
+    return realStreak;
   }
 
   // H E A T M A P 

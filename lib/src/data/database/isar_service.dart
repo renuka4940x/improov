@@ -7,11 +7,9 @@ import 'package:path_provider/path_provider.dart';
 class IsarService {
   static late Isar _isar;
 
-  //initializa the database
   static Future<void> init() async {
     final dir = await getApplicationCacheDirectory();
 
-    //check for open instances
     if(Isar.instanceNames.isEmpty) {
       _isar = await Isar.open(
         [TaskSchema, HabitSchema, AppSettingsSchema], 
@@ -23,5 +21,5 @@ class IsarService {
     }
   }
 
-  Isar get db => _isar;
+  static Isar get db => _isar;
 }

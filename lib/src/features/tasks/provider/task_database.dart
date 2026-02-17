@@ -6,7 +6,7 @@ import 'package:isar/isar.dart';
 import '../../../data/models/task.dart';
 
 class TaskDatabase extends ChangeNotifier {
-  final isar = IsarService().db;
+  final isar = IsarService.db;
 
   //list of tasks
   final List<Task> currentTasks = [];

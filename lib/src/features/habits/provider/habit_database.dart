@@ -9,7 +9,7 @@ import 'package:isar/isar.dart';
 import '../../../data/enums/priority.dart';
 
 class HabitDatabase extends ChangeNotifier {
-  final isar = IsarService().db;
+  final isar = IsarService.db;
 
   /*        S E T U P       */
 
