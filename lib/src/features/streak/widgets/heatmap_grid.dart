@@ -21,7 +21,7 @@ class HeatmapGrid extends StatelessWidget {
     final double squareSize = 25.0; 
     final double spacing = 4.0;
     final double gridWidth = (habit.goalDaysPerWeek * squareSize) + ((habit.goalDaysPerWeek - 1) * spacing);
-    // FIX: FutureBuilder must match the Engine's return type
+    
     return FutureBuilder<List<HabitSquareStatus>>(
       future: HeatmapEngine.getLinearStatuses(habit: habit, targetMonth: targetMonth),
       builder: (context, snapshot) {
@@ -33,7 +33,7 @@ class HeatmapGrid extends StatelessWidget {
         if (statuses.isEmpty) return const SizedBox.shrink();
 
         return SizedBox(
-          width: gridWidth, // This stops the "Gigantic" effect
+          width: gridWidth,
           child: GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -62,13 +62,14 @@ class HeatmapGrid extends StatelessWidget {
   Color _getColor(HabitSquareStatus status) {
     switch (status) {
       case HabitSquareStatus.completed:
-        return AppColors.slayGreen; // Your "Goal Met" Green
+        //goal met
+        return AppColors.slayGreen;
       case HabitSquareStatus.overflow:
-        return Colors.amber;      // Your "Legend" Gold
+        // extra accomplishments
+        return Colors.amber;
       case HabitSquareStatus.empty:
-        return Colors.grey.withOpacity(0.2); // Your "Gap" Gray
-      default:
-        return Colors.transparent;
+        //gap
+        return Colors.grey.withOpacity(0.2);
     }
   }
 }

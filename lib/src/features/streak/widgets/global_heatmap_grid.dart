@@ -25,7 +25,7 @@ class _GlobalHeatmapGridState extends State<GlobalHeatmapGrid> {
   void didUpdateWidget(covariant GlobalHeatmapGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
     
-    // If the list of habits has changed (length or content), RECALCULATE!
+    // If the list of habits has changed (length or content), recalculate
     if (oldWidget.habits != widget.habits) {
       _calculateData();
     }
@@ -60,21 +60,18 @@ class _GlobalHeatmapGridState extends State<GlobalHeatmapGrid> {
   }
 
   Widget _buildSquare(BuildContext context, double intensity) {
-    // DEBUG: This will tell us exactly what each square thinks its intensity is
-    // print("Square Intensity: $intensity"); 
 
     if (intensity == 0.0) {
       return Container(
         margin: const EdgeInsets.all(2),
         decoration: BoxDecoration(
-          color: Colors.grey[300], // The "No Progress" Gray
+          color: Colors.grey[300],
           borderRadius: BorderRadius.circular(3),
         ),
       );
     }
 
     // If intensity is GREATER than 0, we FORCE it to show Green.
-    // We use a high minimum opacity (0.5) so it's impossible to miss.
     return Container(
       margin: const EdgeInsets.all(2),
       decoration: BoxDecoration(

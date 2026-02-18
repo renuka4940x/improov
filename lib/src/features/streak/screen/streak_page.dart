@@ -15,7 +15,7 @@ class StreakPage extends StatefulWidget {
 class _StreakPageState extends State<StreakPage> {
   DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month, 1);
   
-  //we'll keep this but logic is currently Monthly-focused
+  //logic is currently Monthly-focused
   bool isYearly = false; 
   late Stream<List<Habit>> _habitStream;
 
