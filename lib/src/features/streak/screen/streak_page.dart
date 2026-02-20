@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:improov/src/data/database/isar_service.dart'; 
 import 'package:improov/src/data/models/habit.dart';
 import 'package:improov/src/features/streak/widgets/global_heatmap_grid.dart';
@@ -88,7 +89,13 @@ class _StreakPageState extends State<StreakPage> {
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              _buildSectionHeader("Total Progress"),
+              Text(
+                "All", 
+                style: GoogleFonts.jost(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                )
+              ),
               const SizedBox(height: 8),
               
               //we use habits.first here because 'habit' doesn't exist yet
@@ -98,37 +105,39 @@ class _StreakPageState extends State<StreakPage> {
                 targetMonth: _selectedMonth,
               ),
 
-              const SizedBox(height: 32),
-              const Divider(),
-              const SizedBox(height: 16),
-
-              _buildSectionHeader("Individual Habits"),
-              const SizedBox(height: 16),
+              const SizedBox(height: 36),
               
               // Here 'habit' is defined within the map scope
               ...habits.map((habit) => Padding(
-                padding: const EdgeInsets.only(bottom: 24.0),
+                padding: const EdgeInsets.only(bottom: 24, right: 8, left: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Divider(color: Colors.grey),
+                    const SizedBox(height: 12),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          habit.name.toUpperCase(), 
-                          style: TextStyle(
-                            color: Colors.grey[600], 
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
+                          "${habit.name[0].toUpperCase()}${habit.name.substring(1)}", 
+                          style: GoogleFonts.jost(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
                           )
                         ),
-                        Text(
-                          "STREAK: ${habit.calculateStreak}", 
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange)
+                        Row(
+                          children: [
+                            Icon(Icons.local_fire_department_outlined, color: Colors.grey, size: 18),
+                            Text(
+                              "${habit.calculateStreak}", 
+                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     HeatmapGrid(
                       habit: habit, 
                       targetMonth: _selectedMonth, 
@@ -141,9 +150,5 @@ class _StreakPageState extends State<StreakPage> {
         );
       },
     );
-  }
-
-  Widget _buildSectionHeader(String title) {
-    return Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold));
   }
 }

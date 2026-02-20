@@ -18,8 +18,8 @@ class HeatmapGrid extends StatelessWidget {
   Widget build(BuildContext context) {
 
     // Calculate width: (Goal * SquareSize) + (Spacing)
-    final double squareSize = 25.0; 
-    final double spacing = 4.0;
+    final double squareSize = 28; 
+    final double spacing = 15;
     final double gridWidth = (habit.goalDaysPerWeek * squareSize) + ((habit.goalDaysPerWeek - 1) * spacing);
     
     return FutureBuilder<List<HabitSquareStatus>>(
@@ -32,27 +32,29 @@ class HeatmapGrid extends StatelessWidget {
         final statuses = snapshot.data!;
         if (statuses.isEmpty) return const SizedBox.shrink();
 
-        return SizedBox(
-          width: gridWidth,
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: habit.goalDaysPerWeek,
-              mainAxisSpacing: spacing,
-              crossAxisSpacing: spacing,
+        return Center(
+          child: SizedBox(
+            width: gridWidth,
+            child: GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: habit.goalDaysPerWeek,
+                mainAxisSpacing: spacing,
+                crossAxisSpacing: spacing,
+              ),
+              itemCount: statuses.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  width: squareSize,
+                  height: squareSize,
+                  decoration: BoxDecoration(
+                    color: _getColor(statuses[index]),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                );
+              },
             ),
-            itemCount: statuses.length,
-            itemBuilder: (context, index) {
-              return Container(
-                width: squareSize,
-                height: squareSize,
-                decoration: BoxDecoration(
-                  color: _getColor(statuses[index]),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              );
-            },
           ),
         );
       },
@@ -63,13 +65,13 @@ class HeatmapGrid extends StatelessWidget {
     switch (status) {
       case HabitSquareStatus.completed:
         //goal met
-        return AppColors.slayGreen;
+        return AppColors.lightTertiary;
       case HabitSquareStatus.overflow:
         // extra accomplishments
-        return Colors.amber;
+        return Colors.amberAccent;
       case HabitSquareStatus.empty:
         //gap
-        return Colors.grey.withOpacity(0.2);
+        return Colors.grey.withOpacity(0.3);
     }
   }
 }

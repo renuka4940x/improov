@@ -1,5 +1,5 @@
 enum HabitSquareStatus {
   empty,
   completed,
-  overflow
+  overflow,
 }

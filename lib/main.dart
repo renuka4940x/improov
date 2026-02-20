@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/features/habits/provider/habit_database.dart';
 import 'package:improov/src/features/tasks/provider/task_database.dart';
@@ -38,12 +39,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = context.watch<ThemeProvider>().themeData;
+    final currentTheme = context.watch<ThemeProvider>().themeData;
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
-      theme: themeData,
+      theme: currentTheme.copyWith(
+        textTheme: GoogleFonts.interTextTheme(currentTheme.textTheme),
+        primaryTextTheme: GoogleFonts.jostTextTheme(currentTheme.primaryTextTheme),
+      ),
       builder: (context, child) {
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 5),
