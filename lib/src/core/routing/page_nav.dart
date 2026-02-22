@@ -41,7 +41,7 @@ class PageNav extends StatelessWidget {
           child: Icon(
             Icons.add, 
             color: Theme.of(context).colorScheme.inversePrimary,
-            ),
+          ),
         ),
       ),
 

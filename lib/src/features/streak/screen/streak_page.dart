@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:improov/src/core/util/logic/heatmap_engine.dart';
 import 'package:improov/src/data/database/isar_service.dart'; 
 import 'package:improov/src/data/models/habit.dart';
-import 'package:improov/src/features/streak/widgets/global_heatmap_grid.dart';
-import 'package:improov/src/features/streak/widgets/heatmap_grid.dart';
+import 'package:improov/src/features/streak/widgets/global_calendar/global_calendar_grid.dart';
+import 'package:improov/src/features/streak/widgets/global_calendar/widgets/day_audit_sheet.dart';
+import 'package:improov/src/features/streak/widgets/individual_heatmap/heatmap_grid.dart';
 import 'package:isar/isar.dart';
 
 class StreakPage extends StatefulWidget {
@@ -42,6 +44,11 @@ class _StreakPageState extends State<StreakPage> {
         }
 
         final habits = snapshot.data ?? [];
+
+        final monthlySnapshots = HeatmapEngine.generateGlobalSnapshot(
+          habits: habits,
+          targetMonth: _selectedMonth,
+        );
         
         if (habits.isEmpty) {
           return Scaffold(
@@ -53,18 +60,10 @@ class _StreakPageState extends State<StreakPage> {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
           appBar: AppBar(
-            title: const Text("Streak"),
-            actions: [
-              TextButton.icon(
-                onPressed: () => setState(() => isYearly = !isYearly),
-                icon: Icon(isYearly ? Icons.calendar_view_month : Icons.calendar_view_week),
-                label: Text(isYearly ? "Monthly" : "Yearly"),
-              )
-            ],
             bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(50),
+              preferredSize: const Size.fromHeight(20),
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+                padding: const EdgeInsets.only(bottom: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -72,7 +71,7 @@ class _StreakPageState extends State<StreakPage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Theme.of(context).colorScheme.secondary,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -89,33 +88,39 @@ class _StreakPageState extends State<StreakPage> {
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              Text(
-                "All", 
-                style: GoogleFonts.jost(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                )
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text(
+                  "All", 
+                  style: GoogleFonts.jost(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                  )
+                ),
               ),
               const SizedBox(height: 8),
               
-              //we use habits.first here because 'habit' doesn't exist yet
-              GlobalHeatmapGrid(
-                key: ValueKey(habits.map((e) => e.completedDays.length).join(',')), // Forces rebuild on change
-                habits: habits,
+              //calendar view
+              GlobalCalendarGrid(
                 targetMonth: _selectedMonth,
+                snapshots: monthlySnapshots,
+                onDayTap: (date, snapshot) {
+                  DayAuditSheet.show(context, date, snapshot.completedHabits);
+                },
               ),
 
-              const SizedBox(height: 36),
+              const SizedBox(height: 16),
               
-              // Here 'habit' is defined within the map scope
+              //specific habit
               ...habits.map((habit) => Padding(
-                padding: const EdgeInsets.only(bottom: 24, right: 8, left: 8),
+                padding: const EdgeInsets.only(bottom: 36, right: 8, left: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Divider(color: Colors.grey),
                     const SizedBox(height: 12),
 
+                    //name
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -126,6 +131,8 @@ class _StreakPageState extends State<StreakPage> {
                             fontWeight: FontWeight.w600,
                           )
                         ),
+
+                        //streak count
                         Row(
                           children: [
                             Icon(Icons.local_fire_department_outlined, color: Colors.grey, size: 18),
@@ -138,13 +145,15 @@ class _StreakPageState extends State<StreakPage> {
                       ],
                     ),
                     const SizedBox(height: 16),
+
+                    //heatmap grid
                     HeatmapGrid(
                       habit: habit, 
                       targetMonth: _selectedMonth, 
                     ),
                   ],
                 ),
-              )).toList(),
+              )),
             ],
           ),
         );

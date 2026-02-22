@@ -9,10 +9,10 @@ class AppColors {
   static const Color lightInversePrimary = Color(0xFF1D1D1D);
 
   // D A R K  T H E M E
-  static const Color darkSurface = Color(0xFF202020);
+  static const Color darkSurface = Color(0xFF0F0F0F);
   static const Color darkPrimary = Color(0xFF1D1D1D);
   static const Color darkSecondary = Color(0xFF2B2B2B);
-  static const Color darkTertiary = Color.fromARGB(255, 60, 150, 55);
+  static const Color darkTertiary = Color.fromARGB(255, 81, 202, 74);
   static const Color darkInversePrimary = Color(0xFFF5F5F5);
 
   // S O V E R E I G N  P A L E T T E

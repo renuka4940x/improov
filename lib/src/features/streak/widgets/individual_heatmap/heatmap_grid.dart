@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/core/constants/app_colors.dart';
 import 'package:improov/src/core/util/logic/heatmap_engine.dart';
 import 'package:improov/src/data/enums/habit_status.dart';
 import 'package:improov/src/data/models/habit.dart';
@@ -49,7 +48,7 @@ class HeatmapGrid extends StatelessWidget {
                   width: squareSize,
                   height: squareSize,
                   decoration: BoxDecoration(
-                    color: _getColor(statuses[index]),
+                    color: _getColor(context, statuses[index]),
                     borderRadius: BorderRadius.circular(6),
                   ),
                 );
@@ -61,11 +60,13 @@ class HeatmapGrid extends StatelessWidget {
     );
   }
 
-  Color _getColor(HabitSquareStatus status) {
+  Color _getColor(BuildContext context, HabitSquareStatus status) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     switch (status) {
       case HabitSquareStatus.completed:
         //goal met
-        return AppColors.lightTertiary;
+        return colorScheme.tertiary;
       case HabitSquareStatus.overflow:
         // extra accomplishments
         return Colors.amberAccent;

@@ -19,13 +19,16 @@ class DateTimePicker extends StatelessWidget {
       context: context, 
       initialDate: selectedDateTime ?? DateTime.now(),
       firstDate: DateTime.now(), 
-      lastDate: DateTime(2030),
+      lastDate: DateTime(2040),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: Theme.of(context).colorScheme.copyWith(
-              //header &selected day bg
+              //header & selected day bg
               primary: Theme.of(context).colorScheme.tertiary,
+
+              primaryContainer: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.1),
+              onPrimaryContainer: Theme.of(context).colorScheme.inversePrimary,
               //text on top of selection
               onPrimary: Theme.of(context).colorScheme.onTertiary,
               //dialog bg
@@ -58,6 +61,8 @@ class DateTimePicker extends StatelessWidget {
             colorScheme: Theme.of(context).colorScheme.copyWith(
               primary: Theme.of(context).colorScheme.tertiary,
               onPrimary: Theme.of(context).colorScheme.onTertiary,
+              primaryContainer: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.1),
+              onPrimaryContainer: Theme.of(context).colorScheme.inversePrimary,
               surface: Theme.of(context).colorScheme.primary,
               onSurface: Theme.of(context).colorScheme.inversePrimary,
             ),

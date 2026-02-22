@@ -14,8 +14,6 @@ class NavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomAppBar(
       color: Theme.of(context).colorScheme.primary,
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 8,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -42,7 +40,7 @@ class NavBar extends StatelessWidget {
           ),
 
           //space for fab
-          const SizedBox(width: 40),
+          const SizedBox(width: 30),
 
           //streak
           IconButton(
