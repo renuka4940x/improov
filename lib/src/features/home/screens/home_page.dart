@@ -26,7 +26,11 @@ class _HomePageState extends State<HomePage> {
         child: CustomScrollView(
           slivers: [
             //show the Habit Header
-            const SliverToBoxAdapter(child: BuildTitle(title: "Habits")),
+            const SliverToBoxAdapter(
+              child: BuildTitle(
+                title: "Habits",
+              ),
+            ),
         
             //habit section
             habitDatabase.currentHabits.isEmpty
@@ -55,7 +59,11 @@ class _HomePageState extends State<HomePage> {
                     }, childCount: habitDatabase.currentHabits.length),
                   ),
         
-            const SliverToBoxAdapter(child: BuildTitle(title: "Tasks")),
+            const SliverToBoxAdapter(
+              child: BuildTitle(
+                title: "Tasks"
+              ),
+            ),
         
             //task section
             taskDatabase.currentTasks.isEmpty

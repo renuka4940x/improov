@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class BuildTitle extends StatelessWidget {
   final String title;
@@ -14,9 +15,9 @@ class BuildTitle extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: GoogleFonts.jost(
               fontSize: 24,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
               color: Theme.of(context).colorScheme.inversePrimary,
             ),
           ),
