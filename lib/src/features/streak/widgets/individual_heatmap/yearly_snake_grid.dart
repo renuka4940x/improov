@@ -35,7 +35,7 @@ class YearlySnakeGrid extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
               margin: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
@@ -82,7 +82,7 @@ class YearlySnakeGrid extends StatelessWidget {
                               );
                             }),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 10),
                           // --- THE GRID ---
                           ...List.generate(rowCount, (rowIndex) {
                             return Padding(
@@ -100,7 +100,7 @@ class YearlySnakeGrid extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       color: isFilled 
                                           ? Theme.of(context).colorScheme.tertiary 
-                                          : Theme.of(context).colorScheme.tertiary.withOpacity(0.08),
+                                          : Theme.of(context).colorScheme.tertiary.withOpacity(0.2),
                                       borderRadius: BorderRadius.circular(2),
                                     ),
                                   );
@@ -123,6 +123,8 @@ class YearlySnakeGrid extends StatelessWidget {
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: HabitCalendarView(habit: habit),
                   ),
+
+                  const SizedBox(height: 16)
                 ],
               ),
             ),
