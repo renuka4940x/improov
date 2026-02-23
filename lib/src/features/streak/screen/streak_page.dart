@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/util/logic/heatmap_engine.dart';
-import 'package:improov/src/core/widgets/build_title.dart';
 import 'package:improov/src/data/database/isar_service.dart'; 
 import 'package:improov/src/data/models/habit.dart';
 import 'package:improov/src/features/streak/widgets/global_calendar/global_calendar_grid.dart';
@@ -92,8 +92,9 @@ class _StreakPageState extends State<StreakPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: BuildTitle(
-                  title: "All",
+                child: Text(
+                  "All",
+                  style: AppStyle.title(context),
                 ),
               ),
               const SizedBox(height: 8),
@@ -141,8 +142,9 @@ class _StreakPageState extends State<StreakPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          BuildTitle(
-                            title: "${habit.name[0].toUpperCase()}${habit.name.substring(1)}", 
+                          Text(
+                            "${habit.name[0].toUpperCase()}${habit.name.substring(1)}", 
+                            style: AppStyle.title(context),
                           ),
                 
                           //streak count
