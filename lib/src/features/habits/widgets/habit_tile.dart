@@ -107,11 +107,11 @@ class HabitTile extends StatelessWidget {
                   border: Border(
                     left: BorderSide(
                       color: isUrgent ? Colors.red.shade300 : Colors.transparent,
-                      width: 4,
+                      width: 3,
                     ),
                   ),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                padding: isUrgent ? const EdgeInsets.only(left: 16) : EdgeInsets.all(0),
                 child: Row(
                   children: [
                     //checkbox
@@ -148,8 +148,15 @@ class HabitTile extends StatelessWidget {
                               color: isCompletedToday
                                 ? Colors.grey 
                                 : Theme.of(context).colorScheme.inversePrimary,
-                              decoration: isCompletedToday ? TextDecoration.lineThrough : null,
-                              fontStyle: isCompletedToday ? FontStyle.italic : null,
+                              decoration: isCompletedToday 
+                                ? TextDecoration.lineThrough 
+                                : null,
+                              decorationColor: isCompletedToday
+                                ? Colors.grey
+                                : Colors.transparent,
+                              fontStyle: isCompletedToday 
+                                ? FontStyle.italic 
+                                : null,
                             ),
                           ),
                           if (habit.description != null && habit.description!.isNotEmpty)
