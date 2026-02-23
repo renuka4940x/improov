@@ -19,13 +19,16 @@ class YearlySnakeGrid extends StatelessWidget {
 
         final habit = snapshot.data!;
         final int rowCount = habit.goalDaysPerWeek;
-        
-        // 1. Sort completions to ensure we're counting correctly
         final totalCompletions = habit.completedDays.length;
         final DateTime startDate = habit.startDate;
 
-        // Find the Monday of the starting week
-        final startOfCreationWeek = startDate.subtract(Duration(days: startDate.weekday - 1));
+        final int daysSinceStart = DateTime.now().difference(startDate).inDays;
+        final int currentWeekCount = (daysSinceStart / 7).ceil();
+
+        final int weekOffset = currentWeekCount > columnCount ? (currentWeekCount - columnCount) : 0;
+
+        final DateTime windowStartDate = startDate.add(Duration(days: weekOffset * 7));
+        final DateTime headerAnchor = windowStartDate.subtract(Duration(days: windowStartDate.weekday - 1));
 
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -48,10 +51,10 @@ class YearlySnakeGrid extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // N O N T H L Y  H E A D E R
+                  // M O N T H L Y  H E A D E R
                   Row(
                     children: List.generate(columnCount, (colIndex) {
-                      final date = startOfCreationWeek.add(Duration(days: colIndex * 7));
+                      final date = headerAnchor.add(Duration(days: colIndex * 7));
                       final monthLabels = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                         
                       // Only show month if it's the 1st col or the month changed from the previous col
@@ -59,7 +62,7 @@ class YearlySnakeGrid extends StatelessWidget {
                       if (colIndex == 0) {
                         showMonth = true;
                       } else {
-                        final prevDate = startOfCreationWeek.add(Duration(days: (colIndex - 1) * 7));
+                        final prevDate = headerAnchor.add(Duration(days: (colIndex - 1) * 7));
                         if (date.month != prevDate.month) showMonth = true;
                       }
               
@@ -83,7 +86,7 @@ class YearlySnakeGrid extends StatelessWidget {
                     
                   const SizedBox(height: 12),
               
-                  // V E R T I C A L  S N A K E  H E A D E R
+                  // V E R T I C A L  S N A K E  G R I D
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,10 +96,9 @@ class YearlySnakeGrid extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: List.generate(columnCount, (colIndex) {
-                            // 2. Calculate the "Linear Position" of this box
-                            final int linearIndex = (colIndex * rowCount) + rowIndex;
+                            final int globalWeekIndex = weekOffset + colIndex;
+                            final int linearIndex = (globalWeekIndex * rowCount) + rowIndex;
                   
-                            // 3. Compare position against your actual streak/completions
                             final bool isFilled = linearIndex < totalCompletions;
                   
                             return Container(
