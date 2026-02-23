@@ -23,7 +23,7 @@ class _FocusedMenuWrapperState extends State<FocusedMenuWrapper> {
   final GlobalKey _childKey = GlobalKey();
 
   void _showMenu() {
-    // 1. GET THE POSITION
+    //getting positions
     final RenderBox renderBox = _childKey.currentContext?.findRenderObject() as RenderBox;
     final offset = renderBox.localToGlobal(Offset.zero);
     final size = renderBox.size;

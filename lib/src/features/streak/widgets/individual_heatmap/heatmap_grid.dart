@@ -16,7 +16,7 @@ class HeatmapGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // Calculate width: (Goal * SquareSize) + (Spacing)
+    // calculate width
     final double squareSize = 28; 
     final double spacing = 15;
     final double gridWidth = (habit.goalDaysPerWeek * squareSize) + ((habit.goalDaysPerWeek - 1) * spacing);

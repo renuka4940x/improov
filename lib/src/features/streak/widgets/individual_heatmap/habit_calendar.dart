@@ -64,7 +64,7 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
             final day = index - leadingSpaces + 1;
             final date = DateTime(_viewDate.year, _viewDate.month, day);
             
-            // Check completion for THIS specific month/day
+            //check completions
             final isCompleted = widget.habit.completedDays.any((d) => 
               d.year == date.year && d.month == date.month && d.day == date.day
             );

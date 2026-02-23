@@ -11,7 +11,7 @@ class HeatmapEngine {
     final DateTime monthStart = DateTime(targetMonth.year, targetMonth.month, 1);
     final DateTime monthEnd = DateTime(targetMonth.year, targetMonth.month + 1, 0);
 
-    // 1. Start exactly on habit start date or month start
+    //start on habit start date or month start
     DateTime gridStart = habit.startDate.isAfter(monthStart)
         ? DateTime(habit.startDate.year, habit.startDate.month, habit.startDate.day)
         : monthStart;
@@ -25,15 +25,13 @@ class HeatmapEngine {
     DateTime currentWeekStart = gridStart;
 
     while (currentWeekStart.isBefore(monthEnd) || currentWeekStart.isAtSameMomentAs(monthEnd)) {
-      // Determine the end of the current "Habit Week"
-      // Usually Sunday, or the end of the month
-      // 1. Determine the window end
+      //determine the end of the current habit week
       int daysUntilMonday = 8 - currentWeekStart.weekday;
       if (daysUntilMonday > 7) daysUntilMonday = 7;
 
       DateTime weekEnd = currentWeekStart.add(Duration(days: daysUntilMonday - 1));
 
-      // CRITICAL: Ensure weekEnd NEVER goes past the last day of the month
+      //
       if (weekEnd.isAfter(monthEnd)) {
         weekEnd = DateTime(monthEnd.year, monthEnd.month, monthEnd.day);
       }
@@ -41,7 +39,7 @@ class HeatmapEngine {
       //recalculate the actual days available in this final fragment
       int daysInThisWindow = weekEnd.difference(currentWeekStart).inDays + 1;
 
-      // the Adjusted Goal (The "Tail")
+      //the Adjusted Goal (The "Tail")
       int adjustedGoal = (goal > daysInThisWindow) ? daysInThisWindow : goal;
 
       int countInWeek = 0;
@@ -82,13 +80,13 @@ class HeatmapEngine {
   }) {
     final Map<int, DaySnapshot> snapshots = {};
     
-    // 1. Get total days in the month
+    //get total days in the month
     final lastDay = DateTime(targetMonth.year, targetMonth.month + 1, 0).day;
 
     for (int i = 1; i <= lastDay; i++) {
       final checkDate = DateTime(targetMonth.year, targetMonth.month, i);
       
-      // 2. Which habits have this day in their completedDays list?
+      //which habits have this day in their completedDays list?
       final completedToday = habits.where((h) {
         return h.completedDays.any((d) => 
           d.year == checkDate.year && 
@@ -97,7 +95,7 @@ class HeatmapEngine {
         );
       }).toList();
 
-      // 3. Did any habit start (was born) today?
+      //did any habit start today?
       final isOrigin = habits.any((h) => 
           h.startDate.year == checkDate.year && 
           h.startDate.month == checkDate.month && 
