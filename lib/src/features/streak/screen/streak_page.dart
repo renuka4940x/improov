@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:improov/src/core/util/logic/heatmap_engine.dart';
@@ -6,6 +8,7 @@ import 'package:improov/src/data/models/habit.dart';
 import 'package:improov/src/features/streak/widgets/global_calendar/global_calendar_grid.dart';
 import 'package:improov/src/features/streak/widgets/global_calendar/widgets/day_audit_sheet.dart';
 import 'package:improov/src/features/streak/widgets/individual_heatmap/heatmap_grid.dart';
+import 'package:improov/src/features/streak/widgets/individual_heatmap/yearly_snake_grid.dart';
 import 'package:isar/isar.dart';
 
 class StreakPage extends StatefulWidget {
@@ -112,46 +115,66 @@ class _StreakPageState extends State<StreakPage> {
               const SizedBox(height: 16),
               
               //specific habit
-              ...habits.map((habit) => Padding(
-                padding: const EdgeInsets.only(bottom: 36, right: 8, left: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Divider(color: Colors.grey),
-                    const SizedBox(height: 12),
-
-                    //name
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${habit.name[0].toUpperCase()}${habit.name.substring(1)}", 
-                          style: GoogleFonts.jost(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                          )
-                        ),
-
-                        //streak count
-                        Row(
-                          children: [
-                            Icon(Icons.local_fire_department_outlined, color: Colors.grey, size: 18),
-                            Text(
-                              "${habit.calculateStreak}", 
-                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    //heatmap grid
-                    HeatmapGrid(
-                      habit: habit, 
-                      targetMonth: _selectedMonth, 
-                    ),
-                  ],
+              ...habits.map((habit) => GestureDetector(
+                onTap: () {
+                  showGeneralDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  barrierLabel: '',
+                  barrierColor: Colors.black.withOpacity(0.3),
+                  transitionDuration: const Duration(milliseconds: 300),
+                  pageBuilder: (context, anim1, anim2) {
+                    return Center(
+                      //blur
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                        child: YearlySnakeGrid(habitId: habit.id),
+                      ),
+                    );
+                  },
+                );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 36, right: 8, left: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Divider(color: Colors.grey),
+                      const SizedBox(height: 12),
+                
+                      //name
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${habit.name[0].toUpperCase()}${habit.name.substring(1)}", 
+                            style: GoogleFonts.jost(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                            )
+                          ),
+                
+                          //streak count
+                          Row(
+                            children: [
+                              Icon(Icons.local_fire_department_outlined, color: Colors.grey, size: 18),
+                              Text(
+                                "${habit.calculateStreak}", 
+                                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                
+                      //heatmap grid
+                      HeatmapGrid(
+                        habit: habit, 
+                        targetMonth: _selectedMonth, 
+                      ),
+                    ],
+                  ),
                 ),
               )),
             ],
