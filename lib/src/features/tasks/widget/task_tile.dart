@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:improov/src/core/widgets/focused_menu_wrapper.dart';
 import 'package:improov/src/features/home/widgets/modals/screen/modal.dart';
 import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/data/models/task.dart';
@@ -39,19 +39,18 @@ class TaskTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
-      tag: 'task_${task.id}',
+    return FocusedMenuWrapper(
+      onEdit: () => onEditPressed(context),
+      onDelete: () => onDeletePressed(context),
+      onDetails: () {
+        HapticFeedback.mediumImpact();
+        Navigator.push(
+          context,
+          HeroDialogRoute(builder: (context) => TaskPopup(task: task)),
+        );
+      },
       child: GestureDetector(
-        //long press for popup
-        onLongPress: () {
-          HapticFeedback.mediumImpact();
-          Navigator.push(
-            context,
-            HeroDialogRoute(
-              builder: (context) => TaskPopup(task: task,)
-            )
-          );
-        },
+        behavior: HitTestBehavior.translucent,
                           
         //tap for check/uncheck
         onTap: () {
@@ -62,85 +61,61 @@ class TaskTile extends StatelessWidget {
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-          child: Slidable(
-            endActionPane: ActionPane(
-              motion: const StretchMotion(), 
+          child: Material(
+            type: MaterialType.transparency,
+            child: Row(
               children: [
-                SlidableAction(
-                  //edit
-                  onPressed: (context) => onEditPressed(context),
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  foregroundColor: Colors.grey,
-                  icon: Icons.edit,
-                  borderRadius: BorderRadius.circular(8),
+                //checkbox
+                Transform.scale(
+                  scale: 1.2,
+                  child: Checkbox(
+                    side: BorderSide(
+                      color: isCompleted
+                        ? Colors.transparent
+                        : Theme.of(context).colorScheme.inversePrimary,
+                      width: 1.5,
+                    ),
+                    value: isCompleted, 
+                    onChanged: onChanged,
+                    activeColor: Theme.of(context).colorScheme.tertiary,
+                    checkColor: Theme.of(context).colorScheme.inversePrimary,
+            
+                    fillColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Theme.of(context).colorScheme.tertiary;
+                    }
+                      return Colors.transparent;
+                    }),
+                    
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                  ),
                 ),
-          
-                //delete
-                SlidableAction(
-                  onPressed: (context) => onDeletePressed(context),
-                  backgroundColor: Colors.red.shade300,
-                  foregroundColor: Colors.white,
-                  icon: Icons.delete,
-                  borderRadius: BorderRadius.circular(8),
+            
+                const SizedBox(width: 12),
+            
+                //task name
+                Expanded(
+                  child: Text(
+                    task.title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: isCompleted 
+                        ? Colors.grey 
+                        : null,
+                      decoration: isCompleted 
+                        ? TextDecoration.lineThrough 
+                        : null,
+                      decorationColor: isCompleted
+                        ? Colors.grey
+                        : Colors.transparent,
+                      fontStyle: isCompleted 
+                        ? FontStyle.italic 
+                        : null,
+                    ),
+                  ),
                 ),
               ],
-            ),
-            child: Material(
-              type: MaterialType.transparency,
-              child: Row(
-                children: [
-                  //checkbox
-                  Transform.scale(
-                    scale: 1.2,
-                    child: Checkbox(
-                      side: BorderSide(
-                        color: isCompleted
-                          ? Colors.transparent
-                          : Theme.of(context).colorScheme.inversePrimary,
-                        width: 1.5,
-                      ),
-                      value: isCompleted, 
-                      onChanged: onChanged,
-                      activeColor: Theme.of(context).colorScheme.tertiary,
-                      checkColor: Theme.of(context).colorScheme.inversePrimary,
-              
-                      fillColor: WidgetStateProperty.resolveWith((states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return Theme.of(context).colorScheme.tertiary;
-                      }
-                        return Colors.transparent;
-                      }),
-                      
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                    ),
-                  ),
-              
-                  const SizedBox(width: 12),
-              
-                  //task name
-                  Expanded(
-                    child: Text(
-                      task.title,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: isCompleted 
-                          ? Colors.grey 
-                          : null,
-                        decoration: isCompleted 
-                          ? TextDecoration.lineThrough 
-                          : null,
-                        decorationColor: isCompleted
-                          ? Colors.grey
-                          : Colors.transparent,
-                        fontStyle: isCompleted 
-                          ? FontStyle.italic 
-                          : null,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
         ),
