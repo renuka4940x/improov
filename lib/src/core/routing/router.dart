@@ -3,7 +3,7 @@ import 'package:improov/src/presentation/pages/calendar_page.dart';
 import 'package:improov/src/features/home/screens/home_page.dart';
 import 'package:improov/src/features/streak/screen/streak_page.dart';
 import 'package:improov/src/core/routing/page_nav.dart';
-import 'package:improov/src/presentation/pages/profile_page.dart';
+import 'package:improov/src/features/profile/screen/profile_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',

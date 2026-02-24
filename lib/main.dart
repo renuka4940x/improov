@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/features/habits/provider/habit_database.dart';
+import 'package:improov/src/features/profile/provider/app_settings_database.dart';
+import 'package:improov/src/features/profile/provider/settings_provider.dart';
 import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/core/theme/theme_provider.dart';
 import 'package:improov/src/core/routing/router.dart';
@@ -14,6 +16,8 @@ void main() async {
   await IsarService.init();
 
   await Future.delayed(const Duration(milliseconds: 100));
+
+  final settingsDatabase = AppSettingsDatabase();
 
   runApp(
     MultiProvider(
@@ -28,6 +32,7 @@ void main() async {
           ..checkWeeklyReset()
           ..readHabits()
         ),
+        ChangeNotifierProvider(create: (context) => SettingsProvider(settingsDatabase)),
       ],
       child: const MyApp(),
     ),

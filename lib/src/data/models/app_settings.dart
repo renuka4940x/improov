@@ -9,6 +9,9 @@ class AppSettings {
 
   DateTime? firstLaunchDate;
 
+  //name
+  String? nickname;
+
   //subscription type
   @enumerated
   SubscriptionType subscriptionType = SubscriptionType.none;
