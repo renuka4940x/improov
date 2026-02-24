@@ -9,7 +9,7 @@ class BuildTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 25, top: 50, bottom: 5, right: 25),
+      padding: const EdgeInsets.only(left: 25, top: 25, bottom: 5, right: 25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -17,7 +17,7 @@ class BuildTitle extends StatelessWidget {
             title,
             style: AppStyle.title(context),
           ),
-          Divider(thickness: 1),
+          Divider(thickness: 1, color: Colors.grey,),
         ],
       ),
     );
