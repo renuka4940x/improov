@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:improov/src/core/constants/app_colors.dart';
@@ -10,6 +11,9 @@ import '../../../data/enums/priority.dart';
 
 class HabitDatabase extends ChangeNotifier {
   final isar = IsarService.db;
+
+  final _controller = StreamController<void>.broadcast();
+  Stream<void> get onUpdate =>_controller.stream;
 
   /*        S E T U P       */
 
@@ -155,14 +159,24 @@ class HabitDatabase extends ChangeNotifier {
         else if (!isCompleted){
           //remove the current date if the habit is marked as not completed
           habit.completedDays.removeWhere((date) =>
-            date.year == now.year &&
-            date.month == now.month &&
-            date.day == now.day
+            date.year == today.year &&
+            date.month == today.month &&
+            date.day == today.day
           );
+        }
+
+        habit.currentStreak = habit.calculateStreak;
+  
+        // The magic wish-whoosh
+        if (habit.currentStreak > habit.bestStreak) {
+          habit.bestStreak = habit.currentStreak;
         }
 
         //save the updated habits back to the db
         await isar.habits.put(habit);
+
+        //notify listeners
+        _controller.add(null);
       });
     }
 
@@ -284,4 +298,15 @@ class HabitDatabase extends ChangeNotifier {
     //reread from db
     readHabits();
   }
+
+  //best streak
+  Future<int> getGlobalBestStreak() async {
+    final bestHabit = await IsarService.db.habits
+      .where()
+      .sortByBestStreakDesc()
+      .findFirst();
+    
+    return bestHabit?.bestStreak ?? 0;
+  }
+
 }

@@ -4,6 +4,7 @@ import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/theme/theme_provider.dart';
 import 'package:improov/src/features/home/widgets/modals/components/UI/build_row.dart';
 import 'package:improov/src/features/profile/provider/settings_provider.dart';
+import 'package:improov/src/features/profile/provider/stats_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -36,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               child: ListView(
-                padding: const EdgeInsets.all(30),
+                padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
                 children: [ 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -69,26 +70,56 @@ class _ProfilePageState extends State<ProfilePage> {
                       ), 
                     ],
                   ),
-                  const Divider(color: Colors.grey,),
+                  const Divider(color: Colors.grey),
+                  
+                  const SizedBox(height: 16),
 
+                  //achievements
+                  Text(
+                    "Achievements:",
+                    style: AppStyle.title(context),
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildStatCard(
+                        iconData: Icons.local_fire_department_outlined,
+                        label: "Best Streak",
+                        value: "${context.watch<StatsProvider>().bestStreak}"
+                      ),
+                      _buildStatCard(
+                        iconData: Icons.calendar_today_outlined,
+                        label: "Tasks Done",
+                        value: "${context.watch<StatsProvider>().totalTasksCompleted}"
+                      ),
+                    ],
+                  ),
+                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
+                  
                   //theme toggle button
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => context.read<ThemeProvider>().toggleTheme(),
-                    child: BuildRow(
-                      label: "Dark Mode", 
-                      trailing: Transform.scale(
-                        scale: 0.8,
-                        child: CupertinoSwitch(
-                          value: context.watch<ThemeProvider>().isDarkMode,
-                          activeTrackColor: Theme.of(context).colorScheme.tertiary, 
-                          onChanged: (value) {
-                            context.read<ThemeProvider>().toggleTheme();
-                          }
-                        ),
-                      )
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => context.read<ThemeProvider>().toggleTheme(),
+                      child: BuildRow(
+                        label: "Dark Mode",
+                        isBold: true,
+                        trailing: Transform.scale(
+                          scale: 0.8,
+                          child: CupertinoSwitch(
+                            value: context.watch<ThemeProvider>().isDarkMode,
+                            activeTrackColor: Theme.of(context).colorScheme.tertiary, 
+                            onChanged: (value) {
+                              context.read<ThemeProvider>().toggleTheme();
+                            }
+                          ),
+                        )
+                      ),
                     ),
                   ),
+                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
                 ],
               ),
             ),
@@ -135,6 +166,37 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildStatCard({required IconData iconData, required String label, required String value}) {
+    return Card(
+      elevation: 0,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Icon(iconData),
+                const SizedBox(width: 8),
+                Text(
+                  value, 
+                  style: AppStyle.title(context)
+                ),
+              ],
+            ), // Your custom font style
+            const SizedBox(height: 4),
+            Text(
+              label, 
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/data/enums/priority.dart';
+import 'package:improov/src/data/models/global_stats.dart';
 import 'package:isar/isar.dart';
 
 import '../../../data/models/task.dart';
@@ -8,8 +10,22 @@ import '../../../data/models/task.dart';
 class TaskDatabase extends ChangeNotifier {
   final isar = IsarService.db;
 
+  final _controller = StreamController<void>.broadcast();
+  Stream<void> get onUpdate =>_controller.stream;
+
   //list of tasks
   final List<Task> currentTasks = [];
+
+  // Inside your TaskDatabase or a migration method
+  Future<void> initializeStats() async {
+    final stats = await IsarService.db.globalStats.get(0);
+    if (stats == null) {
+      // If it doesn't exist, create the first one
+      await IsarService.db.writeTxn(() async {
+        await IsarService.db.globalStats.put(GlobalStats());
+      });
+    }
+  }
 
   /*             C R U D              */
 
@@ -87,20 +103,30 @@ class TaskDatabase extends ChangeNotifier {
 
   // U P D A T E - task completion
   Future<void> updateTaskCompletion(int id, bool isCompleted) async {
-    //find specific task
+    // Find specific task
     final task = await isar.tasks.get(id);
 
-    //update completion logic
-    if(task != null) {
-      //flip the status
-      task.isCompleted = isCompleted;
+    if (task != null) {
+      await isar.writeTxn(() async {
+        final stats = await isar.globalStats.get(0) ?? GlobalStats();
 
-      //save to db
-      await isar.writeTxn(() async { 
+        // 1. If we are completing a previously incomplete task
+        if (isCompleted && !task.isCompleted) {
+          stats.totalTasksCompleted += 1;
+        } 
+        // 2. If we are unchecking a previously completed task
+        else if (!isCompleted && task.isCompleted) {
+          stats.totalTasksCompleted -= 1;
+        }
+
+        // 3. Save the changes
+        task.isCompleted = isCompleted;
         await isar.tasks.put(task);
+        await isar.globalStats.put(stats);
       });
-      
-      //re-read from db
+
+      //notify and Refresh
+      _controller.add(null);
       readTask();
     }
   }
@@ -176,5 +202,11 @@ class TaskDatabase extends ChangeNotifier {
         reminderTime: reminder
       );
     }
+  }
+
+  //store total number of tasks completed
+  Future<int> getTotalTasksCompleted() async {
+    final stats = await IsarService.db.globalStats.get(0);
+    return stats?.totalTasksCompleted ?? 0;
   }
 }

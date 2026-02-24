@@ -5,12 +5,15 @@ part 'app_settings.g.dart';
 
 @collection
 class AppSettings {
-  Id id = Isar.autoIncrement;
+  Id id = 0;
 
   DateTime? firstLaunchDate;
 
   //name
   String? nickname;
+
+  //theme
+  bool isDarkMode = false;
 
   //subscription type
   @enumerated

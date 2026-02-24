@@ -1,4 +1,5 @@
 import 'package:improov/src/data/models/app_settings.dart';
+import 'package:improov/src/data/models/global_stats.dart';
 import 'package:improov/src/data/models/habit.dart';
 import 'package:improov/src/data/models/task.dart';
 import 'package:isar/isar.dart';
@@ -12,7 +13,7 @@ class IsarService {
 
     if(Isar.instanceNames.isEmpty) {
       _isar = await Isar.open(
-        [TaskSchema, HabitSchema, AppSettingsSchema], 
+        [TaskSchema, HabitSchema, AppSettingsSchema, GlobalStatsSchema], 
         directory: dir.path,
         inspector: false,
       );

@@ -4,12 +4,14 @@ import 'package:improov/src/core/widgets/pro_badge.dart';
 class BuildRow extends StatelessWidget {
   final String label;
   final Widget trailing;
+  final bool isBold;
   final bool isPro;
 
   const BuildRow({
     super.key,
     required this.label,
     required this.trailing,
+    this.isBold = false,
     this.isPro = false,
   });
 
@@ -22,8 +24,12 @@ class BuildRow extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500
+              fontSize: isBold
+                ? 18
+                : 16,
+              fontWeight: isBold
+                ? FontWeight.w600
+                : FontWeight.w500,
             ),
           ),
 
