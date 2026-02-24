@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:improov/src/core/widgets/focused_menu_wrapper.dart';
@@ -5,7 +7,6 @@ import 'package:improov/src/features/home/widgets/modals/screen/modal.dart';
 import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/data/models/task.dart';
 import 'package:improov/src/features/tasks/widget/task_popup.dart';
-import 'package:improov/src/core/routing/hero_dialog_route.dart';
 import 'package:provider/provider.dart';
 
 class TaskTile extends StatelessWidget {
@@ -44,9 +45,30 @@ class TaskTile extends StatelessWidget {
       onDelete: () => onDeletePressed(context),
       onDetails: () {
         HapticFeedback.mediumImpact();
-        Navigator.push(
-          context,
-          HeroDialogRoute(builder: (context) => TaskPopup(task: task)),
+        Navigator.of(context, rootNavigator: true).push(
+          PageRouteBuilder(
+            opaque: false,
+            barrierDismissible: true,
+            transitionDuration: const Duration(milliseconds: 300),
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return Stack(
+                children: [
+                  
+                  //B L U R
+                  FadeTransition(
+                    opacity: animation,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                      child: Container(color: Colors.black.withOpacity(0.2)),
+                    ),
+                  ),
+
+                  //P O P U P
+                  TaskPopup(task: task),
+                ],
+              );
+            },
+          ),
         );
       },
       child: GestureDetector(
