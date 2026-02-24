@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/util/logic/heatmap_engine.dart';
 import 'package:improov/src/data/database/isar_service.dart'; 
@@ -54,8 +55,30 @@ class _StreakPageState extends State<StreakPage> {
         
         if (habits.isEmpty) {
           return Scaffold(
-            appBar: AppBar(title: const Text("Streak")),
-            body: const Center(child: Text("No habits yet. Start slaying.")),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: SvgPicture.asset(
+                      Theme.of(context).brightness == Brightness.dark
+                        ? 'assets/images/dark_mode/doodle_unboxing_dark.svg'
+                        : 'assets/images/light_mode/doodle_unboxing.svg',
+                      height: 300,
+                      width: 300,
+                    ),
+                  ),
+                  const SizedBox(height: 16,),
+                  Text(
+                    "hmmm no habits yet, wanna start a new one?",
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           );
         }
 
