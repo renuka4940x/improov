@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:improov/src/data/enums/subscription_type.dart';
 import 'package:improov/src/data/models/app_settings.dart';
-import 'package:improov/src/features/profile/provider/app_settings_database.dart';
+import 'package:improov/src/presentation/profile/provider/app_settings_database.dart';
 
 class SettingsProvider extends ChangeNotifier {
   final AppSettingsDatabase database;

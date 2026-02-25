@@ -5,10 +5,10 @@ import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/util/logic/heatmap_engine.dart';
 import 'package:improov/src/data/database/isar_service.dart'; 
 import 'package:improov/src/data/models/habit.dart';
-import 'package:improov/src/features/streak/widgets/global_calendar/global_calendar_grid.dart';
-import 'package:improov/src/features/streak/widgets/global_calendar/widgets/day_audit_sheet.dart';
-import 'package:improov/src/features/streak/widgets/individual_heatmap/heatmap_grid.dart';
-import 'package:improov/src/features/streak/widgets/individual_heatmap/yearly_snake_grid.dart';
+import 'package:improov/src/presentation/streak/widgets/global_calendar/global_calendar_grid.dart';
+import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/day_audit_sheet.dart';
+import 'package:improov/src/presentation/streak/widgets/individual_heatmap/heatmap_grid.dart';
+import 'package:improov/src/presentation/streak/widgets/individual_heatmap/yearly_snake_grid.dart';
 import 'package:isar/isar.dart';
 
 class StreakPage extends StatefulWidget {

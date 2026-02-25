@@ -1,6 +1,6 @@
 import 'package:improov/src/data/enums/habit_status.dart';
 import 'package:improov/src/data/models/habit.dart';
-import 'package:improov/src/features/streak/widgets/global_calendar/widgets/day_snapshot.dart';
+import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/day_snapshot.dart';
 
 class HeatmapEngine {
   static Future<List<HabitSquareStatus>> getLinearStatuses({

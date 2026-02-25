@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/data/models/habit.dart';
-import 'package:improov/src/features/streak/widgets/individual_heatmap/habit_calendar.dart';
+import 'package:improov/src/presentation/streak/widgets/individual_heatmap/habit_calendar.dart';
 
 class YearlySnakeGrid extends StatelessWidget {
   final int habitId;

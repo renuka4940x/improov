@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/theme/theme_provider.dart';
-import 'package:improov/src/features/home/widgets/modals/components/UI/build_row.dart';
-import 'package:improov/src/features/profile/provider/settings_provider.dart';
-import 'package:improov/src/features/profile/provider/stats_provider.dart';
+import 'package:improov/src/presentation/home/widgets/modals/components/UI/build_row.dart';
+import 'package:improov/src/presentation/profile/provider/settings_provider.dart';
+import 'package:improov/src/presentation/profile/provider/stats_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {

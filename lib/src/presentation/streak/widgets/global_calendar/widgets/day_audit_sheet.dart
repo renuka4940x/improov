@@ -76,7 +76,7 @@ class _AuditContent extends StatelessWidget {
           const SizedBox(width: 16),
           Expanded(
             child: Text(
-              habit.name,
+              habit.name[0].toUpperCase() + habit.name.substring(1).toLowerCase(),
               style: TextStyle(
                 color: Theme.of(context).colorScheme.inversePrimary, 
                 fontSize: 16, 
@@ -111,8 +111,13 @@ class _AuditContent extends StatelessWidget {
       width: double.infinity,
       child: Column(
         children: [
-          Icon(Icons.radio_button_unchecked, color: Colors.white.withOpacity(0.1), size: 48),
-          Text("No wins recorded for this day.", style: TextStyle(color: Colors.grey[600])),
+          Text(
+            "No wins recorded for *this* day", 
+            style: TextStyle(
+              fontStyle: FontStyle.italic,
+              color: Colors.grey[600]
+            ),
+          ),
         ],
       ),
     );

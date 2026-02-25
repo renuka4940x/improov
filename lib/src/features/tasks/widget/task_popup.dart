@@ -29,7 +29,7 @@ class TaskPopup extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        task.title,
+                        task.title[0].toUpperCase() + task.title.substring(1).toLowerCase(),
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 6),

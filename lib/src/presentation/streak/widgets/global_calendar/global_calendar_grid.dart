@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/features/streak/widgets/global_calendar/widgets/day_snapshot.dart';
-import 'package:improov/src/features/streak/widgets/global_calendar/widgets/constellation_widget.dart';
+import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/day_snapshot.dart';
+import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/constellation_widget.dart';
 
 class GlobalCalendarGrid extends StatelessWidget {
   final DateTime targetMonth;

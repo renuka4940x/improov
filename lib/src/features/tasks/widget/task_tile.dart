@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:improov/src/core/widgets/focused_menu_wrapper.dart';
-import 'package:improov/src/features/home/widgets/modals/screen/modal.dart';
+import 'package:improov/src/presentation/home/widgets/modals/screen/modal.dart';
 import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/data/models/task.dart';
 import 'package:improov/src/features/tasks/widget/task_popup.dart';
