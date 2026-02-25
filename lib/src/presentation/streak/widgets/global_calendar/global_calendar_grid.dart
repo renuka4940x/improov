@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/day_snapshot.dart';
+import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/day_snapshot_habit.dart';
 import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/constellation_widget.dart';
 
 class GlobalCalendarGrid extends StatelessWidget {

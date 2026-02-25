@@ -6,7 +6,7 @@ import 'package:improov/src/core/util/logic/heatmap_engine.dart';
 import 'package:improov/src/data/database/isar_service.dart'; 
 import 'package:improov/src/data/models/habit.dart';
 import 'package:improov/src/presentation/streak/widgets/global_calendar/global_calendar_grid.dart';
-import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/day_audit_sheet.dart';
+import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/day_audit_sheet_habit.dart';
 import 'package:improov/src/presentation/streak/widgets/individual_heatmap/heatmap_grid.dart';
 import 'package:improov/src/presentation/streak/widgets/individual_heatmap/yearly_snake_grid.dart';
 import 'package:isar/isar.dart';
@@ -127,7 +127,7 @@ class _StreakPageState extends State<StreakPage> {
                 targetMonth: _selectedMonth,
                 snapshots: monthlySnapshots,
                 onDayTap: (date, snapshot) {
-                  DayAuditSheet.show(context, date, snapshot.completedHabits);
+                  HabitAuditSheet.show(context, date, snapshot.completedHabits);
                 },
               ),
 

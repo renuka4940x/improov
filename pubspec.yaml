@@ -43,6 +43,7 @@ dependencies:
   go_router: ^17.1.0
   flutter_slidable: ^4.0.3
   google_fonts: ^8.0.2
+  table_calendar: ^3.2.0
 
 dev_dependencies:
   flutter_test:

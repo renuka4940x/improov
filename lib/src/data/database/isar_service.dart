@@ -22,5 +22,13 @@ class IsarService {
     }
   }
 
+  Future<List<Task>> queryTasksByDateRange(DateTime start, DateTime end) async {
+    
+    return await IsarService.db.tasks
+      .filter()
+      .dueDateBetween(start, end)
+      .findAll();
+  }
+
   static Isar get db => _isar;
 }

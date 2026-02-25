@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:improov/src/core/constants/app_style.dart';
+import 'package:improov/src/core/widgets/month_name.dart';
 import 'package:improov/src/data/models/habit.dart';
 
-class DayAuditSheet {
+class HabitAuditSheet {
   static void show(BuildContext context, DateTime date, List<Habit> completedHabits) {
     showModalBottomSheet(
       context: context,
@@ -35,12 +36,8 @@ class _AuditContent extends StatelessWidget {
 
           //date
           Text(
-            "${_monthName(date.month)} ${date.day}, ${date.year}",
-            style: GoogleFonts.jost(
-              fontSize: 24, 
-              fontWeight: FontWeight.w600, 
-              color: Theme.of(context).colorScheme.inversePrimary
-            ),
+            "${MonthName.getMonthName(date.month)} ${date.day}, ${date.year}",
+            style: AppStyle.title(context),
           ),
 
           const SizedBox(height: 24),
@@ -121,9 +118,5 @@ class _AuditContent extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _monthName(int month) {
-    return ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month];
   }
 }

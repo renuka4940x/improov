@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/features/habits/provider/habit_database.dart';
+import 'package:improov/src/features/tasks/provider/task_provider.dart';
 import 'package:improov/src/presentation/profile/provider/app_settings_database.dart';
 import 'package:improov/src/presentation/profile/provider/settings_provider.dart';
 import 'package:improov/src/presentation/profile/provider/stats_provider.dart';
@@ -22,6 +23,7 @@ void main() async {
   final habitDatabase = HabitDatabase();
   final taskDataase = TaskDatabase();
   final appSettingsDatabase = AppSettingsDatabase();
+  final isarService = IsarService();
 
   runApp(
     MultiProvider(
@@ -37,8 +39,8 @@ void main() async {
           ..readHabits()
         ),
         ChangeNotifierProvider(create: (context) => SettingsProvider(settingsDatabase)),
-
         ChangeNotifierProvider(create: (_) => StatsProvider(habitDatabase, taskDataase)),
+        ChangeNotifierProvider(create: (_) => TaskProvider(isarService)),
       ],
       child: const MyApp(),
     ),
