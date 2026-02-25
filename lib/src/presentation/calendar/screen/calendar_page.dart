@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:improov/src/data/models/task.dart';
+import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/features/tasks/provider/task_provider.dart';
 import 'package:improov/src/presentation/calendar/widgets/ui/calendar_view.dart';
+import 'package:improov/src/presentation/calendar/widgets/ui/task_feed.dart';
 import 'package:improov/src/presentation/calendar/widgets/util/day_audit_sheet_task.dart';
 import 'package:provider/provider.dart';
 
@@ -74,7 +77,7 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             ListenableBuilder(
@@ -97,8 +100,27 @@ class _CalendarPageState extends State<CalendarPage> {
                 );
               },
             ),
-            const SizedBox(height: 20,),
-            const Divider(color: Colors.grey),
+            const SizedBox(height: 20),
+            Expanded(
+              child: Consumer<TaskProvider>(
+                builder: (context, provider, child) {
+                  return FutureBuilder<List<Task>>(
+                    future: provider.getAllIncompleteTasks(), 
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CircularProgressIndicator();
+                      }
+                      return TaskFeed(
+                        tasks: snapshot.data!, 
+                        onToggle: (task) {
+                          context.read<TaskDatabase>().updateTaskCompletion(task.id, !task.isCompleted);
+                        },
+                      );
+                    }
+                  );
+                }
+              ),
+            ),
           ],
         ),
       ),

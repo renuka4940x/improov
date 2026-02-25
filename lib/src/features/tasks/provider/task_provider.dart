@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:improov/src/data/database/isar_service.dart';
-import 'package:improov/src/data/models/task.dart'; // Your Isar service
+import 'package:improov/src/data/models/task.dart';
+import 'package:isar/isar.dart'; // Your Isar service
 
 class TaskProvider extends ChangeNotifier {
   final IsarService _isarService;
@@ -42,5 +43,18 @@ class TaskProvider extends ChangeNotifier {
     }
 
     return uniqueDates.values.toList();
+  }
+
+  Future<List<Task>> getAllIncompleteTasks() async {
+    // 1. Get the actual Isar instance first!
+    final isar = IsarService.db; 
+    
+    // 2. Now perform the query on the instance
+    return await isar.tasks
+        .where()
+        .filter()
+        .isCompletedEqualTo(false)
+        .sortByDueDate()
+        .findAll();
   }
 }

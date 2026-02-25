@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:improov/src/core/widgets/custom_checkbox.dart';
 import 'package:improov/src/core/widgets/focused_menu_wrapper.dart';
 import 'package:improov/src/presentation/home/widgets/modals/screen/modal.dart';
 import 'package:improov/src/features/habits/provider/habit_database.dart';
@@ -115,19 +116,9 @@ class HabitTile extends StatelessWidget {
                   //checkbox
                   Transform.scale(
                     scale: 1.2,
-                    child: Checkbox(
-                      side: BorderSide(
-                        color: isCompletedToday
-                          ? Colors.transparent
-                          : Theme.of(context).colorScheme.inversePrimary,
-                        width: 1.5,
-                      ),
+                    child: CustomCheckbox(
                       value: isCompletedToday, 
-                      onChanged: onChanged,
-                      activeColor: Theme.of(context).colorScheme.tertiary,
-                      checkColor: Theme.of(context).colorScheme.inversePrimary,
-                      
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                      onChanged: onChanged
                     ),
                   ),
                     
