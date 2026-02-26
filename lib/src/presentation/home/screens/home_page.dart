@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:improov/src/features/habits/provider/habit_database.dart';
-import 'package:improov/src/features/tasks/provider/task_database.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/src/features/tasks/provider/task_notifier.dart';
+import 'package:improov/src/features/habits/provider/habit_notifier.dart';
 import 'package:improov/src/features/habits/widgets/habit_tile.dart';
 import 'package:improov/src/features/tasks/widget/task_tile.dart';
 import 'package:improov/src/core/widgets/build_title.dart';
-import 'package:provider/provider.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    //watch notifiers
+    final habitsAsync = ref.watch(habitNotifierProvider);
+    final tasksAsync = ref.watch(taskNotifierProvider);
 
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    final habitDatabase = context.watch<HabitDatabase>();
-    final taskDatabase = context.watch<TaskDatabase>();
+    final hasHabits = habitsAsync.value?.isNotEmpty ?? false;
+    final hasTasks = tasksAsync.value?.isNotEmpty ?? false;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
@@ -33,31 +33,41 @@ class _HomePageState extends State<HomePage> {
             ),
         
             //habit section
-            habitDatabase.currentHabits.isEmpty
-              ? const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 25, bottom: 20),
-                  child: Text(
-                    "none, for now~",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontStyle: FontStyle.italic,
+            habitsAsync.when(
+              data: (habits) => habits.isEmpty
+                ? const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 25, bottom: 20),
+                    child: Text(
+                      "none, for now~",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ),
+                )
+                : SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final habit = habits[index];
+                      return HabitTile(
+                        habit: habit,
+                        onChanged: (val) => ref
+                          .read(habitNotifierProvider.notifier)
+                          .updateHabitCompletion(habit.id, val ?? false),
+                      );
+                    }, 
+                    childCount: habits.length
+                  ),
                 ),
-              )
-              : SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final habit = habitDatabase.currentHabits[index];
-                  return HabitTile(
-                    habit: habit,
-                    onChanged: (val) => habitDatabase.updateHabitCompletion(
-                      habit.id,
-                      val ?? false,
-                    ),
-                  );
-                }, childCount: habitDatabase.currentHabits.length),
+              loading: () => const SliverToBoxAdapter(
+                child: Center(child: CircularProgressIndicator())
               ),
+              error: (err, _) => SliverToBoxAdapter(
+                child: Text("Error: $err"),
+              ),
+            ),
         
             const SliverToBoxAdapter(
               child: BuildTitle(
@@ -66,27 +76,37 @@ class _HomePageState extends State<HomePage> {
             ),
         
             //task section
-            taskDatabase.currentTasks.isEmpty
+            tasksAsync.when(
+              data: (tasks) => tasks.isEmpty
                 ? const SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.only(left: 25, bottom: 20),
                     ),
                   )
                 : SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final task = taskDatabase.currentTasks[index];
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                      final task = tasks[index];
                       return TaskTile(
                         task: task,
-                        onChanged: (val) =>
-                            taskDatabase.updateTaskCompletion(task.id, val ?? false),
+                        onChanged: (val) => ref
+                          .read(taskNotifierProvider.notifier)
+                          .updateTaskCompletion(task.id, val ?? false),
                         isCompleted: task.isCompleted,
                       );
-                    }, childCount: taskDatabase.currentTasks.length),
+                    }, 
+                    childCount: tasks.length,
                   ),
+                ),
+              loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
+              error: (err, _) => SliverToBoxAdapter(child: Text("Error: $err")),  
+            ),
         
             //svg section
-            if (habitDatabase.currentHabits.isEmpty &&
-                taskDatabase.currentTasks.isEmpty)
+            if (habitsAsync.hasValue &&
+                tasksAsync.hasValue &&
+                habitsAsync.value!.isEmpty &&
+                tasksAsync.value!.isEmpty)
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(
@@ -115,9 +135,11 @@ class _HomePageState extends State<HomePage> {
               ),
         
             //padding to not let fab cover last item
-            if (habitDatabase.currentHabits.isNotEmpty ||
-                taskDatabase.currentTasks.isNotEmpty)
-              const SliverToBoxAdapter(child: SizedBox(height: 80)),
+
+            if (hasHabits || hasTasks) 
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 80),
+              ),
           ],
         ),
       ),

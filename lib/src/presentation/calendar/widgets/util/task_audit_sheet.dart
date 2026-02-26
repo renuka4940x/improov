@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/widgets/month_name.dart';
 import 'package:improov/src/data/models/task.dart';
-import 'package:improov/src/features/tasks/provider/task_database.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/src/features/tasks/provider/task_notifier.dart';
 
 class TaskAuditSheet {
   static Future<void> show(BuildContext context, DateTime date, List<Task> tasks) async {
@@ -19,7 +19,7 @@ class TaskAuditSheet {
   }
 }
 
-class _TaskAuditContent extends StatefulWidget {
+class _TaskAuditContent extends ConsumerStatefulWidget {
   final DateTime date;
   final List<Task> tasks;
 
@@ -29,10 +29,10 @@ class _TaskAuditContent extends StatefulWidget {
   });
 
   @override
-  State<_TaskAuditContent> createState() => _TaskAuditContentState();
+  ConsumerState<_TaskAuditContent> createState() => _TaskAuditContentState();
 }
 
-class _TaskAuditContentState extends State<_TaskAuditContent> {
+class _TaskAuditContentState extends ConsumerState<_TaskAuditContent> {
   late List<Task> _tasks;
 
   @override
@@ -42,13 +42,12 @@ class _TaskAuditContentState extends State<_TaskAuditContent> {
   }
 
   void _toggleTask(Task task) {
-    // 1. Update the local UI state immediately
     setState(() {
       task.isCompleted = !task.isCompleted;
     });
 
     // 2. Sync with DB
-    context.read<TaskDatabase>().updateTaskCompletion(task.id, task.isCompleted);
+    ref.read(taskNotifierProvider.notifier).updateTaskCompletion(task.id, task.isCompleted);
   }
   
   @override

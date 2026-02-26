@@ -5,12 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:improov/src/core/widgets/custom_checkbox.dart';
 import 'package:improov/src/core/widgets/focused_menu_wrapper.dart';
 import 'package:improov/src/presentation/home/widgets/modals/screen/modal.dart';
-import 'package:improov/src/features/habits/provider/habit_database.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/src/features/habits/provider/habit_notifier.dart';
 import 'package:improov/src/data/models/habit.dart';
 import 'package:improov/src/features/habits/widgets/habit_popup.dart';
-import 'package:provider/provider.dart';
 
-class HabitTile extends StatelessWidget {
+class HabitTile extends ConsumerWidget {
   final Habit habit;
   final Function(bool?)? onChanged;
 
@@ -34,12 +34,12 @@ class HabitTile extends StatelessWidget {
   }
 
   //delete function
-  void onDeletePressed(BuildContext context) {
-    context.read<HabitDatabase>().deleteHabit(habit.id);
+  void onDeletePressed(WidgetRef ref, int id) {
+    ref.read(habitNotifierProvider.notifier).deleteHabit(id);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     //is habit completed today?
     final DateTime today = DateTime.now();
     final bool isCompletedToday = habit.completedDays.any((date) =>
@@ -57,7 +57,7 @@ class HabitTile extends StatelessWidget {
 
     return FocusedMenuWrapper(
       onEdit: () => onEditPressed(context),
-      onDelete: () => onDeletePressed(context),
+      onDelete: () => onDeletePressed(ref, habit.id),
       onDetails: () {
         HapticFeedback.mediumImpact();
         Navigator.of(context, rootNavigator: true).push(
@@ -91,9 +91,9 @@ class HabitTile extends StatelessWidget {
                     
         //tap for check/uncheck
         onTap: () {
-          context.read<HabitDatabase>().updateHabitCompletion(
+          ref.read(habitNotifierProvider.notifier).updateHabitCompletion(
             habit.id, 
-            !habit.isCompleted,
+            !isCompletedToday,
           );
         },
         child: Padding(

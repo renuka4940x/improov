@@ -1,28 +1,37 @@
-import 'package:flutter/material.dart';
-import 'package:improov/src/features/habits/provider/habit_database.dart';
-import 'package:improov/src/features/tasks/provider/task_database.dart';
+import 'package:improov/src/data/models/global_stats.dart';
+import 'package:improov/src/data/models/habit.dart';
+import 'package:isar/isar.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:improov/src/data/provider/providers.dart';
+import 'package:improov/src/features/tasks/provider/task_notifier.dart';
+import 'package:improov/src/features/habits/provider/habit_notifier.dart';
 
-class StatsProvider extends ChangeNotifier{
-  final HabitDatabase habitDb;
-  final TaskDatabase taskDb;
+part 'stats_provider.g.dart';
 
-  int _bestStreak = 0;
-  int _totalTasksCompleted = 0;
+@riverpod
+Future<Map<String, int>> globalStats(GlobalStatsRef ref) async {
+  // 1. "Watch" the other notifiers. 
+  // Whenever tasks or habits change, this whole function re-runs!
+  ref.watch(taskNotifierProvider);
+  ref.watch(habitNotifierProvider);
 
-  int get bestStreak => _bestStreak;
-  int get totalTasksCompleted => _totalTasksCompleted;
+  final service = await ref.watch(isarDatabaseProvider.future);
 
-  StatsProvider(this.habitDb, this.taskDb) {
-    habitDb.onUpdate.listen((_) => refreshStats());
-    taskDb.onUpdate.listen((_) => refreshStats());
+  // 2. Fetch the data directly from Isar
+  // Get total tasks completed from GlobalStats
+  final statsRecord = await service.db.globalStats.get(0);
+  final totalTasks = statsRecord?.totalTasksCompleted ?? 0;
 
-    refreshStats();
-  }
+  // Get the best streak from habits
+  final bestHabit = await service.db.habits
+      .where()
+      .sortByBestStreakDesc()
+      .findFirst();
+  final bestStreak = bestHabit?.bestStreak ?? 0;
 
-  Future<void> refreshStats() async {
-    _bestStreak = await habitDb.getGlobalBestStreak();
-    _totalTasksCompleted = await taskDb.getTotalTasksCompleted();
-
-    notifyListeners();
-  }
+  // 3. Return as a simple map (or a dedicated class if you prefer)
+  return {
+    'bestStreak': bestStreak,
+    'totalTasksCompleted': totalTasks,
+  };
 }

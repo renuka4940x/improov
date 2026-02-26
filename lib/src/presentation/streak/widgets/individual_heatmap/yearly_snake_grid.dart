@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:improov/src/data/models/habit.dart';
-import 'package:improov/src/features/habits/provider/habit_database.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/src/features/habits/provider/habit_notifier.dart';
 import 'package:improov/src/presentation/streak/widgets/individual_heatmap/habit_calendar.dart';
-import 'package:provider/provider.dart';
 
-class YearlySnakeGrid extends StatelessWidget {
+class YearlySnakeGrid extends ConsumerWidget {
   final int habitId;
   final int columnCount = 26;
 
   const YearlySnakeGrid({super.key, required this.habitId});
 
   @override
-  Widget build(BuildContext context) {
-    final habitDatabase = context.read<HabitDatabase>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    //watch habit notifier
+    final habitsAsync = ref.watch(habitNotifierProvider);
 
-    return StreamBuilder<Habit?>(
-      stream: habitDatabase.isarService.db.habits
-        .watchObject(
-          habitId, 
-          fireImmediately: true
-        ),
+    return habitsAsync.when(
+      data: (habits) {
+        //find the specific habit in the list
+        final habit = habits.firstWhere(
+          (h) => h.id == habitId,
+          orElse: () => Habit(),
+        );
 
-      builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.data == null) {
-          return const SizedBox.shrink();
-        }
+        //if the habit is dummy/newly deleted, don't show anything
+        if (habit.id == -1) return const SizedBox.shrink();
 
-        final habit = snapshot.data!;
         final int rowCount = habit.goalDaysPerWeek;
         final totalCompletions = habit.completedDays.length;
         final DateTime startDate = habit.startDate;
@@ -152,6 +151,8 @@ class YearlySnakeGrid extends StatelessWidget {
           ),
         );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) => const SizedBox.shrink(),
     );
   }
 }

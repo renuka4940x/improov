@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/src/features/tasks/provider/task_notifier.dart';
+import 'package:improov/src/features/habits/provider/habit_notifier.dart';
 import 'package:improov/src/presentation/home/widgets/modals/forms/build_habit_form.dart';
 import 'package:improov/src/presentation/home/widgets/modals/forms/build_task_form.dart';
 import 'package:improov/src/presentation/home/widgets/modals/components/UI/build_cross.dart';
 import 'package:improov/src/presentation/home/widgets/modals/components/UI/build_text_field.dart';
 import 'package:improov/src/presentation/home/widgets/modals/components/toggle/build_toggle.dart';
-import 'package:improov/src/features/habits/provider/habit_database.dart';
-import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/data/enums/priority.dart';
 import 'package:improov/src/data/models/habit.dart';
 import 'package:improov/src/data/models/task.dart';
 import 'package:improov/src/core/widgets/button.dart';
-import 'package:provider/provider.dart';
 
-class Modal extends StatefulWidget {
+class Modal extends ConsumerStatefulWidget {
   final Task? taskToEdit;
   final Habit? habitToEdit;
   final bool? isUpdating;
@@ -25,10 +25,10 @@ class Modal extends StatefulWidget {
   });
 
   @override
-  State<Modal> createState() => _ModalState();
+  ConsumerState<Modal> createState() => _ModalState();
 }
 
-class _ModalState extends State<Modal> {
+class _ModalState extends ConsumerState<Modal> {
   Priority _selectedHabitPriority = Priority.low;
   Priority _selectedTaskPriority = Priority.low;
 
@@ -195,7 +195,7 @@ class _ModalState extends State<Modal> {
             
                     // save info to db based on toggle mode
                     if (isHabitMode) {
-                      await context.read<HabitDatabase>().handleSaveHabit(
+                      await ref.read(habitNotifierProvider.notifier).handleSaveHabit(
                         existingHabit: widget.habitToEdit,
                         name: habitName, 
                         description: habitDesc, 
@@ -205,7 +205,7 @@ class _ModalState extends State<Modal> {
                         reminderTime: _habitReminder,
                       );
                     } else {
-                      await context.read<TaskDatabase>().handleSaveTask(
+                      await ref.read(taskNotifierProvider.notifier).handleSaveTask(
                         existingTask: widget.taskToEdit,
                         title: taskTitle, 
                         description: taskDesc, 

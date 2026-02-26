@@ -1,79 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:improov/src/data/database/isar_service.dart';
-import 'package:improov/src/features/habits/provider/habit_database.dart';
-import 'package:improov/src/features/tasks/provider/task_provider.dart';
-import 'package:improov/src/presentation/profile/provider/app_settings_database.dart';
-import 'package:improov/src/presentation/profile/provider/settings_provider.dart';
-import 'package:improov/src/presentation/profile/provider/stats_provider.dart';
-import 'package:improov/src/features/tasks/provider/task_database.dart';
-import 'package:improov/src/core/theme/theme_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/src/presentation/profile/provider/app_settings_notifier.dart';
 import 'package:improov/src/core/routing/router.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //initialzing isar database
-  final isarService = await IsarService.init();
-
-  await Future.delayed(const Duration(milliseconds: 100));
-
-  
-  final taskDatabase = TaskDatabase(isarService);
-  final settingsDatabase = AppSettingsDatabase(isarService);
-  final habitDatabase = HabitDatabase(isarService);
-  final appSettingsDatabase = AppSettingsDatabase(isarService);
-
-  await Future.wait([
-    taskDatabase.readTask(),
-    habitDatabase.saveFirstLaunchDate(),
-    habitDatabase.checkWeeklyReset(),
-    habitDatabase.readHabits(),
-  ]);
-
   runApp(
-    MultiProvider(
-      providers: [
-        //theme provider
-        ChangeNotifierProvider(create: (context) => ThemeProvider(appSettingsDatabase)),
-
-        //database providers
-        ChangeNotifierProvider(create: (context) => taskDatabase..readTask()),
-        ChangeNotifierProvider(create: (context) => habitDatabase
-          ..saveFirstLaunchDate()
-          ..checkWeeklyReset()
-          ..readHabits()
-        ),
-        ChangeNotifierProvider(create: (context) => SettingsProvider(settingsDatabase)),
-        ChangeNotifierProvider(create: (_) => StatsProvider(habitDatabase, taskDatabase)),
-        ChangeNotifierProvider(create: (_) => TaskProvider(isarService)),
-      ],
-      child: const MyApp(),
+    const ProviderScope(
+      child: MyApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final currentTheme = context.watch<ThemeProvider>().themeData;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settingsAsync = ref.watch(appSettingsNotifierProvider);
 
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: appRouter,
-      theme: currentTheme.copyWith(
-        textTheme: GoogleFonts.interTextTheme(currentTheme.textTheme),
-        primaryTextTheme: GoogleFonts.jostTextTheme(currentTheme.primaryTextTheme),
-      ),
-      builder: (context, child) {
-        return AnimatedSwitcher(
+  //handles the state
+  return settingsAsync.when(
+    data: (settings) {
+      final currentTheme = settings.themeData;
+
+      return MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: appRouter,
+        theme: currentTheme.copyWith(
+          textTheme: GoogleFonts.interTextTheme(currentTheme.textTheme),
+          primaryTextTheme: GoogleFonts.jostTextTheme(currentTheme.primaryTextTheme),
+        ),
+        builder: (context, child) => AnimatedSwitcher(
           duration: const Duration(milliseconds: 5),
           child: child!,
-        );
-      },
-    );
+        ),
+      );
+    },
+
+    loading: () => const MaterialApp(
+      home: Scaffold(
+        body: Center(child: CircularProgressIndicator())
+      )
+    ),
+
+    error: (err, stack) => MaterialApp(
+      home: Scaffold(
+        body: Center(child: Text("Fatal Error: $err"))
+      )
+    ),
+  );
   }
 }

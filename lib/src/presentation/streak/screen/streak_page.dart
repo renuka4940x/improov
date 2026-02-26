@@ -1,58 +1,48 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/util/logic/heatmap_engine.dart';
-import 'package:improov/src/data/models/habit.dart';
-import 'package:improov/src/features/habits/provider/habit_database.dart';
+import 'package:improov/src/features/habits/provider/habit_notifier.dart';
 import 'package:improov/src/presentation/streak/widgets/global_calendar/global_calendar_grid.dart';
-import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/day_audit_sheet_habit.dart';
+import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/habit_audit_sheet.dart';
 import 'package:improov/src/presentation/streak/widgets/individual_heatmap/heatmap_grid.dart';
 import 'package:improov/src/presentation/streak/widgets/individual_heatmap/yearly_snake_grid.dart';
-import 'package:isar/isar.dart';
-import 'package:provider/provider.dart';
 
-class StreakPage extends StatefulWidget {
+class StreakPage extends ConsumerStatefulWidget {
   const StreakPage({super.key});
 
   @override
-  State<StreakPage> createState() => _StreakPageState();
+  ConsumerState<StreakPage> createState() => _StreakPageState();
 }
 
-class _StreakPageState extends State<StreakPage> {
+class _StreakPageState extends ConsumerState<StreakPage> {
   DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month, 1);
   
-  //logic is currently Monthly-focused
-  bool isYearly = false; 
-  late Stream<List<Habit>> _habitStream;
-
-  @override
-  void initState() {
-    super.initState();
-    final habitDatabase = context.read<HabitDatabase>();
-    _habitStream = habitDatabase.isarService.db.habits
-      .where()
-      .build()
-      .watch(fireImmediately: true);
-  }
+  //logic is currently monthly-focused
+  bool isYearly = false;
 
   void _changeMonth(int increment) {
     setState(() {
-      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + increment, 1);
+      _selectedMonth = DateTime(
+        _selectedMonth.year, 
+        _selectedMonth.month + increment, 
+        1
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Habit>>(
-      stream: _habitStream,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
-        }
+    //watch habit notifier
+    final habitsAsync = ref.watch(habitNotifierProvider);
 
-        final habits = snapshot.data ?? [];
-
+    return habitsAsync.when(
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (err, stack) => Scaffold(body: Center(child: Text("Error: $err"))),
+      data: (habits) {
+        // 5. Use the engine to generate data from the reactive list
         final monthlySnapshots = HeatmapEngine.generateGlobalSnapshot(
           habits: habits,
           targetMonth: _selectedMonth,

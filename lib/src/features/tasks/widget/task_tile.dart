@@ -2,15 +2,15 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/src/core/widgets/custom_checkbox.dart';
 import 'package:improov/src/core/widgets/focused_menu_wrapper.dart';
 import 'package:improov/src/presentation/home/widgets/modals/screen/modal.dart';
-import 'package:improov/src/features/tasks/provider/task_database.dart';
 import 'package:improov/src/data/models/task.dart';
 import 'package:improov/src/features/tasks/widget/task_popup.dart';
-import 'package:provider/provider.dart';
+import 'package:improov/src/features/tasks/provider/task_notifier.dart';
 
-class TaskTile extends StatelessWidget {
+class TaskTile extends ConsumerWidget {
   final Task task;
   final bool isCompleted;
   final Function(bool?)? onChanged;
@@ -35,15 +35,15 @@ class TaskTile extends StatelessWidget {
   }
 
   //delete function
-  void onDeletePressed(BuildContext context) {
-    context.read<TaskDatabase>().deleteTask(task.id);
+  void onDeletePressed(WidgetRef ref) {
+    ref.read(taskNotifierProvider.notifier).deleteTask(task.id);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FocusedMenuWrapper(
       onEdit: () => onEditPressed(context),
-      onDelete: () => onDeletePressed(context),
+      onDelete: () => onDeletePressed(ref),
       onDetails: () {
         HapticFeedback.mediumImpact();
         Navigator.of(context, rootNavigator: true).push(
@@ -77,10 +77,7 @@ class TaskTile extends StatelessWidget {
                           
         //tap for check/uncheck
         onTap: () {
-          context.read<TaskDatabase>().updateTaskCompletion(
-            task.id, 
-            !task.isCompleted,
-          );
+          ref.read(taskNotifierProvider.notifier).updateTaskCompletion(task.id, !task.isCompleted);
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
