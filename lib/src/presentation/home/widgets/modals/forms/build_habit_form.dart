@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/presentation/home/widgets/modals/components/UI/build_row.dart';
+import 'package:improov/src/core/widgets/build_row.dart';
 import 'package:improov/src/presentation/home/widgets/modals/components/pickers/date_time_picker.dart';
 import 'package:improov/src/presentation/home/widgets/modals/components/pickers/goal_picker.dart';
 import 'package:improov/src/presentation/home/widgets/modals/components/pickers/priority_picker.dart';

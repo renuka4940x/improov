@@ -20,6 +20,7 @@ class BuildRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsetsGeometry.symmetric(vertical: 12),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             label,
@@ -34,7 +35,11 @@ class BuildRow extends StatelessWidget {
           ),
 
           if (isPro) ...[
-            const SizedBox(width: 8,),
+             SizedBox(
+              width: isBold
+                ? 24
+                : 8,
+            ),
             ProBadge(),
           ],
           const Spacer(),

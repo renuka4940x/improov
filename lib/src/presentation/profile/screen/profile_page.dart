@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/src/core/constants/app_style.dart';
-import 'package:improov/src/presentation/home/widgets/modals/components/UI/build_row.dart';
+import 'package:improov/src/core/widgets/build_row.dart';
+import 'package:improov/src/core/widgets/pro_badge.dart';
 import 'package:improov/src/presentation/profile/provider/app_settings_notifier.dart';
 import 'package:improov/src/presentation/profile/provider/stats_provider.dart';
 
@@ -45,12 +46,16 @@ class ProfilePage extends ConsumerWidget {
                         const Spacer(),
                         PopupMenuButton<String>(
                           icon: const Icon(Icons.more_horiz),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           onSelected: (value) {
                             if (value == 'edit') _showEditNicknameDialog(context, ref);
                           },
                           itemBuilder: (context) => [
                             const PopupMenuItem<String>(
                               value: 'edit',
+                              height: 36,
                               child: Row(
                                 children: [
                                   Text("Edit"), 
@@ -123,6 +128,99 @@ class ProfilePage extends ConsumerWidget {
                   ),
 
                   Divider(color: Colors.grey.withValues(alpha: 0.5)),
+
+                  // Inside your ProfilePage ListView
+                  ExpansionTile(
+                    shape: const Border(), 
+                    collapsedShape: const Border(),
+                    title: Text(
+                      "Sync", 
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    iconColor: Theme.of(context).colorScheme.inversePrimary,
+                    tilePadding: const EdgeInsets.symmetric(horizontal: 8),
+                    childrenPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ProBadge(),
+                        const SizedBox(width: 24),
+                        const Icon(Icons.expand_more_rounded),
+                      ],
+                    ),
+                    children: [
+                      //CLOUD SYNC TOGGLE
+                      _buildToggleTile(
+                        title: "Cloud Sync",
+                        subtitle: "Backup data to the cloud",
+                        icon: Icons.cloud_done_outlined,
+                        value: false, // Link to provider later
+                        onChanged: (val) {
+                          // logic for Cloud Sync
+                        },
+                      ),
+                      
+                      //CALENDAR SYNC TOGGLE
+                      _buildToggleTile(
+                        title: "Google Calendar",
+                        subtitle: "Sync with your Google schedule",
+                        icon: Icons.calendar_month_outlined,
+                        value: false,
+                        onChanged: (val) {
+                          // Logic for OAuth flow
+                        },
+                      ),
+                    ],
+                  ),
+
+                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
+
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: GestureDetector(
+                      child: BuildRow(
+                        label: "Analytics", 
+                        trailing: Row(
+                          children: [
+                            ProBadge(),
+                            const SizedBox(width: 24),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                        isBold: true,
+                      ),
+                    ),
+                  ),
+
+                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
+
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: GestureDetector(
+                      child: BuildRow(
+                        label: "Premium", 
+                        trailing: Row(
+                          children: [
+                            ProBadge(),
+                            const SizedBox(width: 24),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                        isBold: true,
+                      ),
+                    ),
+                  ),
+
+                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
                 ],
               ),
             ),
@@ -169,11 +267,10 @@ class ProfilePage extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        title: Text(
           "What should we call you?", 
-          style: TextStyle(
-            fontWeight: FontWeight.bold
-          ),
+          style: AppStyle.title(context),
         ),
         content: TextField(
           controller: controller,
@@ -192,15 +289,32 @@ class ProfilePage extends ConsumerWidget {
               
               Navigator.pop(context);
             },
-            child: const Text(
+            child: Text(
               "Save", 
               style: TextStyle(
-                fontWeight: FontWeight.bold
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.inversePrimary
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildToggleTile({
+    required String title, 
+    required String subtitle, 
+    required IconData icon, 
+    required bool value, 
+    required Function(bool) onChanged
+  }) {
+    return SwitchListTile.adaptive(
+      secondary: Icon(icon),
+      title: Text(title),
+      subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
+      value: value,
+      onChanged: onChanged,
     );
   }
 }

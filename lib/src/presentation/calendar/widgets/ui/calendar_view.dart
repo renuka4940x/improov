@@ -66,7 +66,6 @@ class _CalendarViewState extends State<CalendarView> {
 
         final bool shouldBeBold = hasTask;
 
-        final bool isSelected = isSameDay(date, widget.selectedDay);
         final bool isToday = isSameDay(date, DateTime.now());
         
         return GestureDetector(
@@ -79,10 +78,7 @@ class _CalendarViewState extends State<CalendarView> {
             decoration: BoxDecoration(
               color: isToday 
                 ? Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.2) 
-                : ( isSelected 
-                  ? Theme.of(context).primaryColor 
-                  : Colors.transparent
-                ),
+                : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(

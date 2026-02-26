@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/util/logic/heatmap_engine.dart';
+import 'package:improov/src/core/util/provider/calendar_month_provider.dart';
 import 'package:improov/src/features/habits/provider/habit_notifier.dart';
 import 'package:improov/src/presentation/streak/widgets/global_calendar/global_calendar_grid.dart';
 import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/habit_audit_sheet.dart';
@@ -18,25 +19,15 @@ class StreakPage extends ConsumerStatefulWidget {
 }
 
 class _StreakPageState extends ConsumerState<StreakPage> {
-  DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month, 1);
   
   //logic is currently monthly-focused
   bool isYearly = false;
 
-  void _changeMonth(int increment) {
-    setState(() {
-      _selectedMonth = DateTime(
-        _selectedMonth.year, 
-        _selectedMonth.month + increment, 
-        1
-      );
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    //watch habit notifier
+    //habit notifier
     final habitsAsync = ref.watch(habitNotifierProvider);
+    final selectedMonth = ref.watch(calendarMonthProvider);
 
     return habitsAsync.when(
       loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
@@ -45,7 +36,7 @@ class _StreakPageState extends ConsumerState<StreakPage> {
         // 5. Use the engine to generate data from the reactive list
         final monthlySnapshots = HeatmapEngine.generateGlobalSnapshot(
           habits: habits,
-          targetMonth: _selectedMonth,
+          targetMonth: selectedMonth,
         );
         
         if (habits.isEmpty) {
@@ -87,7 +78,10 @@ class _StreakPageState extends ConsumerState<StreakPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(onPressed: () => _changeMonth(-1), icon: const Icon(Icons.chevron_left)),
+                    IconButton(
+                      onPressed: () => ref.read(calendarMonthProvider.notifier).changeMonth(-1),
+                      icon: const Icon(Icons.chevron_left),
+                    ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
@@ -95,11 +89,14 @@ class _StreakPageState extends ConsumerState<StreakPage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        "${_selectedMonth.month} / ${_selectedMonth.year}",
+                        "${selectedMonth.month} / ${selectedMonth.year}",
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                    IconButton(onPressed: () => _changeMonth(1), icon: const Icon(Icons.chevron_right)),
+                    IconButton(
+                      onPressed: () => ref.read(calendarMonthProvider.notifier).changeMonth(1),
+                      icon: const Icon(Icons.chevron_right),
+                    ),
                   ],
                 ),
               ),
@@ -111,7 +108,7 @@ class _StreakPageState extends ConsumerState<StreakPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text(
-                  "All",
+                  "Streaks",
                   style: AppStyle.title(context),
                 ),
               ),
@@ -119,7 +116,7 @@ class _StreakPageState extends ConsumerState<StreakPage> {
               
               //calendar view
               GlobalCalendarGrid(
-                targetMonth: _selectedMonth,
+                targetMonth: selectedMonth,
                 snapshots: monthlySnapshots,
                 onDayTap: (date, snapshot) {
                   HabitAuditSheet.show(context, date, snapshot.completedHabits);
@@ -182,7 +179,7 @@ class _StreakPageState extends ConsumerState<StreakPage> {
                       //heatmap grid
                       HeatmapGrid(
                         habit: habit, 
-                        targetMonth: _selectedMonth, 
+                        targetMonth: selectedMonth, 
                       ),
                     ],
                   ),

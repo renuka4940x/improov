@@ -67,20 +67,23 @@ class _TaskFeedState extends State<TaskFeed> {
         final date = _sortedDates[index];
         final dateTasks = _groupedTasks[date]!;
         
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Divider(color: Colors.grey),
-            const SizedBox(height: 16),
-            Text(
-              "${MonthName.getMonthName(date.month)}, ${date.day}",
-              style: AppStyle.title(context),
-            ),
-            const SizedBox(height: 6),
-
-            ...dateTasks.map((t) => _buildTaskTile(context, t)),
-            const SizedBox(height: 10),
-          ],
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Divider(color: Colors.grey),
+              const SizedBox(height: 12),
+              Text(
+                "${MonthName.getMonthName(date.month)}, ${date.day}",
+                style: AppStyle.title(context),
+              ),
+              const SizedBox(height: 6),
+          
+              ...dateTasks.map((t) => _buildTaskTile(context, t)),
+              const SizedBox(height: 16),
+            ],
+          ),
         );
       },
     );
@@ -96,7 +99,7 @@ class _TaskFeedState extends State<TaskFeed> {
         children: [
           CustomCheckbox(
             value: isCompleted,
-            onChanged: (_) {},
+            onChanged: (bool? newValue) => widget.onToggle(task),
           ),
           Text(
             task.title,

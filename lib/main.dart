@@ -34,16 +34,19 @@ class MyApp extends ConsumerWidget {
           primaryTextTheme: GoogleFonts.jostTextTheme(currentTheme.primaryTextTheme),
         ),
         builder: (context, child) => AnimatedSwitcher(
-          duration: const Duration(milliseconds: 5),
+          duration: const Duration(milliseconds: 10),
           child: child!,
         ),
       );
     },
 
     loading: () => const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Center(child: CircularProgressIndicator())
-      )
+        body: Center(
+          child: CircularProgressIndicator()
+        ),
+      ),
     ),
 
     error: (err, stack) => MaterialApp(

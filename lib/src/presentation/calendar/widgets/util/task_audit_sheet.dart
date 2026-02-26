@@ -11,6 +11,7 @@ class TaskAuditSheet {
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
       isScrollControlled: true,
+      useRootNavigator: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
@@ -71,6 +72,8 @@ class _TaskAuditContentState extends ConsumerState<_TaskAuditContent> {
             _buildEmptyState()
           else
             ..._tasks.map((t) => _buildTaskTile(context, t)),
+          
+          const SizedBox(height: 24),
         ],
       ),
     );
@@ -98,7 +101,8 @@ class _TaskAuditContentState extends ConsumerState<_TaskAuditContent> {
             const SizedBox(width: 16),
             Expanded(
               child: Text(
-                task.title, style: const TextStyle(fontSize: 16)
+                task.title, 
+                style: const TextStyle(fontSize: 16)
               ),
             ),
           ],

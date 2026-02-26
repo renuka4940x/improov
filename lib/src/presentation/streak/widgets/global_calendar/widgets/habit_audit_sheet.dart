@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/widgets/month_name.dart';
 import 'package:improov/src/data/models/habit.dart';
 
 class HabitAuditSheet {
-  static void show(BuildContext context, DateTime date, List<Habit> completedHabits) {
+  static void show(
+    BuildContext context, 
+    DateTime date, 
+    List<Habit> completedHabits
+  ) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.surface, // Ultra-dark
+      backgroundColor: Theme.of(context).colorScheme.surface,
       isScrollControlled: true,
+      useRootNavigator: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
@@ -17,16 +23,16 @@ class HabitAuditSheet {
   }
 }
 
-class _AuditContent extends StatelessWidget {
+class _AuditContent extends ConsumerWidget {
   final DateTime date;
   final List<Habit> completedHabits;
 
   const _AuditContent({required this.date, required this.completedHabits});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      // Respects keyboard and notch
+      //respects keyboard and notch
       padding: EdgeInsets.fromLTRB(24, 12, 24, MediaQuery.of(context).padding.bottom + 24),
       child: Column(
         mainAxisSize: MainAxisSize.min,

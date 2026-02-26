@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/src/core/util/provider/calendar_month_provider.dart';
 import 'package:improov/src/presentation/home/widgets/modals/screen/modal.dart';
 import 'package:improov/src/presentation/home/widgets/nav_bar.dart';
 
-class PageNav extends StatelessWidget {
+class PageNav extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
   const PageNav({
@@ -11,8 +13,20 @@ class PageNav extends StatelessWidget {
     required this.navigationShell,
   });
 
+  void _handleNavigation(BuildContext context, WidgetRef ref, int index) {
+    if (index != navigationShell.currentIndex) {
+      if (Navigator.of(context, rootNavigator: true).canPop()) {
+         Navigator.of(context, rootNavigator: true).pop();
+      }
+      
+      ref.read(calendarMonthProvider.notifier).resetToCurrent();
+
+      navigationShell.goBranch(index);
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: navigationShell,
 
@@ -48,7 +62,7 @@ class PageNav extends StatelessWidget {
       //the navigation bar
       bottomNavigationBar: NavBar(
         currentIndex: navigationShell.currentIndex,
-        onTap: (index) => navigationShell.goBranch(index),
+        onTap: (index) => _handleNavigation(context, ref, index),
       ),
     );
   }
