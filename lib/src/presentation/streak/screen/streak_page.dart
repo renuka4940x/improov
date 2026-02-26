@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/util/logic/heatmap_engine.dart';
-import 'package:improov/src/data/database/isar_service.dart'; 
 import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/features/habits/provider/habit_database.dart';
 import 'package:improov/src/presentation/streak/widgets/global_calendar/global_calendar_grid.dart';
 import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/day_audit_sheet_habit.dart';
 import 'package:improov/src/presentation/streak/widgets/individual_heatmap/heatmap_grid.dart';
 import 'package:improov/src/presentation/streak/widgets/individual_heatmap/yearly_snake_grid.dart';
 import 'package:isar/isar.dart';
+import 'package:provider/provider.dart';
 
 class StreakPage extends StatefulWidget {
   const StreakPage({super.key});
@@ -28,7 +29,11 @@ class _StreakPageState extends State<StreakPage> {
   @override
   void initState() {
     super.initState();
-    _habitStream = IsarService.db.habits.where().build().watch(fireImmediately: true);
+    final habitDatabase = context.read<HabitDatabase>();
+    _habitStream = habitDatabase.isarService.db.habits
+      .where()
+      .build()
+      .watch(fireImmediately: true);
   }
 
   void _changeMonth(int increment) {

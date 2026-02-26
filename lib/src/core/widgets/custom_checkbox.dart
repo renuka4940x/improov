@@ -24,7 +24,7 @@ class CustomCheckbox extends StatelessWidget {
       activeColor: Theme.of(context).colorScheme.tertiary,
       checkColor: Theme.of(context).colorScheme.inversePrimary,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-      
+
       fillColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return Theme.of(context).colorScheme.tertiary;

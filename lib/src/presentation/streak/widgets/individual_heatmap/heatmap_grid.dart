@@ -25,7 +25,12 @@ class HeatmapGrid extends StatelessWidget {
       future: HeatmapEngine.getLinearStatuses(habit: habit, targetMonth: targetMonth),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()));
+          return const SizedBox(
+            height: 100, 
+            child: Center(
+              child: CircularProgressIndicator()
+            )
+          );
         }
 
         final statuses = snapshot.data!;

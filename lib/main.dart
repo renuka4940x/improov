@@ -15,15 +15,22 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   //initialzing isar database
-  await IsarService.init();
+  final isarService = await IsarService.init();
 
   await Future.delayed(const Duration(milliseconds: 100));
 
-  final settingsDatabase = AppSettingsDatabase();
-  final habitDatabase = HabitDatabase();
-  final taskDataase = TaskDatabase();
-  final appSettingsDatabase = AppSettingsDatabase();
-  final isarService = IsarService();
+  
+  final taskDatabase = TaskDatabase(isarService);
+  final settingsDatabase = AppSettingsDatabase(isarService);
+  final habitDatabase = HabitDatabase(isarService);
+  final appSettingsDatabase = AppSettingsDatabase(isarService);
+
+  await Future.wait([
+    taskDatabase.readTask(),
+    habitDatabase.saveFirstLaunchDate(),
+    habitDatabase.checkWeeklyReset(),
+    habitDatabase.readHabits(),
+  ]);
 
   runApp(
     MultiProvider(
@@ -32,14 +39,14 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ThemeProvider(appSettingsDatabase)),
 
         //database providers
-        ChangeNotifierProvider(create: (context) => taskDataase..readTask()),
+        ChangeNotifierProvider(create: (context) => taskDatabase..readTask()),
         ChangeNotifierProvider(create: (context) => habitDatabase
           ..saveFirstLaunchDate()
           ..checkWeeklyReset()
           ..readHabits()
         ),
         ChangeNotifierProvider(create: (context) => SettingsProvider(settingsDatabase)),
-        ChangeNotifierProvider(create: (_) => StatsProvider(habitDatabase, taskDataase)),
+        ChangeNotifierProvider(create: (_) => StatsProvider(habitDatabase, taskDatabase)),
         ChangeNotifierProvider(create: (_) => TaskProvider(isarService)),
       ],
       child: const MyApp(),

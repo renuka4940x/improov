@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:improov/src/core/constants/app_style.dart';
+import 'package:improov/src/core/widgets/custom_checkbox.dart';
 import 'package:improov/src/core/widgets/month_name.dart';
 import 'package:improov/src/data/models/task.dart';
 
-class TaskFeed extends StatelessWidget {
+class TaskFeed extends StatefulWidget {
   final List<Task> tasks;
   final Function(Task) onToggle;
 
@@ -14,26 +15,57 @@ class TaskFeed extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final Map<DateTime, List<Task>> groupedTasks = {};
-    for (var task in tasks) {
-      final date = DateTime((task.dueDate ?? DateTime.now()).year, (task.dueDate ?? DateTime.now()).month, (task.dueDate ?? DateTime.now()).day);
-      groupedTasks.putIfAbsent(date, () => []).add(task);
+  State<TaskFeed> createState() => _TaskFeedState();
+}
+
+class _TaskFeedState extends State<TaskFeed> {
+  Map<DateTime, List<Task>> _groupedTasks = {};
+  List<DateTime> _sortedDates = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _processTasks();
+  }
+
+  @override
+  void didUpdateWidget(TaskFeed oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.tasks != oldWidget.tasks) {
+      _processTasks();
     }
+  }
 
-    final sortedDates = groupedTasks.keys.toList()..sort();
+  void _processTasks() {
+    _groupedTasks = {};
+    for (var task in widget.tasks) {
+      final date = DateTime(
+        (task.dueDate ?? DateTime.now()).year, 
+        (task.dueDate ?? DateTime.now()).month, 
+        (task.dueDate ?? DateTime.now()).day
+      );
 
-    if (sortedDates.isEmpty) {
+      _groupedTasks.putIfAbsent(date, () => []).add(task);
+    }
+    _sortedDates = _groupedTasks.keys.toList()..sort();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    if (_sortedDates.isEmpty) {
       return const Center(
         child: Text("All caught up! No tasks here.")
       );
     }
 
     return ListView.builder(
-      itemCount: sortedDates.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _sortedDates.length,
       itemBuilder: (context, index) {
-        final date = sortedDates[index];
-        final dateTasks = groupedTasks[date]!;
+        final date = _sortedDates[index];
+        final dateTasks = _groupedTasks[date]!;
         
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,14 +87,26 @@ class TaskFeed extends StatelessWidget {
   }
 
   Widget _buildTaskTile(BuildContext context, Task task) {
-    return ListTile(
-      leading: Icon(
-        task.isCompleted 
-          ? Icons.check_box
-          : Icons.check_box_outline_blank_rounded
+    final bool isCompleted = task.isCompleted;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => widget.onToggle(task),
+      child: Row(
+        children: [
+          CustomCheckbox(
+            value: isCompleted,
+            onChanged: (_) {},
+          ),
+          Text(
+            task.title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
-      title: Text(task.title),
-      onTap: () => onToggle(task),
     );
   }
 }

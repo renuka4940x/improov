@@ -38,6 +38,10 @@ class _CalendarViewState extends State<CalendarView> {
     final int leadingEmptyDays = firstDay.weekday - 1;
     final int totalSlots = leadingEmptyDays + lastDay;
 
+    final taskSet = widget.daysWithTask
+      .map((d) => "${d.year}-${d.month}-${d.day}")
+      .toSet();
+    
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -57,10 +61,8 @@ class _CalendarViewState extends State<CalendarView> {
         final date = DateTime(rawDate.year, rawDate.month, rawDate.day);
 
         //check if a date has task
-        final bool hasTask = widget.daysWithTask.any((d) {
-          final match = isSameDay(d, date);
-          return match;
-        });
+        final dateKey = "${date.year}-${date.month}-${date.day}";
+        final bool hasTask = taskSet.contains(dateKey);
 
         final bool shouldBeBold = hasTask;
 

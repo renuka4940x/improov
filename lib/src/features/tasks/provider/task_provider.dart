@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/data/models/task.dart';
-import 'package:isar/isar.dart'; // Your Isar service
+import 'package:isar/isar.dart';
 
 class TaskProvider extends ChangeNotifier {
   final IsarService _isarService;
+  
+  List<Task> _cachedIncompleteTasks = [];
+  List<Task> get cachedTasks => _cachedIncompleteTasks;
 
   TaskProvider(this._isarService);
 
   DateTime stripTime(DateTime d) => DateTime(d.year, d.month, d.day);
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  // Add a getter for a stream
+  Stream<List<Task>> watchIncompleteTasks() {
+    return _isarService.db.tasks
+      .where()
+      .filter()
+      .isCompletedEqualTo(false)
+      .sortByDueDate()
+      .watch(fireImmediately: true);
+  }
 
   Future<List<Task>> getTasksForDate(DateTime date) async {
     final start = DateTime(date.year, date.month, date.day);
@@ -45,16 +61,31 @@ class TaskProvider extends ChangeNotifier {
     return uniqueDates.values.toList();
   }
 
-  Future<List<Task>> getAllIncompleteTasks() async {
-    // 1. Get the actual Isar instance first!
-    final isar = IsarService.db; 
+  Future<List<Task>> getAllIncompleteTasks({bool forceRefresh = false}) async {
+
+    _isLoading = true;
+    notifyListeners();
     
-    // 2. Now perform the query on the instance
-    return await isar.tasks
+    try {
+      final result = await _isarService.db.tasks
         .where()
         .filter()
         .isCompletedEqualTo(false)
         .sortByDueDate()
         .findAll();
+      
+      _cachedIncompleteTasks = result;
+    } 
+    
+    catch (e) {
+      _cachedIncompleteTasks = [];
+    } 
+    
+    finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+
+    return _cachedIncompleteTasks;
   }
 }

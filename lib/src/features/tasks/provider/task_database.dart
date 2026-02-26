@@ -8,7 +8,11 @@ import 'package:isar/isar.dart';
 import '../../../data/models/task.dart';
 
 class TaskDatabase extends ChangeNotifier {
-  final isar = IsarService.db;
+  final IsarService isarService;
+
+  Isar get isar => isarService.db;
+
+  TaskDatabase(this.isarService);
 
   final _controller = StreamController<void>.broadcast();
   Stream<void> get onUpdate =>_controller.stream;
@@ -18,11 +22,11 @@ class TaskDatabase extends ChangeNotifier {
 
   // Inside your TaskDatabase or a migration method
   Future<void> initializeStats() async {
-    final stats = await IsarService.db.globalStats.get(0);
+    final stats = await isar.globalStats.get(0);
     if (stats == null) {
       // If it doesn't exist, create the first one
-      await IsarService.db.writeTxn(() async {
-        await IsarService.db.globalStats.put(GlobalStats());
+      await isar.writeTxn(() async {
+        await isar.globalStats.put(GlobalStats());
       });
     }
   }
@@ -206,7 +210,7 @@ class TaskDatabase extends ChangeNotifier {
 
   //store total number of tasks completed
   Future<int> getTotalTasksCompleted() async {
-    final stats = await IsarService.db.globalStats.get(0);
+    final stats = await isar.globalStats.get(0);
     return stats?.totalTasksCompleted ?? 0;
   }
 }

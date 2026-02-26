@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/features/habits/provider/habit_database.dart';
 import 'package:improov/src/presentation/streak/widgets/individual_heatmap/habit_calendar.dart';
+import 'package:provider/provider.dart';
 
 class YearlySnakeGrid extends StatelessWidget {
   final int habitId;
@@ -11,8 +12,15 @@ class YearlySnakeGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final habitDatabase = context.read<HabitDatabase>();
+
     return StreamBuilder<Habit?>(
-      stream: IsarService.db.habits.watchObject(habitId, fireImmediately: true),
+      stream: habitDatabase.isarService.db.habits
+        .watchObject(
+          habitId, 
+          fireImmediately: true
+        ),
+
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data == null) {
           return const SizedBox.shrink();
@@ -41,13 +49,15 @@ class YearlySnakeGrid extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.92,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
               margin: const EdgeInsets.symmetric(horizontal: 12),
+
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(24),
               ),
+
               child: AnimatedSize(
                 duration: const Duration(milliseconds: 500),
-                curve: Curves.fastOutSlowIn, // This gives it that "scaling" weight
+                curve: Curves.fastOutSlowIn,
                 alignment: Alignment.topCenter,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

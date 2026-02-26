@@ -1,9 +1,15 @@
 import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/data/enums/subscription_type.dart';
 import 'package:improov/src/data/models/app_settings.dart';
+import 'package:isar/isar.dart';
 
 class AppSettingsDatabase {
-  final isar = IsarService.db;
+  final IsarService isarService;
+
+  // Use a getter for cleaner code
+  Isar get isar => isarService.db;
+
+  AppSettingsDatabase(this.isarService);
 
   // Fetch current settings
   Future<AppSettings> getSettings() async {

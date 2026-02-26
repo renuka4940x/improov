@@ -10,7 +10,11 @@ import 'package:isar/isar.dart';
 import '../../../data/enums/priority.dart';
 
 class HabitDatabase extends ChangeNotifier {
-  final isar = IsarService.db;
+  final IsarService isarService;
+
+  HabitDatabase(this.isarService);
+
+  Isar get isar => isarService.db;
 
   final _controller = StreamController<void>.broadcast();
   Stream<void> get onUpdate =>_controller.stream;
@@ -301,7 +305,7 @@ class HabitDatabase extends ChangeNotifier {
 
   //best streak
   Future<int> getGlobalBestStreak() async {
-    final bestHabit = await IsarService.db.habits
+    final bestHabit = await isar.habits
       .where()
       .sortByBestStreakDesc()
       .findFirst();

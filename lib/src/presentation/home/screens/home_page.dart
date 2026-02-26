@@ -34,30 +34,30 @@ class _HomePageState extends State<HomePage> {
         
             //habit section
             habitDatabase.currentHabits.isEmpty
-                ? const SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 25, bottom: 20),
-                      child: Text(
-                        "none, for now~",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
+              ? const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 25, bottom: 20),
+                  child: Text(
+                    "none, for now~",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontStyle: FontStyle.italic,
                     ),
-                  )
-                : SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final habit = habitDatabase.currentHabits[index];
-                      return HabitTile(
-                        habit: habit,
-                        onChanged: (val) => habitDatabase.updateHabitCompletion(
-                          habit.id,
-                          val ?? false,
-                        ),
-                      );
-                    }, childCount: habitDatabase.currentHabits.length),
                   ),
+                ),
+              )
+              : SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final habit = habitDatabase.currentHabits[index];
+                  return HabitTile(
+                    habit: habit,
+                    onChanged: (val) => habitDatabase.updateHabitCompletion(
+                      habit.id,
+                      val ?? false,
+                    ),
+                  );
+                }, childCount: habitDatabase.currentHabits.length),
+              ),
         
             const SliverToBoxAdapter(
               child: BuildTitle(

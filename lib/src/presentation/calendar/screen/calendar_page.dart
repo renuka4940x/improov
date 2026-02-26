@@ -15,8 +15,13 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month, 1);
-  // ignore: unused_field
+  late TaskProvider _taskProvider;
+  late TaskDatabase _taskDatabase;
+
+  DateTime _selectedMonth = DateTime(
+    DateTime.now().year, DateTime.now().month, 1
+  );
+
   DateTime _selectedDay = DateTime.now();
 
   void _changeMonth(int increment) {
@@ -37,10 +42,24 @@ class _CalendarPageState extends State<CalendarPage> {
 
   DateTime stripTime(DateTime d) => DateTime(d.year, d.month, d.day);
 
+
   @override
   void initState() {
     super.initState();
-    _loadTaskDates();
+
+    _taskProvider = context.read<TaskProvider>();
+    _taskDatabase = context.read<TaskDatabase>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(const Duration(milliseconds: 100)); 
+      
+      if (!mounted) return;
+      await _loadTaskDates();
+      
+      await Future.delayed(const Duration(milliseconds: 100));
+      if (!mounted) return;
+      _taskProvider.getAllIncompleteTasks(forceRefresh: true);
+    });
   }
 
   @override
@@ -76,53 +95,62 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
         ),
       ),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            ListenableBuilder(
-              listenable: context.read<TaskProvider>(),
-              builder: (context, _) {
-                return CalendarView(
-                  key: ValueKey(_taskDates.length),
-                  targetMonth: _selectedMonth, 
-                  daysWithTask: _taskDates,
-                  selectedDay: _selectedDay,
-                  getTasksForDate: (date) => context.read<TaskProvider>().getTasksForDate(date),
-                  onDayTap: ( date, tasks) async {
-                    setState(() => _selectedDay = date);
-                    if (!mounted) return;
-                    
-                    //open the Audit Sheet
-                    await TaskAuditSheet.show(context, date, tasks);
-                    _loadTaskDates();
-                  },
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: Consumer<TaskProvider>(
-                builder: (context, provider, child) {
-                  return FutureBuilder<List<Task>>(
-                    future: provider.getAllIncompleteTasks(), 
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const CircularProgressIndicator();
-                      }
-                      return TaskFeed(
-                        tasks: snapshot.data!, 
-                        onToggle: (task) {
-                          context.read<TaskDatabase>().updateTaskCompletion(task.id, !task.isCompleted);
-                        },
-                      );
-                    }
+        children: [
+          ListenableBuilder(
+            listenable: context.read<TaskProvider>(),
+            builder: (context, _) {
+              return CalendarView(
+                key: ValueKey(_taskDates.length),
+                targetMonth: _selectedMonth,
+                daysWithTask: _taskDates,
+                selectedDay: _selectedDay,
+                getTasksForDate: (date) => context.read<TaskProvider>().getTasksForDate(date),
+                onDayTap: (date, tasks) async {
+                  setState(() => _selectedDay = date);
+                  if (!mounted) return;
+                  await TaskAuditSheet.show(context, date, tasks);
+                  _loadTaskDates();
+                },
+              );
+            },
+          ),
+          
+          const SizedBox(height: 20),
+          
+          StreamBuilder<List<Task>>(
+            stream: _taskProvider.watchIncompleteTasks(),
+            builder: (context, snapshot) {
+              // 1. Handle loading or empty states
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              
+              if (snapshot.hasError) {
+                return Text("Error: ${snapshot.error}");
+              }
+
+              // 2. Access the fresh, reactive data
+              final tasks = snapshot.data ?? [];
+
+              return TaskFeed(
+                tasks: tasks,
+                onToggle: (task) async {
+
+                  await _taskDatabase.updateTaskCompletion(
+                    task.id, 
+                    !task.isCompleted,
                   );
-                }
-              ),
-            ),
-          ],
-        ),
+
+                  if (!mounted) return;
+
+                  _taskProvider.getAllIncompleteTasks(forceRefresh: true);
+                },
+              );
+            },
+          ),
+        ],
       ),
     );
   }
