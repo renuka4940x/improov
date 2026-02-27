@@ -1,10 +1,18 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/widgets/custom_checkbox.dart';
+import 'package:improov/src/core/widgets/focused_menu_wrapper.dart';
 import 'package:improov/src/core/widgets/month_name.dart';
 import 'package:improov/src/data/models/task.dart';
+import 'package:improov/src/features/tasks/provider/task_notifier.dart';
+import 'package:improov/src/features/tasks/widget/task_popup.dart';
+import 'package:improov/src/presentation/home/widgets/modals/screen/modal.dart';
 
-class TaskFeed extends StatefulWidget {
+class TaskFeed extends ConsumerStatefulWidget {
   final List<Task> tasks;
   final Function(Task) onToggle;
 
@@ -15,10 +23,10 @@ class TaskFeed extends StatefulWidget {
   });
 
   @override
-  State<TaskFeed> createState() => _TaskFeedState();
+  ConsumerState<TaskFeed> createState() => _TaskFeedState();
 }
 
-class _TaskFeedState extends State<TaskFeed> {
+class _TaskFeedState extends ConsumerState<TaskFeed> {
   Map<DateTime, List<Task>> _groupedTasks = {};
   List<DateTime> _sortedDates = [];
 
@@ -48,6 +56,25 @@ class _TaskFeedState extends State<TaskFeed> {
       _groupedTasks.putIfAbsent(date, () => []).add(task);
     }
     _sortedDates = _groupedTasks.keys.toList()..sort();
+  }
+
+  //Edit
+  void _onDeleteTask(WidgetRef ref, int id) {
+    ref.read(taskNotifierProvider.notifier).deleteTask(id);
+  }
+
+  // EDIT
+  void _onEditTask(BuildContext context, Task task) {
+    // Reusing your modal logic
+    showModalBottomSheet(
+      context: Navigator.of(context, rootNavigator: true).context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (context) => Modal(
+        taskToEdit: task,
+        isUpdating: true,
+      ),
+    );
   }
 
   @override
@@ -80,7 +107,7 @@ class _TaskFeedState extends State<TaskFeed> {
               ),
               const SizedBox(height: 6),
           
-              ...dateTasks.map((t) => _buildTaskTile(context, t)),
+              ...dateTasks.map((t) => _buildTaskTile(context, t, ref)),
               const SizedBox(height: 16),
             ],
           ),
@@ -89,26 +116,62 @@ class _TaskFeedState extends State<TaskFeed> {
     );
   }
 
-  Widget _buildTaskTile(BuildContext context, Task task) {
+  Widget _buildTaskTile(BuildContext context, Task task, WidgetRef ref) {
     final bool isCompleted = task.isCompleted;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => widget.onToggle(task),
-      child: Row(
-        children: [
-          CustomCheckbox(
-            value: isCompleted,
-            onChanged: (bool? newValue) => widget.onToggle(task),
+    return FocusedMenuWrapper(
+      onEdit: () => _onEditTask(context, task),
+      onDelete: () => _onDeleteTask(ref, task.id), 
+      onDetails: () {
+        HapticFeedback.mediumImpact();
+        Navigator.of(context, rootNavigator: true).push(
+          PageRouteBuilder(
+            opaque: false,
+            barrierDismissible: true,
+            transitionDuration: const Duration(milliseconds: 300),
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return Stack(
+                children: [
+                  
+                  //B L U R
+                  FadeTransition(
+                    opacity: animation,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                      child: Container(color: Colors.black.withOpacity(0.2)),
+                    ),
+                  ),
+
+                  //P O P U P
+                  TaskPopup(task: task),
+                ],
+              );
+            },
           ),
-          Text(
-            task.title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+        );
+      },
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => widget.onToggle(task),
+        child: Row(
+          children: [
+            CustomCheckbox(
+              value: isCompleted,
+              onChanged: (bool? newValue) => widget.onToggle(task),
             ),
-          ),
-        ],
+            Expanded(
+              child: Text(
+                task.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

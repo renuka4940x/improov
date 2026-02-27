@@ -6,7 +6,7 @@ class CalendarView extends StatefulWidget {
   final DateTime selectedDay;
   final Future<List<Task>> Function(DateTime) getTasksForDate;
   final Function(DateTime, List<Task>) onDayTap;
-  final List<DateTime> daysWithTask;
+  final Map<DateTime, bool> daysWithTask;
 
   const CalendarView({
     super.key, 
@@ -14,7 +14,7 @@ class CalendarView extends StatefulWidget {
     required this.selectedDay, 
     required this.getTasksForDate,
     required this.onDayTap,
-    this.daysWithTask = const [],
+    this.daysWithTask = const {},
   });
 
   @override
@@ -37,10 +37,6 @@ class _CalendarViewState extends State<CalendarView> {
     final lastDay = DateTime(widget.targetMonth.year, widget.targetMonth.month + 1, 0).day;
     final int leadingEmptyDays = firstDay.weekday - 1;
     final int totalSlots = leadingEmptyDays + lastDay;
-
-    final taskSet = widget.daysWithTask
-      .map((d) => "${d.year}-${d.month}-${d.day}")
-      .toSet();
     
     return GridView.builder(
       shrinkWrap: true,
@@ -60,11 +56,11 @@ class _CalendarViewState extends State<CalendarView> {
         final rawDate = DateTime(widget.targetMonth.year, widget.targetMonth.month, dayNumber);
         final date = DateTime(rawDate.year, rawDate.month, rawDate.day);
 
-        //check if a date has task
-        final dateKey = "${date.year}-${date.month}-${date.day}";
-        final bool hasTask = taskSet.contains(dateKey);
+        
 
-        final bool shouldBeBold = hasTask;
+        final dateKey = DateTime(date.year, date.month, date.day);
+
+        final bool shouldBeBold = widget.daysWithTask[dateKey] ?? false;
 
         final bool isToday = isSameDay(date, DateTime.now());
         
@@ -74,12 +70,19 @@ class _CalendarViewState extends State<CalendarView> {
             widget.onDayTap(date, tasksForDay);
           },
           child: Container(
+            margin: isToday 
+              ? EdgeInsets.symmetric(horizontal: 6)
+              : EdgeInsets.zero,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: isToday 
-                ? Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.2) 
-                : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
+              border: isToday 
+              ? Border(
+                  bottom: BorderSide(
+                    color: Theme.of(context).colorScheme.tertiary, 
+                    width: 2,
+                  ),
+                ) 
+              : null,
             ),
             child: Text(
               "$dayNumber", 

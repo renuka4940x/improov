@@ -78,85 +78,80 @@ class _MenuOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    
+    //if the item is below 70% of the screen, flip it.
+    final bool showAbove = position.dy > (screenHeight * 0.7);
+
+    //container
+    final menuWidget = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        width: 180,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 6),
+            _item(context, "Edit", Icons.edit_outlined, onEdit),
+            const Divider(color: Colors.grey, height: 1),
+            _item(context, "Details", Icons.info_outline, onDetails),
+            const Divider(color: Colors.grey, height: 1),
+            _item(context, "Delete", Icons.delete_outline, onDelete, isRed: true),
+            const SizedBox(height: 6),
+          ],
+        ),
+      ),
+    );
+
+
+    final tileWidget = Container(
+      height: size.height,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, blurRadius: 20, offset: Offset(0, 5))
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: position.dx),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: IgnorePointer(
+            ignoring: true,
+            child: previewChild,
+          ),
+        ),
+      ),
+    );
+
     return Stack(
       children: [
         Positioned(
-          top: position.dy,
-          left: position.dx,
-          width: size.width,
+          top: showAbove ? null : position.dy,
+          bottom: showAbove ? (screenHeight - position.dy - size.height) : null,
+          left: 0,
+          width: MediaQuery.of(context).size.width,
           child: Material(
             type: MaterialType.transparency,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 //lifted tile
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    boxShadow: const [BoxShadow(
-                      color: Colors.black26, 
-                      blurRadius: 20,
-                      offset: Offset(0, 5),
-                    )],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    
-                    child: IgnorePointer(
-                      ignoring: true,
-                      child: previewChild,
-                    ),
-                  ),
-                ),
-                
-                const SizedBox(height: 8),
-
-                //menu
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    width: 180,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(height: 6),
-
-                        //edit
-                        _item(
-                          context, 
-                          "Edit", 
-                          Icons.edit_outlined, 
-                          onEdit
-                        ),
-                        const Divider(color: Colors.grey,),
-
-                        //details
-                        _item(
-                          context, 
-                          "Details", 
-                          Icons.info_outline, 
-                          onDetails
-                        ),
-                        const Divider(color: Colors.grey,),
-
-                        //delete
-                        _item(
-                          context, 
-                          "Delete", 
-                          Icons.delete_outline, 
-                          onDelete, 
-                          isRed: true
-                        ),
-                        const SizedBox(height: 6),
-                      ],
-                    ),
-                  ),
-                ),
+                if (showAbove) ...[
+                  menuWidget,
+                  const SizedBox(height: 8),
+                  tileWidget,
+                ] else ...[
+                  tileWidget,
+                  const SizedBox(height: 8),
+                  menuWidget,
+                ],
               ],
             ),
           ),

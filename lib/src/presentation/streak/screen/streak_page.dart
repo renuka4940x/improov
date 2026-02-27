@@ -157,9 +157,13 @@ class _StreakPageState extends ConsumerState<StreakPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "${habit.name[0].toUpperCase()}${habit.name.substring(1)}", 
-                            style: AppStyle.title(context),
+                          Expanded(
+                           child: Text(
+                              "${habit.name[0].toUpperCase()}${habit.name.substring(1)}", 
+                              style: AppStyle.title(context),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                 
                           //streak count

@@ -62,15 +62,21 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
       body: tasksAsync.when(
         data: (allTasks) {
           //filter data for the calendar
-          final taskDates = allTasks
-            .where((t) => 
-              t.dueDate != null && 
-              t.dueDate!.month == selectedMonth.month && 
-              t.dueDate!.year == selectedMonth.year
-            )
-            .map((t) => stripTime(t.dueDate!))
-            .toSet()
-            .toList();
+          final Map<DateTime, bool> completionMap = {};
+
+          for (var task in allTasks) {
+            //check if dueDate exists
+            if (task.dueDate != null) {
+              DateTime dateKey = DateTime(
+                task.dueDate!.year, 
+                task.dueDate!.month, 
+                task.dueDate!.day
+              );
+              
+              //update the map
+              completionMap[dateKey] = (completionMap[dateKey] ?? false) || !task.isCompleted;
+            }
+          }
 
           //filter for the Task Feed
           final incompleteTasks = allTasks.where((t) => !t.isCompleted).toList();
@@ -88,7 +94,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
 
               CalendarView(
                 targetMonth: selectedMonth,
-                daysWithTask: taskDates,
+                daysWithTask: completionMap,
                 selectedDay: _selectedDay,
                 //get tasks for a specific tapped date
                 getTasksForDate: (date) async { 

@@ -109,7 +109,6 @@ class HabitTile extends ConsumerWidget {
                     width: 3,
                   ),
                 ),
-                borderRadius: BorderRadius.circular(4),
               ),
               child: Row(
                 children: [

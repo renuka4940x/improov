@@ -142,8 +142,9 @@ class HabitNotifier extends _$HabitNotifier {
     final service = await ref.read(isarDatabaseProvider.future);
     final finalColor = colorHex ?? AppColors.slayGreen.toARGB32();
 
-    await service.db.writeTxn(() async {
-      if (existingHabit != null) {
+    if (existingHabit != null) {
+      //update
+      await service.db.writeTxn(() async {
         existingHabit.name = name;
         existingHabit.description = description;
         existingHabit.priority = priority;
@@ -151,11 +152,22 @@ class HabitNotifier extends _$HabitNotifier {
         existingHabit.reminderTime = reminderTime;
         existingHabit.colorHex = finalColor;
         await service.db.habits.put(existingHabit);
-      } else {
-        await addHabit(name, true, description: description, priority: priority, goalDays: goal, startDate: startDate, reminderTime: reminderTime, colorHex: finalColor);
-      }
-    });
-    ref.invalidateSelf();
+      });
+
+      //refresh ui
+      ref.invalidateSelf();
+    } else {
+      await addHabit(
+        name, 
+        true, 
+        description: description, 
+        priority: priority, 
+        goalDays: goal, 
+        startDate: startDate, 
+        reminderTime: reminderTime, 
+        colorHex: finalColor
+      );
+    }
   }
 
   // D E L E T E
