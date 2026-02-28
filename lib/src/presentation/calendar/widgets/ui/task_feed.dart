@@ -82,7 +82,10 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
 
     if (_sortedDates.isEmpty) {
       return const Center(
-        child: Text("All caught up! No tasks here.")
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: Text("All caught up! No tasks here."),
+        )
       );
     }
 
