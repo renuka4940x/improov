@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/widgets/custom_checkbox.dart';
 import 'package:improov/src/core/widgets/focused_menu_wrapper.dart';
@@ -83,8 +84,8 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
     if (_sortedDates.isEmpty) {
       return const Center(
         child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text("All caught up! No tasks here."),
+          padding: EdgeInsets.only(top: 140),
+          child: Text("All caught up! No tasks here ;)"),
         )
       );
     }
@@ -96,23 +97,60 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
       itemBuilder: (context, index) {
         final date = _sortedDates[index];
         final dateTasks = _groupedTasks[date]!;
+
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+        final bool isToday = date.isAtSameMomentAs(today);
+        final bool isOverdue = date.isBefore(today);
         
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Divider(color: Colors.grey),
-              const SizedBox(height: 12),
-              Text(
-                "${MonthName.getMonthName(date.month)}, ${date.day}",
-                style: AppStyle.title(context),
-              ),
-              const SizedBox(height: 6),
-          
-              ...dateTasks.map((t) => _buildTaskTile(context, t, ref)),
-              const SizedBox(height: 16),
-            ],
+          padding: const EdgeInsets.only(right: 12, bottom: 10, left: 12),
+          child: Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Divider(color: Colors.grey.withValues(alpha: 0.5)),
+                ExpansionTile(
+                  key: PageStorageKey(date),
+                  initiallyExpanded: isToday || isOverdue,
+                  tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+                  
+                  //H E A D E R
+                  title: Text(
+                    isToday ? "Today" : "${MonthName.getMonthName(date.month)}, ${date.day}",
+                    style: AppStyle.title(context).copyWith(
+                      color: isOverdue 
+                        ? Colors.red.shade300 
+                        : (isToday 
+                          ? Theme.of(context).colorScheme.inversePrimary 
+                          : null
+                        ),
+                    ),
+                  ),
+                  trailing: Text(
+                    "${dateTasks.length}", 
+                    style: GoogleFonts.jost(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: isOverdue
+                        ? Colors.red.shade300
+                        : null
+                    ),
+                  ),
+
+                  //T A S K  L I S T
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Column(
+                        children: dateTasks.map((t) => _buildTaskTile(context, t, ref)).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

@@ -18,6 +18,12 @@ class AppSettings {
   //theme
   bool isDarkMode;
 
+  //haptic & notification toggles
+  bool hapticsEnabled;
+  bool notifyHabitReminders;
+  bool notifyTaskDeadlines;
+  bool notifyStreakWarning;
+
   //subscription type
   @enumerated
   SubscriptionType subscriptionType = SubscriptionType.none;
@@ -25,7 +31,14 @@ class AppSettings {
   //get subscription type
   bool get isPro => subscriptionType != SubscriptionType.none;
 
-  AppSettings({this.isDarkMode = false});
+  AppSettings({
+    this.isDarkMode = false,
+    this.hapticsEnabled = true,
+    this.notifyHabitReminders = true,
+    this.notifyTaskDeadlines = true,
+    this.notifyStreakWarning = true,
+    DateTime? firstLaunchDate,
+  }): firstLaunchDate = firstLaunchDate ?? DateTime.now();
 
   @ignore
   ThemeData get themeData {

@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/widgets/build_row.dart';
-import 'package:improov/src/presentation/profile/provider/app_settings_notifier.dart';
+import 'package:improov/src/presentation/settings/provider/app_settings_notifier.dart';
 import 'package:improov/src/presentation/profile/provider/stats_provider.dart';
 
 class ProfilePage extends ConsumerWidget {
@@ -100,38 +99,13 @@ class ProfilePage extends ConsumerWidget {
                     loading: () => const Center(child: CircularProgressIndicator()),
                     error: (err, _) => Text("Error: $err"),
                   ),
-                  
-                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
-
-                  settingsAsync.when(
-                    data: (settings) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => ref.read(appSettingsNotifierProvider.notifier).toggleTheme(),
-                        child: BuildRow(
-                          label: "Dark Mode",
-                          isBold: true,
-                          trailing: Transform.scale(
-                            scale: 0.8,
-                            child: CupertinoSwitch(
-                              value: settings.isDarkMode,
-                              activeTrackColor: Theme.of(context).colorScheme.tertiary,
-                              onChanged: (_) => ref.read(appSettingsNotifierProvider.notifier).toggleTheme(),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ), 
-                    loading: () => const SizedBox.shrink(),
-                    error: (err, stack) => const SizedBox.shrink(),
-                  ),
 
                   Divider(color: Colors.grey.withValues(alpha: 0.5)),
 
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: () => context.pushNamed('settings'),
                       child: BuildRow(
                         label: "Settings", 

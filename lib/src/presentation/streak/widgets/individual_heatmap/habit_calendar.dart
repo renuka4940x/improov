@@ -26,6 +26,10 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
     final daysInMonth = lastDayOfMonth.day;
     final leadingSpaces = firstDayOfMonth.weekday - 1;
 
+    final completedSet = widget.habit.completedDays
+      .map((d) => "${d.year}-${d.month}-${d.day}")
+      .toSet();
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -62,12 +66,10 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
             if (index < leadingSpaces) return const SizedBox.shrink();
 
             final day = index - leadingSpaces + 1;
-            final date = DateTime(_viewDate.year, _viewDate.month, day);
+            final dateKey = "${_viewDate.year}-${_viewDate.month}-$day";
             
             //check completions
-            final isCompleted = widget.habit.completedDays.any((d) => 
-              d.year == date.year && d.month == date.month && d.day == date.day
-            );
+            final isCompleted = completedSet.contains(dateKey);
 
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,

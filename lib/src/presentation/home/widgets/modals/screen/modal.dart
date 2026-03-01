@@ -139,6 +139,7 @@ class _ModalState extends ConsumerState<Modal> {
                     ? "e.g. read for 15 mins"
                     : "description",
                   isItalic: true,
+                  isDescription: true,
                 ),
             
                 const SizedBox(height: 30),

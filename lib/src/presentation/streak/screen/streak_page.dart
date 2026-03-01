@@ -129,61 +129,76 @@ class _StreakPageState extends ConsumerState<StreakPage> {
               ...habits.map((habit) => GestureDetector(
                 onTap: () {
                   showGeneralDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  barrierLabel: '',
-                  barrierColor: Colors.black.withOpacity(0.3),
-                  transitionDuration: const Duration(milliseconds: 300),
-                  pageBuilder: (context, anim1, anim2) {
-                    return Center(
-                      //blur
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                        child: YearlySnakeGrid(habitId: habit.id),
-                      ),
-                    );
-                  },
-                );
+                    context: context,
+                    barrierDismissible: true,
+                    barrierLabel: '',
+                    barrierColor: Colors.black.withOpacity(0.3),
+                    transitionDuration: const Duration(milliseconds: 300),
+                    pageBuilder: (context, anim1, anim2) {
+                      return Center(
+                        //blur
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                          child: YearlySnakeGrid(habitId: habit.id),
+                        ),
+                      );
+                    },
+                  );
                 },
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 36, right: 8, left: 8),
+                  padding: const EdgeInsets.only(bottom: 8, right: 8, left: 8),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Divider(color: Colors.grey),
-                      const SizedBox(height: 12),
-                
-                      //name
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                           child: Text(
-                              "${habit.name[0].toUpperCase()}${habit.name.substring(1)}", 
-                              style: AppStyle.title(context),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                      Divider(
+                        color: Colors.grey.withValues(alpha: 0.5)
+                      ),
+                      Theme(
+                        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          initiallyExpanded: true,
+                          tilePadding: const EdgeInsets.symmetric(horizontal: 8),
+                          key: PageStorageKey(habit.id),
+                          
+                          //C O L L A P S E D  H E A D E R
+                          title: Text(
+                            "${habit.name[0].toUpperCase()}${habit.name.substring(1)}",
+                            style: AppStyle.title(context),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          trailing: SizedBox(
+                            width: 80,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                const Icon(Icons.local_fire_department_outlined, color: Colors.grey, size: 18),
+                                Text(
+                                  "${habit.calculateStreak}",
+                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.expand_more, size: 20, color: Colors.grey,),
+                              ],
                             ),
                           ),
-                
-                          //streak count
-                          Row(
-                            children: [
-                              Icon(Icons.local_fire_department_outlined, color: Colors.grey, size: 18),
-                              Text(
-                                "${habit.calculateStreak}", 
-                                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)
+                      
+                          //E X P A N D E D  C O N T E N T
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                              child: Column(
+                                children: [
+                                  // Your Heatmap
+                                  HeatmapGrid(
+                                    habit: habit,
+                                    targetMonth: selectedMonth,
+                                  ),
+                                  const SizedBox(height: 12),
+                                ],
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                
-                      //heatmap grid
-                      HeatmapGrid(
-                        habit: habit, 
-                        targetMonth: selectedMonth, 
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
