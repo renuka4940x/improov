@@ -125,7 +125,7 @@ class _StreakPageState extends ConsumerState<StreakPage> {
 
               const SizedBox(height: 16),
               
-              //specific habit
+              //I N D I V I D U A L  H A B I T S
               ...habits.map((habit) => GestureDetector(
                 onTap: () {
                   showGeneralDialog(
@@ -150,18 +150,20 @@ class _StreakPageState extends ConsumerState<StreakPage> {
                   child: Column(
                     children: [
                       Divider(
-                        color: Colors.grey.withValues(alpha: 0.5)
+                        color: Colors.grey.withOpacity(0.5)
                       ),
                       Theme(
                         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                         child: ExpansionTile(
                           initiallyExpanded: true,
                           tilePadding: const EdgeInsets.symmetric(horizontal: 8),
-                          key: PageStorageKey(habit.id),
+                          key: ValueKey("expansion_${habit.id}"),
                           
                           //C O L L A P S E D  H E A D E R
                           title: Text(
-                            "${habit.name[0].toUpperCase()}${habit.name.substring(1)}",
+                            habit.name.trim().isNotEmpty 
+                              ? "${habit.name[0].toUpperCase()}${habit.name.substring(1)}" 
+                              : "Unnamed Habit",
                             style: AppStyle.title(context),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

@@ -32,20 +32,21 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
           (h) => h.id == widget.habitId,
           orElse: () {
             final emptyHabit = Habit();
-            emptyHabit.id = -1; // Flag for error state
+            emptyHabit.id = -1;
             return emptyHabit;
           },
         );
 
-        // ERROR HANDLING: Prevents grid calculation on null/missing data
+        // ERROR HANDLING
         if (habit.id == -1) {
           return _buildErrorState("Habit not found");
         }
 
-        final int rowCount = _isLinearView ? (habit.goalDaysPerWeek > 0 ? habit.goalDaysPerWeek : 1) : 7;
+        final int rowCount = _isLinearView 
+          ? (habit.goalDaysPerWeek > 0 ? habit.goalDaysPerWeek : 1) 
+          : 7;
         
-        // --- PERFORMANCE OPTIMIZATION ---
-        // Mapping outside the builder loop to save CPU cycles
+        //PERFORMANCE OPTIMIZATION
         final completedDateSet = habit.completedDays
             .map((d) => "${d.year}-${d.month}-${d.day}")
             .toSet();
@@ -53,7 +54,8 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
         final DateTime now = DateTime.now();
         final DateTime today = DateTime(now.year, now.month, now.day);
         final String todayKey = "${today.year}-${today.month}-${today.day}";
-        final DateTime headerAnchor = today.subtract(Duration(days: today.weekday - 1));
+        final DateTime habitStart = DateTime(habit.startDate.year, habit.startDate.month, habit.startDate.day);
+        final DateTime headerAnchor = habitStart.subtract(Duration(days: habitStart.weekday - 1));
 
         final DateTime activeStart = DateTime(
           habit.startDate.year, 
@@ -67,34 +69,53 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
             children: [
               _buildToggles(),
               const SizedBox(height: 20),
-              // RepaintBoundary prevents the heavy grid from re-painting
-              // unless its own internal data actually changes.
+
               RepaintBoundary(
                 child: _buildGridScroll(
                   rowCount: rowCount,
                   headerAnchor: headerAnchor,
                   content: (col, row) {
-                    Color squareColor = Theme.of(context).colorScheme.tertiary.withOpacity(0.2);
+                    Color squareColor = Theme.of(context).colorScheme.tertiary.withOpacity(0.05);
+
+                    final DateTime squareDate = headerAnchor.add(Duration(days: (col * 7) + row));
+                    final String dateKey = "${squareDate.year}-${squareDate.month}-${squareDate.day}";
 
                     if (_isLinearView) {
-                      final int linearIndex = (col * rowCount) + row;
-                      if (linearIndex < habit.completedDays.length) {
+                      // G O A L
+                      final DateTime weekStart = headerAnchor.add(Duration(days: col * 7));
+                      final DateTime weekEnd = weekStart.add(const Duration(days: 6));
+
+                      // Count how many completions happened ONLY in this specific week
+                      final int completionsThisWeek = habit.completedDays.where((d) {
+                        final normalized = DateTime(d.year, d.month, d.day);
+                        return !normalized.isBefore(weekStart) && !normalized.isAfter(weekEnd);
+                      }).length;
+
+                      // Fill the square ONLY if the row index is less than the completions in THIS week
+                      if (row < completionsThisWeek) {
                         squareColor = Theme.of(context).colorScheme.tertiary;
                       }
                     } else {
-                      final DateTime squareDate = headerAnchor.add(Duration(days: (col * 7) + row));
-                      final String dateKey = "${squareDate.year}-${squareDate.month}-${squareDate.day}";
-
+                      // C A L E D A R
                       final bool isWithinActiveRange = !squareDate.isBefore(activeStart) && !squareDate.isAfter(today);
 
                       if (isWithinActiveRange) {
                         if (completedDateSet.contains(dateKey)) {
-                          final bool isGold = habit.calculateStreak > 30;
-                          squareColor = isGold ? const Color(0xFFFFD700) : Theme.of(context).colorScheme.tertiary;
+                          // Calculate completions for the week this specific date belongs to
+                          final DateTime weekStart = squareDate.subtract(Duration(days: squareDate.weekday - 1));
+                          final DateTime weekEnd = weekStart.add(const Duration(days: 6));
+                          
+                          final int weeklyCount = habit.completedDays.where((d) {
+                            final normalized = DateTime(d.year, d.month, d.day);
+                            return !normalized.isBefore(weekStart) && !normalized.isAfter(weekEnd);
+                          }).length;
+
+                          // If completions in that week exceed the goal, make it GOLD
+                          squareColor = (weeklyCount > habit.goalDaysPerWeek) 
+                              ? const Color(0xFFFFD700) // Gold
+                              : Theme.of(context).colorScheme.tertiary;
                         } else if (dateKey == todayKey) {
                           squareColor = Theme.of(context).colorScheme.secondary.withOpacity(0.5);
-                        } else {
-                          squareColor = Theme.of(context).colorScheme.tertiary.withOpacity(0.05);
                         }
                       }
                     }
@@ -111,7 +132,7 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
           ),
         );
       },
-      // Keeps the main thread free to handle Isar worker startup
+      
       loading: () => _buildShimmerLoading(),
       error: (err, stack) {
         debugPrint("YearlySnakeGrid Error: $err");
@@ -120,7 +141,7 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
     );
   }
 
-  // --- UI COMPONENTS ---
+  // UI COMPONENTS
 
   Widget _buildErrorState(String message) {
     return _buildMainContainer(
@@ -223,7 +244,7 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
   Widget _buildMonthHeader(DateTime anchor) {
   final monthLabels = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   int lastMonthShown = -1;
-  int lastLabelColumn = -1; // Track the column index of the last label
+  int lastLabelColumn = -1;
 
   return Row(
     children: List.generate(columnCount, (i) {
@@ -256,8 +277,8 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
                 overflow: TextOverflow.visible,
                 softWrap: false,
                 style: TextStyle(
-                  fontSize: 9, // Slightly smaller font helps a LOT
-                  letterSpacing: -0.2, // Tighter letters save space
+                  fontSize: 9,
+                  letterSpacing: -0.2,
                   fontWeight: FontWeight.w900,
                   color: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.7),
                 ),

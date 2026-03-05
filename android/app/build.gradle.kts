@@ -1,9 +1,9 @@
+project.layout.buildDirectory.set(file("../../build/app"))
+
 plugins {
+    id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
-    id("com.android.application") version "9.0.1" apply false
-    id("com.android.library") version "9.0.1" apply false
-    id("org.jetbrains.kotlin.android") version "2.1.0" apply false
 }
 
 android {
@@ -39,6 +39,10 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 

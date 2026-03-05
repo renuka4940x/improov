@@ -3,75 +3,97 @@ import 'package:improov/src/data/models/habit.dart';
 import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/day_snapshot_habit.dart';
 
 class HeatmapEngine {
-  static Future<List<HabitSquareStatus>> getLinearStatuses({
+  static Future<List<List<HabitSquareStatus>>> getWeeklyStatusChunks({
     required Habit habit,
     required DateTime targetMonth,
   }) async {
     final int goal = habit.goalDaysPerWeek;
     final DateTime monthStart = DateTime(targetMonth.year, targetMonth.month, 1);
     final DateTime monthEnd = DateTime(targetMonth.year, targetMonth.month + 1, 0);
-
-    //start on habit start date or month start
-    DateTime gridStart = habit.startDate.isAfter(monthStart)
-        ? DateTime(habit.startDate.year, habit.startDate.month, habit.startDate.day)
-        : monthStart;
+    final habitStart = DateTime(habit.startDate.year, habit.startDate.month, habit.startDate.day);
 
     final completionDates = habit.completedDays
         .map((d) => DateTime(d.year, d.month, d.day))
         .toSet();
 
-    List<HabitSquareStatus> contractSquares = [];
-    int totalOverflow = 0;
-    DateTime currentWeekStart = gridStart;
+    List<List<HabitSquareStatus>> allRows = [];
 
-    while (currentWeekStart.isBefore(monthEnd) || currentWeekStart.isAtSameMomentAs(monthEnd)) {
-      //determine the end of the current habit week
-      int daysUntilMonday = 8 - currentWeekStart.weekday;
-      if (daysUntilMonday > 7) daysUntilMonday = 7;
+    // --- STEP 1: CALCULATE THE FIRST WEEK FRAGMENT ---
+    int daysInFirstWeek = 8 - monthStart.weekday;
+    if (daysInFirstWeek > 7) daysInFirstWeek = 7;
+    if (daysInFirstWeek > monthEnd.day) daysInFirstWeek = monthEnd.day;
 
-      DateTime weekEnd = currentWeekStart.add(Duration(days: daysUntilMonday - 1));
+    allRows.add(_processWindow(
+      start: monthStart,
+      days: daysInFirstWeek,
+      goal: goal,
+      habitStart: habitStart,
+      completions: completionDates,
+    ));
 
-      //
-      if (weekEnd.isAfter(monthEnd)) {
-        weekEnd = DateTime(monthEnd.year, monthEnd.month, monthEnd.day);
-      }
+    // --- STEP 2: CALCULATE THE MIDDLE AND END WEEKS ---
+    DateTime currentPtr = monthStart.add(Duration(days: daysInFirstWeek));
 
-      //recalculate the actual days available in this final fragment
-      int daysInThisWindow = weekEnd.difference(currentWeekStart).inDays + 1;
+    while (currentPtr.isBefore(monthEnd) || currentPtr.isAtSameMomentAs(monthEnd)) {
+      int remainingInMonth = monthEnd.difference(currentPtr).inDays + 1;
+      int windowSize = (remainingInMonth < 7) ? remainingInMonth : 7;
 
-      //the Adjusted Goal (The "Tail")
-      int adjustedGoal = (goal > daysInThisWindow) ? daysInThisWindow : goal;
+      allRows.add(_processWindow(
+        start: currentPtr,
+        days: windowSize,
+        goal: goal,
+        habitStart: habitStart,
+        completions: completionDates,
+      ));
 
-      int countInWeek = 0;
-      for (int i = 0; i < daysInThisWindow; i++) {
-        DateTime checkDay = currentWeekStart.add(Duration(days: i));
-        if (completionDates.contains(DateTime(checkDay.year, checkDay.month, checkDay.day))) {
-          countInWeek++;
-        }
-      }
-
-      //fill the Contract
-      for (int i = 0; i < adjustedGoal; i++) {
-        if (i < countInWeek) {
-          contractSquares.add(HabitSquareStatus.completed);
-        } else {
-          contractSquares.add(HabitSquareStatus.empty);
-        }
-      }
-
-      //track Overflow (Gold)
-      if (countInWeek > adjustedGoal) {
-        totalOverflow += (countInWeek - adjustedGoal);
-      }
-
-      //move to next week
-      currentWeekStart = weekEnd.add(const Duration(days: 1));
+      currentPtr = currentPtr.add(Duration(days: windowSize));
     }
 
-    return [
-      ...contractSquares,
-      ...List.filled(totalOverflow, HabitSquareStatus.overflow)
-    ];
+    // Filter out any rows that ended up being empty (before habit started)
+    return allRows.where((row) => row.isNotEmpty).toList();
+  }
+
+  static List<HabitSquareStatus> _processWindow({
+    required DateTime start,
+    required int days,
+    required int goal,
+    required DateTime habitStart,
+    required Set<DateTime> completions,
+  }) {
+    List<HabitSquareStatus> results = [];
+    int count = 0;
+    int activeDays = 0;
+
+    for (int i = 0; i < days; i++) {
+      DateTime checkDay = start.add(Duration(days: i));
+      if (!checkDay.isBefore(habitStart)) {
+        activeDays++;
+        if (completions.contains(checkDay)) {
+          count++;
+        }
+      }
+    }
+
+    // If the habit hasn't started in this window at all, return empty row
+    if (activeDays == 0) return [];
+
+    // Goal for this specific fragment is capped by active days
+    int adjustedGoal = (goal > activeDays) ? activeDays : goal;
+
+    // Fill contract squares
+    for (int i = 0; i < adjustedGoal; i++) {
+      results.add(i < count ? HabitSquareStatus.completed : HabitSquareStatus.empty);
+    }
+
+    // Interleave Gold (Overflow)
+    if (count > adjustedGoal) {
+      int overflowCount = count - adjustedGoal;
+      for (int i = 0; i < overflowCount; i++) {
+        results.add(HabitSquareStatus.overflow);
+      }
+    }
+
+    return results;
   }
 
   static Map<int, DaySnapshot> generateGlobalSnapshot({
