@@ -135,24 +135,32 @@ class _StreakPageState extends ConsumerState<StreakPage> {
                     barrierColor: Colors.black.withOpacity(0.3),
                     transitionDuration: const Duration(milliseconds: 300),
                     pageBuilder: (context, anim1, anim2) {
-                      return Center(
-                        //blur
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                          child: YearlySnakeGrid(habitId: habit.id),
-                        ),
-                      );
+                      return YearlySnakeGrid(habitId: habit.id);
                     },
                     transitionBuilder: (context, anim1, anim2, child) {
-                      return ScaleTransition(
-                        scale: CurvedAnimation(
-                          parent: anim1,
-                          curve: Curves.easeInOutBack,
-                        ),
-                        child: FadeTransition(
-                          opacity: anim1,
-                          child: child,
-                        ),
+                      final curvedValue = Curves.easeInOutBack.transform(anim1.value);
+
+                      return Stack(
+                        children: [
+                          IgnorePointer(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(
+                                sigmaX: 4 * anim1.value, 
+                                sigmaY: 4 * anim1.value
+                              ),
+                              child: Container(color: Colors.transparent),
+                            ),
+                          ),
+                          Center(
+                            child: Transform.scale(
+                              scale: 0.85 + (curvedValue * 0.15),
+                              child: Opacity(
+                                opacity: anim1.value,
+                                child: child,
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     },
                   );

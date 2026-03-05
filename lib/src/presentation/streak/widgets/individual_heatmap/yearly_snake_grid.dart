@@ -171,17 +171,22 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
     return Center(
       child: Material(
         color: Colors.transparent,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOutCubic,
+        child: Container(
           width: MediaQuery.of(context).size.width * 0.92,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
           margin: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(24),
           ),
-          child: child,
+          child: AnimatedSize(
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOutCubic,
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
+              child: child,
+            ),
+          ),
         ),
       ),
     );
