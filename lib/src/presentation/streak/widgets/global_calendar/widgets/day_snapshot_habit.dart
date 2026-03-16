@@ -1,4 +1,4 @@
-import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/data/models/habit/habit.dart';
 
 class DaySnapshot {
   final int completedCount;

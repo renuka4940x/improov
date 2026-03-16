@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/widgets/month_name.dart';
-import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/data/models/habit/habit.dart';
 
 class HabitAuditSheet {
   static void show(

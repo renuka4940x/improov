@@ -8,8 +8,8 @@ import 'package:improov/src/presentation/home/widgets/modals/components/UI/build
 import 'package:improov/src/presentation/home/widgets/modals/components/UI/build_text_field.dart';
 import 'package:improov/src/presentation/home/widgets/modals/components/toggle/build_toggle.dart';
 import 'package:improov/src/data/enums/priority.dart';
-import 'package:improov/src/data/models/habit.dart';
-import 'package:improov/src/data/models/task.dart';
+import 'package:improov/src/data/models/habit/habit.dart';
+import 'package:improov/src/data/models/task/task.dart';
 import 'package:improov/src/core/widgets/button.dart';
 
 class Modal extends ConsumerStatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:improov/src/data/models/app_settings.dart';
+import 'package:improov/src/data/models/app_settings/app_settings.dart';
 import 'package:improov/src/data/enums/subscription_type.dart';
 import 'package:improov/src/data/provider/providers.dart';
 import 'package:improov/src/core/theme/dark_mode.dart';

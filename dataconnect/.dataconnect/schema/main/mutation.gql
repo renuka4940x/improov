@@ -1,0 +1,450 @@
+extend type Mutation {
+  """
+  ✨ Insert a single `Habit` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  habit_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Habit_Data!
+  ): Habit_KeyOutput! @fdc_generated(from: "Habit", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `HabitLog` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  habitLog_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: HabitLog_Data!
+  ): HabitLog_KeyOutput! @fdc_generated(from: "HabitLog", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Task` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  task_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Task_Data!
+  ): Task_KeyOutput! @fdc_generated(from: "Task", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `User` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  user_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: User_Data!
+  ): User_KeyOutput! @fdc_generated(from: "User", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `Habit` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  habit_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Habit_Data!]!
+  ): [Habit_KeyOutput!]! @fdc_generated(from: "Habit", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `HabitLog` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  habitLog_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [HabitLog_Data!]!
+  ): [HabitLog_KeyOutput!]! @fdc_generated(from: "HabitLog", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Task` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  task_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Task_Data!]!
+  ): [Task_KeyOutput!]! @fdc_generated(from: "Task", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `User` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  user_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [User_Data!]!
+  ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert or update a single `Habit` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Habit`.
+  """
+  habit_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Habit_Data!
+  ): Habit_KeyOutput! @fdc_generated(from: "Habit", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `HabitLog` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `HabitLog`.
+  """
+  habitLog_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: HabitLog_Data!
+  ): HabitLog_KeyOutput! @fdc_generated(from: "HabitLog", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Task` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Task`.
+  """
+  task_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Task_Data!
+  ): Task_KeyOutput! @fdc_generated(from: "Task", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `User` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
+  """
+  user_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: User_Data!
+  ): User_KeyOutput! @fdc_generated(from: "User", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update `Habit` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Habit`.
+  """
+  habit_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Habit_Data!]!
+  ): [Habit_KeyOutput!]! @fdc_generated(from: "Habit", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `HabitLog` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `HabitLog`.
+  """
+  habitLog_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [HabitLog_Data!]!
+  ): [HabitLog_KeyOutput!]! @fdc_generated(from: "HabitLog", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Task` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Task`.
+  """
+  task_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Task_Data!]!
+  ): [Task_KeyOutput!]! @fdc_generated(from: "Task", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `User` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
+  """
+  user_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [User_Data!]!
+  ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `Habit` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Habit` or `null` if not found.
+  """
+  habit_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Habit_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Habit_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Habit_Data!
+  ): Habit_KeyOutput @fdc_generated(from: "Habit", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `HabitLog` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `HabitLog` or `null` if not found.
+  """
+  habitLog_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: HabitLog_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: HabitLog_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: HabitLog_Data!
+  ): HabitLog_KeyOutput @fdc_generated(from: "HabitLog", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Task` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Task` or `null` if not found.
+  """
+  task_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Task_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Task_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Task_Data!
+  ): Task_KeyOutput @fdc_generated(from: "Task", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `User` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `User` or `null` if not found.
+  """
+  user_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: User_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: User_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: User_Data!
+  ): User_KeyOutput @fdc_generated(from: "User", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update `Habit` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  habit_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Habit_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Habit_Data!
+  ): Int! @fdc_generated(from: "Habit", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `HabitLog` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  habitLog_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: HabitLog_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: HabitLog_Data!
+  ): Int! @fdc_generated(from: "HabitLog", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Task` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  task_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Task_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Task_Data!
+  ): Int! @fdc_generated(from: "Task", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `User` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  user_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: User_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: User_Data!
+  ): Int! @fdc_generated(from: "User", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Delete a single `Habit` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  habit_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Habit_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Habit_FirstRow
+  ): Habit_KeyOutput @fdc_generated(from: "Habit", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `HabitLog` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  habitLog_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: HabitLog_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: HabitLog_FirstRow
+  ): HabitLog_KeyOutput @fdc_generated(from: "HabitLog", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Task` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  task_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Task_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Task_FirstRow
+  ): Task_KeyOutput @fdc_generated(from: "Task", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `User` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  user_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: User_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: User_FirstRow
+  ): User_KeyOutput @fdc_generated(from: "User", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `Habit` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  habit_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Habit_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Habit", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `HabitLog` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  habitLog_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: HabitLog_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "HabitLog", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Task` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  task_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Task_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Task", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `User` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  user_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: User_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "User", purpose: DELETE_MULTIPLE)
+}

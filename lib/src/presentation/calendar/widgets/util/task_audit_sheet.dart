@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/widgets/month_name.dart';
-import 'package:improov/src/data/models/task.dart';
+import 'package:improov/src/data/models/task/task.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/src/features/tasks/provider/task_notifier.dart';
 

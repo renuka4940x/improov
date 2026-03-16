@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/data/models/habit/habit.dart';
 import 'package:intl/intl.dart';
 
 class HabitCalendarView extends StatefulWidget {

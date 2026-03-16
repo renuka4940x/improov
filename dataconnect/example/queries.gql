@@ -1,0 +1,11 @@
+query GetMyHabits @auth(level: USER) {
+  habits(where: {userId: {eq_expr: "auth.uid"}}) {
+    id
+    name
+    description
+    frequency
+    reminderTime
+    startDate
+    createdAt
+  }
+}

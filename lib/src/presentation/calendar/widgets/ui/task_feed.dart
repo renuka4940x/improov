@@ -8,7 +8,7 @@ import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/widgets/custom_checkbox.dart';
 import 'package:improov/src/core/widgets/focused_menu_wrapper.dart';
 import 'package:improov/src/core/widgets/month_name.dart';
-import 'package:improov/src/data/models/task.dart';
+import 'package:improov/src/data/models/task/task.dart';
 import 'package:improov/src/features/tasks/provider/task_notifier.dart';
 import 'package:improov/src/features/tasks/widget/task_popup.dart';
 import 'package:improov/src/presentation/home/widgets/modals/screen/modal.dart';

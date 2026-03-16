@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:improov/src/core/util/formatters/date_formatter.dart';
-import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/data/models/habit/habit.dart';
 import 'package:improov/src/core/widgets/popup_row.dart';
 
 class HabitPopup extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:improov/src/data/models/task.dart';
-import 'package:improov/src/data/models/global_stats.dart';
+import 'package:improov/src/data/models/task/task.dart';
+import 'package:improov/src/data/models/app_settings/global_stats.dart';
 import 'package:improov/src/data/enums/priority.dart';
 import 'package:improov/src/data/provider/providers.dart';
 import 'package:isar/isar.dart';

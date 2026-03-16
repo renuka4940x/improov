@@ -10,6 +10,10 @@
 analyzer:
   errors:
     deprecated_member_use: ignore
+    prefer_const_constructors_in_immutables: ignore
+  exclude:
+    - "**/*.g.dart"
+    - "lib/generated/**"
 include: package:flutter_lints/flutter.yaml
 
 linter:

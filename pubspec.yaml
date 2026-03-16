@@ -50,6 +50,8 @@ dependencies:
   uuid: ^4.5.3
   shimmer: ^3.0.0
   flutter_local_notifications: ^20.1.0
+  firebase_core: ^4.5.0
+  firebase_data_connect: ^0.2.3
 
 dev_dependencies:
   flutter_test:

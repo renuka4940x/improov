@@ -1,0 +1,39 @@
+mutation CreateTestUser(
+  $username: String!, 
+  $email: String!, 
+  $passwordHash: String!, 
+  $createdAt: Timestamp!
+) @auth(level: PUBLIC) {
+  user_insert(data: {
+    username: $username,
+    email: $email,
+    passwordHash: $passwordHash,
+    createdAt: $createdAt
+  }) 
+}
+
+mutation CreateHabit(
+  $id: UUID!,
+  $userId: UUID!, 
+  $name: String!, 
+  $description: String,
+  $isHabitMode: Boolean!,
+  $startDate: Timestamp!,
+  $goalDaysPerWeek: Int!,
+  $priority: String!,
+  $colorHex: Float!,
+  $isArchived: Boolean!
+) @auth(level: PUBLIC) {
+  habit_insert(data: {
+    id: $id,
+    userId: $userId,
+    name: $name,
+    description: $description,
+    isHabitMode: $isHabitMode,
+    startDate: $startDate,
+    goalDaysPerWeek: $goalDaysPerWeek,
+    priority: $priority,
+    colorHex: $colorHex,
+    isArchived: $isArchived
+  }) 
+}

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/data/models/habit/habit.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/src/features/habits/provider/habit_notifier.dart';
 import 'package:improov/src/presentation/streak/widgets/individual_heatmap/habit_calendar.dart';
@@ -29,11 +29,13 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
       data: (habits) {
         final habit = habits.firstWhere(
           (h) => h.id == widget.habitId,
-          orElse: () {
-            final emptyHabit = Habit();
-            emptyHabit.id = -1;
-            return emptyHabit;
-          },
+          orElse: () => Habit()
+            ..id = -1
+            ..name = 'Deleted Habit'
+            ..startDate = DateTime.now()
+            ..colorHex = 0
+            ..completedDays = [],
+          
         );
 
         // ERROR HANDLING

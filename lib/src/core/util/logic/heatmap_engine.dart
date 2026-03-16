@@ -1,5 +1,5 @@
 import 'package:improov/src/data/enums/habit_status.dart';
-import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/data/models/habit/habit.dart';
 import 'package:improov/src/presentation/streak/widgets/global_calendar/widgets/day_snapshot_habit.dart';
 
 class HeatmapEngine {

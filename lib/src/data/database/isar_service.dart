@@ -1,7 +1,7 @@
-import 'package:improov/src/data/models/app_settings.dart';
-import 'package:improov/src/data/models/global_stats.dart';
-import 'package:improov/src/data/models/habit.dart';
-import 'package:improov/src/data/models/task.dart';
+import 'package:improov/src/data/models/app_settings/app_settings.dart';
+import 'package:improov/src/data/models/app_settings/global_stats.dart';
+import 'package:improov/src/data/models/habit/habit.dart';
+import 'package:improov/src/data/models/task/task.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 

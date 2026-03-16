@@ -1,0 +1,588 @@
+extend type Habit {
+  """
+  ✨ List `HabitLog` objects in a one-to-many relationship (where `HabitLog`.`habit` is this object).
+  """
+  habitLogs_on_habit(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: HabitLog_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [HabitLog_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: HabitLog_Having
+  ): [HabitLog!]! @fdc_generated(from: "HabitLog.habit", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Habit", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Habit` table.
+  """
+  _count: Int! @fdc_generated(from: "Habit.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Habit` table where the `colorHex` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  colorHex_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Habit.colorHex", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Habit` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Habit.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Habit` table where the `goalDaysPerWeek` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  goalDaysPerWeek_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Habit.goalDaysPerWeek", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Habit` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Habit.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Habit` table where the `isArchived` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  isArchived_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Habit.isArchived", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Habit` table where the `isHabitMode` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  isHabitMode_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Habit.isHabitMode", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Habit` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Habit.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Habit` table where the `priority` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  priority_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Habit.priority", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Habit` table where the `reminderTime` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  reminderTime_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Habit.reminderTime", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Habit` table where the `startDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  startDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Habit.startDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Habit` table where the `userId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Habit.userId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `colorHex` field in the `Habit` table.
+  """
+  colorHex_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Habit.colorHex", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `goalDaysPerWeek` field in the `Habit` table.
+  """
+  goalDaysPerWeek_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Habit.goalDaysPerWeek", purpose: QUERY_SUM)
+  """
+  ✨ Average the `colorHex` field in the `Habit` table.
+  """
+  colorHex_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Habit.colorHex", purpose: QUERY_AVG)
+  """
+  ✨ Average the `goalDaysPerWeek` field in the `Habit` table.
+  """
+  goalDaysPerWeek_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Habit.goalDaysPerWeek", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `colorHex` field in the `Habit` table.
+  """
+  colorHex_min: Float @fdc_generated(from: "Habit.colorHex", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `goalDaysPerWeek` field in the `Habit` table.
+  """
+  goalDaysPerWeek_min: Int @fdc_generated(from: "Habit.goalDaysPerWeek", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `reminderTime` field in the `Habit` table.
+  """
+  reminderTime_min: Timestamp @fdc_generated(from: "Habit.reminderTime", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `startDate` field in the `Habit` table.
+  """
+  startDate_min: Timestamp @fdc_generated(from: "Habit.startDate", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `colorHex` field in the `Habit` table.
+  """
+  colorHex_max: Float @fdc_generated(from: "Habit.colorHex", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `goalDaysPerWeek` field in the `Habit` table.
+  """
+  goalDaysPerWeek_max: Int @fdc_generated(from: "Habit.goalDaysPerWeek", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `reminderTime` field in the `Habit` table.
+  """
+  reminderTime_max: Timestamp @fdc_generated(from: "Habit.reminderTime", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `startDate` field in the `Habit` table.
+  """
+  startDate_max: Timestamp @fdc_generated(from: "Habit.startDate", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Habit.id", purpose: GLOBAL_ID)
+}
+extend type HabitLog {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "HabitLog", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `HabitLog` table.
+  """
+  _count: Int! @fdc_generated(from: "HabitLog.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `HabitLog` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "HabitLog.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `HabitLog` table where the `habitId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  habitId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "HabitLog.habitId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `HabitLog` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "HabitLog.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `HabitLog` table where the `isCompleted` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  isCompleted_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "HabitLog.isCompleted", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `HabitLog` table where the `loggedDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  loggedDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "HabitLog.loggedDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `HabitLog` table where the `userId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "HabitLog.userId", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `HabitLog` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "HabitLog.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `loggedDate` field in the `HabitLog` table.
+  """
+  loggedDate_min: Date @fdc_generated(from: "HabitLog.loggedDate", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `HabitLog` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "HabitLog.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `loggedDate` field in the `HabitLog` table.
+  """
+  loggedDate_max: Date @fdc_generated(from: "HabitLog.loggedDate", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "HabitLog.id", purpose: GLOBAL_ID)
+}
+extend type Task {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Task", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Task` table.
+  """
+  _count: Int! @fdc_generated(from: "Task.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Task` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Task.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Task` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Task.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Task` table where the `dueDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  dueDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Task.dueDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Task` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Task.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Task` table where the `isCompleted` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  isCompleted_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Task.isCompleted", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Task` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Task.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Task` table where the `priority` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  priority_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Task.priority", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Task` table where the `userId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Task.userId", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `Task` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Task.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `dueDate` field in the `Task` table.
+  """
+  dueDate_min: Date @fdc_generated(from: "Task.dueDate", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Task` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Task.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `dueDate` field in the `Task` table.
+  """
+  dueDate_max: Date @fdc_generated(from: "Task.dueDate", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Task.id", purpose: GLOBAL_ID)
+}
+extend type User {
+  """
+  ✨ List `Habit` objects in a one-to-many relationship (where `Habit`.`user` is this object).
+  """
+  habits_on_user(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Habit_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Habit_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Habit_Having
+  ): [Habit!]! @fdc_generated(from: "Habit.user", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `HabitLog` objects in a one-to-many relationship (where `HabitLog`.`user` is this object).
+  """
+  habitLogs_on_user(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: HabitLog_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [HabitLog_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: HabitLog_Having
+  ): [HabitLog!]! @fdc_generated(from: "HabitLog.user", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Task` objects in a one-to-many relationship (where `Task`.`user` is this object).
+  """
+  tasks_on_user(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Task_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Task_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Task_Having
+  ): [Task!]! @fdc_generated(from: "Task.user", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "User", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `User` table.
+  """
+  _count: Int! @fdc_generated(from: "User.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `displayName` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  displayName_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.displayName", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `email` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  email_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.email", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `passwordHash` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  passwordHash_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.passwordHash", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `profilePictureUrl` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  profilePictureUrl_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.profilePictureUrl", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `username` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  username_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.username", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `User` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "User.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `User` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "User.createdAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "User.id", purpose: GLOBAL_ID)
+}

@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/dataconnect_generated/generated.dart';
 import 'package:improov/src/presentation/settings/provider/app_settings_notifier.dart';
 import 'package:improov/src/core/routing/router.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  ExampleConnector.instance.dataConnect.useDataConnectEmulator('192.168.29.254', 9399);
+
+  const bool useEmulator = true;
+  
+  if (useEmulator) {
+    print("RAHHHHHH! Data Connect Emulator is Live!");
+  }
 
   runApp(
     const ProviderScope(

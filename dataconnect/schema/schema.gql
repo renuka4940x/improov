@@ -1,0 +1,42 @@
+type User @table {
+  username: String!
+  email: String!
+  passwordHash: String!
+  createdAt: Timestamp!
+  displayName: String
+  profilePictureUrl: String
+}
+
+type Habit @table {
+  id: UUID! 
+  user: User!
+  
+  name: String!
+  description: String
+  isHabitMode: Boolean!
+  startDate: Timestamp!
+  goalDaysPerWeek: Int!
+  
+  priority: String! 
+  reminderTime: Timestamp
+  isArchived: Boolean!
+  colorHex: Float!
+}
+
+type Task @table {
+  user: User!
+  name: String!
+  dueDate: Date!
+  isCompleted: Boolean!
+  createdAt: Timestamp!
+  description: String
+  priority: String
+}
+
+type HabitLog @table {
+  habit: Habit!
+  user: User!
+  loggedDate: Date!
+  isCompleted: Boolean!
+  createdAt: Timestamp!
+}

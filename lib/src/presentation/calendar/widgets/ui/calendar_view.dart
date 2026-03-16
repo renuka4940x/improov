@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:improov/src/data/models/task.dart';
+import 'package:improov/src/data/models/task/task.dart';
 
 class CalendarView extends StatefulWidget {
   final DateTime targetMonth;

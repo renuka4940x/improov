@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:improov/src/core/util/logic/heatmap_engine.dart';
 import 'package:improov/src/data/enums/habit_status.dart';
-import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/data/models/habit/habit.dart';
 
 class HeatmapGrid extends StatelessWidget {
   final Habit habit;

@@ -7,7 +7,7 @@ import 'package:improov/src/core/widgets/focused_menu_wrapper.dart';
 import 'package:improov/src/presentation/home/widgets/modals/screen/modal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/src/features/habits/provider/habit_notifier.dart';
-import 'package:improov/src/data/models/habit.dart';
+import 'package:improov/src/data/models/habit/habit.dart';
 import 'package:improov/src/features/habits/widgets/habit_popup.dart';
 
 class HabitTile extends ConsumerWidget {

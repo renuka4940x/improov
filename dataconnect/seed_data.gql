@@ -1,0 +1,84 @@
+mutation CreateDemoData @transaction @auth(level: USER, insecureReason: "This operation is for seeding data by an authenticated user.") {
+  user_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      username: "john_doe",
+      email: "john.doe@example.com",
+      passwordHash: "hashedpassword1",
+      createdAt: "2023-01-01T10:00:00Z",
+      displayName: "John Doe",
+      profilePictureUrl: "https://example.com/john.jpg"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      username: "jane_smith",
+      email: "jane.smith@example.com",
+      passwordHash: "hashedpassword2",
+      createdAt: "2023-01-02T11:00:00Z",
+      displayName: "Jane Smith",
+      profilePictureUrl: "https://example.com/jane.jpg"
+    }
+  ])
+  habit_insertMany(data: [
+    {
+      id: "650e8400-e29b-41d4-a716-446655440000",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Drink Water",
+      frequency: "Daily",
+      createdAt: "2023-01-01T10:30:00Z",
+      description: "Drink 8 glasses of water",
+      reminderTime: "09:00",
+      startDate: "2023-01-01"
+    },
+    {
+      id: "650e8400-e29b-41d4-a716-446655440001",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      name: "Exercise",
+      frequency: "3 times a week",
+      createdAt: "2023-01-02T11:30:00Z",
+      description: "Go for a 30-minute run",
+      reminderTime: "18:00",
+      startDate: "2023-01-03"
+    }
+  ])
+  task_insertMany(data: [
+    {
+      id: "750e8400-e29b-41d4-a716-446655440000",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Finish Project Report",
+      dueDate: "2023-01-10",
+      isCompleted: false,
+      createdAt: "2023-01-05T14:00:00Z",
+      description: "Complete the report for the Q1 project",
+      priority: "High"
+    },
+    {
+      id: "750e8400-e29b-41d4-a716-446655440001",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      name: "Buy Groceries",
+      dueDate: "2023-01-07",
+      isCompleted: true,
+      createdAt: "2023-01-06T09:00:00Z",
+      description: "Milk, eggs, bread, vegetables",
+      priority: "Medium"
+    }
+  ])
+  habitLog_insertMany(data: [
+    {
+      id: "850e8400-e29b-41d4-a716-446655440000",
+      habitId: "650e8400-e29b-41d4-a716-446655440000",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      loggedDate: "2023-01-01",
+      isCompleted: true,
+      createdAt: "2023-01-01T10:45:00Z"
+    },
+    {
+      id: "850e8400-e29b-41d4-a716-446655440001",
+      habitId: "650e8400-e29b-41d4-a716-446655440001",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      loggedDate: "2023-01-03",
+      isCompleted: true,
+      createdAt: "2023-01-03T18:15:00Z"
+    }
+  ])
+}
