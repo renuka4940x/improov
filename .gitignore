@@ -118,5 +118,10 @@ app.*.symbols
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
 
-#isar generated files
+# Isar generated files
 *.g.dart
+
+# Firebase logs and local data
+*-debug.log
+.dataconnect/
+pgliteData/
