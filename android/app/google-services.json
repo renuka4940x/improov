@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:788643923827:android:8b36e0f672bc2726c7e706",
+        "mobilesdk_app_id": "1:788643923827:android:7cbaca25de1c42b8c7e706",
         "android_client_info": {
-          "package_name": "com.example.improov"
+          "package_name": "app.improov.mobile"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "788643923827-g738834bjet52s9oa77mruarij1glrli.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDYecdfXL37XiPWkIqXquGVpQTgSgw9o60"
@@ -20,7 +25,55 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "788643923827-g738834bjet52s9oa77mruarij1glrli.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "788643923827-k5t4dvqqe9k1vkkg8eab9uohun8pc7ll.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.improov"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:788643923827:android:8b36e0f672bc2726c7e706",
+        "android_client_info": {
+          "package_name": "com.example.improov"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "788643923827-g738834bjet52s9oa77mruarij1glrli.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYecdfXL37XiPWkIqXquGVpQTgSgw9o60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "788643923827-g738834bjet52s9oa77mruarij1glrli.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "788643923827-k5t4dvqqe9k1vkkg8eab9uohun8pc7ll.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.improov"
+              }
+            }
+          ]
         }
       }
     }

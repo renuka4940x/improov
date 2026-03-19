@@ -21,19 +21,17 @@ class GetMyHabitsHabits {
   final String id;
   final String name;
   final String? description;
-  final String frequency;
-  final String? reminderTime;
-  final DateTime? startDate;
-  final Timestamp createdAt;
+  final int goalDaysPerWeek;
+  final Timestamp? reminderTime;
+  final Timestamp startDate;
   GetMyHabitsHabits.fromJson(dynamic json):
   
   id = nativeFromJson<String>(json['id']),
   name = nativeFromJson<String>(json['name']),
   description = json['description'] == null ? null : nativeFromJson<String>(json['description']),
-  frequency = nativeFromJson<String>(json['frequency']),
-  reminderTime = json['reminderTime'] == null ? null : nativeFromJson<String>(json['reminderTime']),
-  startDate = json['startDate'] == null ? null : nativeFromJson<DateTime>(json['startDate']),
-  createdAt = Timestamp.fromJson(json['createdAt']);
+  goalDaysPerWeek = nativeFromJson<int>(json['goalDaysPerWeek']),
+  reminderTime = json['reminderTime'] == null ? null : Timestamp.fromJson(json['reminderTime']),
+  startDate = Timestamp.fromJson(json['startDate']);
   @override
   bool operator ==(Object other) {
     if(identical(this, other)) {
@@ -47,14 +45,13 @@ class GetMyHabitsHabits {
     return id == otherTyped.id && 
     name == otherTyped.name && 
     description == otherTyped.description && 
-    frequency == otherTyped.frequency && 
+    goalDaysPerWeek == otherTyped.goalDaysPerWeek && 
     reminderTime == otherTyped.reminderTime && 
-    startDate == otherTyped.startDate && 
-    createdAt == otherTyped.createdAt;
+    startDate == otherTyped.startDate;
     
   }
   @override
-  int get hashCode => Object.hashAll([id.hashCode, name.hashCode, description.hashCode, frequency.hashCode, reminderTime.hashCode, startDate.hashCode, createdAt.hashCode]);
+  int get hashCode => Object.hashAll([id.hashCode, name.hashCode, description.hashCode, goalDaysPerWeek.hashCode, reminderTime.hashCode, startDate.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -64,14 +61,11 @@ class GetMyHabitsHabits {
     if (description != null) {
       json['description'] = nativeToJson<String?>(description);
     }
-    json['frequency'] = nativeToJson<String>(frequency);
+    json['goalDaysPerWeek'] = nativeToJson<int>(goalDaysPerWeek);
     if (reminderTime != null) {
-      json['reminderTime'] = nativeToJson<String?>(reminderTime);
+      json['reminderTime'] = reminderTime!.toJson();
     }
-    if (startDate != null) {
-      json['startDate'] = nativeToJson<DateTime?>(startDate);
-    }
-    json['createdAt'] = createdAt.toJson();
+    json['startDate'] = startDate.toJson();
     return json;
   }
 
@@ -79,10 +73,9 @@ class GetMyHabitsHabits {
     required this.id,
     required this.name,
     this.description,
-    required this.frequency,
+    required this.goalDaysPerWeek,
     this.reminderTime,
-    this.startDate,
-    required this.createdAt,
+    required this.startDate,
   });
 }
 

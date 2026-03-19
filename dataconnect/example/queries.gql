@@ -3,9 +3,8 @@ query GetMyHabits @auth(level: USER) {
     id
     name
     description
-    frequency
+    goalDaysPerWeek
     reminderTime
     startDate
-    createdAt
   }
 }
