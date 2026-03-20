@@ -62,4 +62,85 @@ ref.subscribe(...);
 ```
 
 ## Mutations
-This connector does not contain any mutations.
+
+### CreateHabit
+#### Required Arguments
+```dart
+String id = ...;
+String name = ...;
+String description = ...;
+bool isHabitMode = ...;
+Timestamp startDate = ...;
+int goalDaysPerWeek = ...;
+String priority = ...;
+double colorHex = ...;
+bool isArchived = ...;
+ExampleConnector.instance.createHabit(
+  id: id,
+  name: name,
+  description: description,
+  isHabitMode: isHabitMode,
+  startDate: startDate,
+  goalDaysPerWeek: goalDaysPerWeek,
+  priority: priority,
+  colorHex: colorHex,
+  isArchived: isArchived,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<CreateHabitData, CreateHabitVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ExampleConnector.instance.createHabit(
+  id: id,
+  name: name,
+  description: description,
+  isHabitMode: isHabitMode,
+  startDate: startDate,
+  goalDaysPerWeek: goalDaysPerWeek,
+  priority: priority,
+  colorHex: colorHex,
+  isArchived: isArchived,
+);
+CreateHabitData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String id = ...;
+String name = ...;
+String description = ...;
+bool isHabitMode = ...;
+Timestamp startDate = ...;
+int goalDaysPerWeek = ...;
+String priority = ...;
+double colorHex = ...;
+bool isArchived = ...;
+
+final ref = ExampleConnector.instance.createHabit(
+  id: id,
+  name: name,
+  description: description,
+  isHabitMode: isHabitMode,
+  startDate: startDate,
+  goalDaysPerWeek: goalDaysPerWeek,
+  priority: priority,
+  colorHex: colorHex,
+  isArchived: isArchived,
+).ref();
+ref.execute();
+```
+

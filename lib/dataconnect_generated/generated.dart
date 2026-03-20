@@ -5,6 +5,8 @@ import 'dart:convert';
 
 part 'get_my_habits.dart';
 
+part 'create_habit.dart';
+
 
 
 
@@ -16,6 +18,11 @@ class ExampleConnector {
   
   GetMyHabitsVariablesBuilder getMyHabits () {
     return GetMyHabitsVariablesBuilder(dataConnect, );
+  }
+  
+  
+  CreateHabitVariablesBuilder createHabit ({required String id, required String name, required String description, required bool isHabitMode, required Timestamp startDate, required int goalDaysPerWeek, required String priority, required double colorHex, required bool isArchived, }) {
+    return CreateHabitVariablesBuilder(dataConnect, id: id,name: name,description: description,isHabitMode: isHabitMode,startDate: startDate,goalDaysPerWeek: goalDaysPerWeek,priority: priority,colorHex: colorHex,isArchived: isArchived,);
   }
   
 

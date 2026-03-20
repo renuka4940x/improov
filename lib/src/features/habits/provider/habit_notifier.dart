@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:firebase_data_connect/firebase_data_connect.dart';
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:improov/src/data/models/habit/habit.dart';
 import 'package:improov/src/data/models/app_settings/app_settings.dart';
@@ -6,7 +8,9 @@ import 'package:improov/src/data/enums/priority.dart';
 import 'package:improov/src/core/constants/app_colors.dart';
 import 'package:improov/src/data/provider/providers.dart';
 import 'package:isar/isar.dart';
-import 'package:uuid/uuid.dart'; // Make sure to add 'uuid' to pubspec.yaml
+import 'package:uuid/uuid.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:improov/dataconnect_generated/generated.dart';
 
 part 'habit_notifier.g.dart';
 
@@ -103,13 +107,33 @@ class HabitNotifier extends _$HabitNotifier {
       ..colorHex = colorHex ?? AppColors.slayGreen.toARGB32()
       ..completedDays = [];
 
-    // Save to ISAR first (Instant)
+    // Save to ISAR
     await service.db.writeTxn(() => service.db.habits.put(newHabit));
     
     // Refresh UI
     ref.invalidateSelf();
 
-    // TODO: Trigger Background Sync to Firebase Data Connect
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        //send to data connect
+        await ExampleConnector.instance.createHabit(
+          id: newHabit.uuid,
+          name: newHabit.name,
+          description: newHabit.description ?? "",
+          isHabitMode: newHabit.isHabitMode,
+          startDate:Timestamp.fromJson(newHabit.startDate.toUtc().toIso8601String()),
+          goalDaysPerWeek: newHabit.goalDaysPerWeek,
+          priority: newHabit.priority.name, 
+          colorHex: newHabit.colorHex.toDouble(), 
+          isArchived: newHabit.isArchived,
+        ).execute();
+        
+        debugPrint("Successfully created habit in the cloud!");
+      }
+    } catch (e) {
+      debugPrint("Sync Error (Add): $e"); 
+    }
   }
 
   // U P D A T E: habit completion

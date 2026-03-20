@@ -20,7 +20,7 @@ class GetMyHabitsVariablesBuilder {
 class GetMyHabitsHabits {
   final String id;
   final String name;
-  final String? description;
+  final String description;
   final int goalDaysPerWeek;
   final Timestamp? reminderTime;
   final Timestamp startDate;
@@ -28,7 +28,7 @@ class GetMyHabitsHabits {
   
   id = nativeFromJson<String>(json['id']),
   name = nativeFromJson<String>(json['name']),
-  description = json['description'] == null ? null : nativeFromJson<String>(json['description']),
+  description = nativeFromJson<String>(json['description']),
   goalDaysPerWeek = nativeFromJson<int>(json['goalDaysPerWeek']),
   reminderTime = json['reminderTime'] == null ? null : Timestamp.fromJson(json['reminderTime']),
   startDate = Timestamp.fromJson(json['startDate']);
@@ -58,9 +58,7 @@ class GetMyHabitsHabits {
     Map<String, dynamic> json = {};
     json['id'] = nativeToJson<String>(id);
     json['name'] = nativeToJson<String>(name);
-    if (description != null) {
-      json['description'] = nativeToJson<String?>(description);
-    }
+    json['description'] = nativeToJson<String>(description);
     json['goalDaysPerWeek'] = nativeToJson<int>(goalDaysPerWeek);
     if (reminderTime != null) {
       json['reminderTime'] = reminderTime!.toJson();
@@ -72,7 +70,7 @@ class GetMyHabitsHabits {
   GetMyHabitsHabits({
     required this.id,
     required this.name,
-    this.description,
+    required this.description,
     required this.goalDaysPerWeek,
     this.reminderTime,
     required this.startDate,

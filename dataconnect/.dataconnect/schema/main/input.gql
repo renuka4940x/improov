@@ -27,25 +27,13 @@ scalar User_KeyOutput
 """
 input Habit_Data {
   """
-  ✨ Generated from Field `Habit`.`id` of type `UUID!`
+  ✨ Generated from Field `Habit`.`id` of type `String!`
   """
-  id: UUID
+  id: String
   """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Habit`.`id` of type `UUID!`)
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Habit`.`id` of type `String!`)
   """
-  id_expr: UUID_Expr
-  """
-  ✨ Generated from Field `Habit`.`userId` of type `UUID!`
-  """
-  userId: UUID
-  """
-  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `Habit`.`userId` of type `UUID!`)
-  """
-  userId_expr: UUID_Expr
-  """
-  ✨ Generated from Field `Habit`.`user` of type `User!`
-  """
-  user: User_Key
+  id_expr: String_Expr
   """
   ✨ Generated from Field `Habit`.`colorHex` of type `Float!`
   """
@@ -59,11 +47,11 @@ input Habit_Data {
   """
   colorHex_update: [Float_Update!]
   """
-  ✨ Generated from Field `Habit`.`description` of type `String`
+  ✨ Generated from Field `Habit`.`description` of type `String!`
   """
   description: String
   """
-  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Habit`.`description` of type `String`)
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Habit`.`description` of type `String!`)
   """
   description_expr: String_Expr
   """
@@ -142,6 +130,14 @@ input Habit_Data {
   ✨ `_update` server value variant of `startDate` (✨ Generated from Field `Habit`.`startDate` of type `Timestamp!`)
   """
   startDate_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Habit`.`userId` of type `String!`
+  """
+  userId: String
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `Habit`.`userId` of type `String!`)
+  """
+  userId_expr: String_Expr
 }
 """
 ✨ Generated filter input type for table 'Habit'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -160,23 +156,15 @@ input Habit_Filter {
   """
   _or: [Habit_Filter!]
   """
-  ✨ Generated from Field `Habit`.`id` of type `UUID!`
+  ✨ Generated from Field `Habit`.`id` of type `String!`
   """
-  id: UUID_Filter
-  """
-  ✨ Generated from Field `Habit`.`userId` of type `UUID!`
-  """
-  userId: UUID_Filter
-  """
-  ✨ Generated from Field `Habit`.`user` of type `User!`
-  """
-  user: User_Filter
+  id: String_Filter
   """
   ✨ Generated from Field `Habit`.`colorHex` of type `Float!`
   """
   colorHex: Float_Filter
   """
-  ✨ Generated from Field `Habit`.`description` of type `String`
+  ✨ Generated from Field `Habit`.`description` of type `String!`
   """
   description: String_Filter
   """
@@ -207,6 +195,10 @@ input Habit_Filter {
   ✨ Generated from Field `Habit`.`startDate` of type `Timestamp!`
   """
   startDate: Timestamp_Filter
+  """
+  ✨ Generated from Field `Habit`.`userId` of type `String!`
+  """
+  userId: String_Filter
   """
   ✨ Generated from Field `Habit`.`habitLogs_on_habit` of type `[HabitLog!]!`
   """
@@ -347,13 +339,13 @@ input Habit_Having {
 """
 input Habit_Key {
   """
-  ✨ Generated from Field `Habit`.`id` of type `UUID!`
+  ✨ Generated from Field `Habit`.`id` of type `String!`
   """
-  id: UUID
+  id: String
   """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Habit`.`id` of type `UUID!`)
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Habit`.`id` of type `String!`)
   """
-  id_expr: UUID_Expr
+  id_expr: String_Expr
 }
 """
 ✨ Generated list filter input type for table 'Habit'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -373,23 +365,15 @@ input Habit_ListFilter {
 """
 input Habit_Order {
   """
-  ✨ Generated from Field `Habit`.`id` of type `UUID!`
+  ✨ Generated from Field `Habit`.`id` of type `String!`
   """
   id: OrderDirection
-  """
-  ✨ Generated from Field `Habit`.`userId` of type `UUID!`
-  """
-  userId: OrderDirection
-  """
-  ✨ Generated from Field `Habit`.`user` of type `User!`
-  """
-  user: User_Order
   """
   ✨ Generated from Field `Habit`.`colorHex` of type `Float!`
   """
   colorHex: OrderDirection
   """
-  ✨ Generated from Field `Habit`.`description` of type `String`
+  ✨ Generated from Field `Habit`.`description` of type `String!`
   """
   description: OrderDirection
   """
@@ -420,6 +404,10 @@ input Habit_Order {
   ✨ Generated from Field `Habit`.`startDate` of type `Timestamp!`
   """
   startDate: OrderDirection
+  """
+  ✨ Generated from Field `Habit`.`userId` of type `String!`
+  """
+  userId: OrderDirection
   """
   ✨ Generated from Field `Habit`.`_count` of type `Int!`
   """
@@ -530,21 +518,21 @@ input HabitLog_Data {
   """
   id_expr: UUID_Expr
   """
-  ✨ Generated from Field `HabitLog`.`habitId` of type `UUID!`
+  ✨ Generated from Field `HabitLog`.`habitId` of type `String!`
   """
-  habitId: UUID
+  habitId: String
   """
-  ✨ `_expr` server value variant of `habitId` (✨ Generated from Field `HabitLog`.`habitId` of type `UUID!`)
+  ✨ `_expr` server value variant of `habitId` (✨ Generated from Field `HabitLog`.`habitId` of type `String!`)
   """
-  habitId_expr: UUID_Expr
+  habitId_expr: String_Expr
   """
-  ✨ Generated from Field `HabitLog`.`userId` of type `UUID!`
+  ✨ Generated from Field `HabitLog`.`userId` of type `String!`
   """
-  userId: UUID
+  userId: String
   """
-  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `HabitLog`.`userId` of type `UUID!`)
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `HabitLog`.`userId` of type `String!`)
   """
-  userId_expr: UUID_Expr
+  userId_expr: String_Expr
   """
   ✨ Generated from Field `HabitLog`.`habit` of type `Habit!`
   """
@@ -615,13 +603,13 @@ input HabitLog_Filter {
   """
   id: UUID_Filter
   """
-  ✨ Generated from Field `HabitLog`.`habitId` of type `UUID!`
+  ✨ Generated from Field `HabitLog`.`habitId` of type `String!`
   """
-  habitId: UUID_Filter
+  habitId: String_Filter
   """
-  ✨ Generated from Field `HabitLog`.`userId` of type `UUID!`
+  ✨ Generated from Field `HabitLog`.`userId` of type `String!`
   """
-  userId: UUID_Filter
+  userId: String_Filter
   """
   ✨ Generated from Field `HabitLog`.`habit` of type `Habit!`
   """
@@ -756,11 +744,11 @@ input HabitLog_Order {
   """
   id: OrderDirection
   """
-  ✨ Generated from Field `HabitLog`.`habitId` of type `UUID!`
+  ✨ Generated from Field `HabitLog`.`habitId` of type `String!`
   """
   habitId: OrderDirection
   """
-  ✨ Generated from Field `HabitLog`.`userId` of type `UUID!`
+  ✨ Generated from Field `HabitLog`.`userId` of type `String!`
   """
   userId: OrderDirection
   """
@@ -841,18 +829,6 @@ input Task_Data {
   """
   id_expr: UUID_Expr
   """
-  ✨ Generated from Field `Task`.`userId` of type `UUID!`
-  """
-  userId: UUID
-  """
-  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `Task`.`userId` of type `UUID!`)
-  """
-  userId_expr: UUID_Expr
-  """
-  ✨ Generated from Field `Task`.`user` of type `User!`
-  """
-  user: User_Key
-  """
   ✨ Generated from Field `Task`.`createdAt` of type `Timestamp!`
   """
   createdAt: Timestamp
@@ -916,6 +892,14 @@ input Task_Data {
   ✨ `_expr` server value variant of `priority` (✨ Generated from Field `Task`.`priority` of type `String`)
   """
   priority_expr: String_Expr
+  """
+  ✨ Generated from Field `Task`.`userId` of type `String!`
+  """
+  userId: String
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `Task`.`userId` of type `String!`)
+  """
+  userId_expr: String_Expr
 }
 """
 ✨ Generated filter input type for table 'Task'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -937,14 +921,6 @@ input Task_Filter {
   ✨ Generated from Field `Task`.`id` of type `UUID!`
   """
   id: UUID_Filter
-  """
-  ✨ Generated from Field `Task`.`userId` of type `UUID!`
-  """
-  userId: UUID_Filter
-  """
-  ✨ Generated from Field `Task`.`user` of type `User!`
-  """
-  user: User_Filter
   """
   ✨ Generated from Field `Task`.`createdAt` of type `Timestamp!`
   """
@@ -969,6 +945,10 @@ input Task_Filter {
   ✨ Generated from Field `Task`.`priority` of type `String`
   """
   priority: String_Filter
+  """
+  ✨ Generated from Field `Task`.`userId` of type `String!`
+  """
+  userId: String_Filter
 }
 """
 ✨ Generated first-row input type for table 'Task'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -1091,14 +1071,6 @@ input Task_Order {
   """
   id: OrderDirection
   """
-  ✨ Generated from Field `Task`.`userId` of type `UUID!`
-  """
-  userId: OrderDirection
-  """
-  ✨ Generated from Field `Task`.`user` of type `User!`
-  """
-  user: User_Order
-  """
   ✨ Generated from Field `Task`.`createdAt` of type `Timestamp!`
   """
   createdAt: OrderDirection
@@ -1122,6 +1094,10 @@ input Task_Order {
   ✨ Generated from Field `Task`.`priority` of type `String`
   """
   priority: OrderDirection
+  """
+  ✨ Generated from Field `Task`.`userId` of type `String!`
+  """
+  userId: OrderDirection
   """
   ✨ Generated from Field `Task`.`_count` of type `Int!`
   """
@@ -1180,13 +1156,13 @@ input Task_Order {
 """
 input User_Data {
   """
-  ✨ Generated from Field `User`.`id` of type `UUID!`
+  ✨ Generated from Field `User`.`id` of type `String!`
   """
-  id: UUID
+  id: String
   """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `UUID!`)
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `String!`)
   """
-  id_expr: UUID_Expr
+  id_expr: String_Expr
   """
   ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
   """
@@ -1261,9 +1237,9 @@ input User_Filter {
   """
   _or: [User_Filter!]
   """
-  ✨ Generated from Field `User`.`id` of type `UUID!`
+  ✨ Generated from Field `User`.`id` of type `String!`
   """
-  id: UUID_Filter
+  id: String_Filter
   """
   ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
   """
@@ -1289,17 +1265,9 @@ input User_Filter {
   """
   username: String_Filter
   """
-  ✨ Generated from Field `User`.`habits_on_user` of type `[Habit!]!`
-  """
-  habits_on_user: Habit_ListFilter
-  """
   ✨ Generated from Field `User`.`habitLogs_on_user` of type `[HabitLog!]!`
   """
   habitLogs_on_user: HabitLog_ListFilter
-  """
-  ✨ Generated from Field `User`.`tasks_on_user` of type `[Task!]!`
-  """
-  tasks_on_user: Task_ListFilter
 }
 """
 ✨ Generated first-row input type for table 'User'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -1380,13 +1348,13 @@ input User_Having {
 """
 input User_Key {
   """
-  ✨ Generated from Field `User`.`id` of type `UUID!`
+  ✨ Generated from Field `User`.`id` of type `String!`
   """
-  id: UUID
+  id: String
   """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `UUID!`)
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `String!`)
   """
-  id_expr: UUID_Expr
+  id_expr: String_Expr
 }
 """
 ✨ Generated list filter input type for table 'User'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -1406,7 +1374,7 @@ input User_ListFilter {
 """
 input User_Order {
   """
-  ✨ Generated from Field `User`.`id` of type `UUID!`
+  ✨ Generated from Field `User`.`id` of type `String!`
   """
   id: OrderDirection
   """

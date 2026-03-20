@@ -401,40 +401,6 @@ extend type Task {
 }
 extend type User {
   """
-  ✨ List `Habit` objects in a one-to-many relationship (where `Habit`.`user` is this object).
-  """
-  habits_on_user(
-    """
-    Filter condition to narrow down the query results.
-    """
-    where: Habit_Filter
-
-    """
-    Order the query results by specific fields.
-    """
-    orderBy: [Habit_Order!]
-
-    """
-    Number of rows to skip before starting to return the results.
-    """
-    offset: Int
-
-    """
-    Maximum number of rows to return (defaults to 100 rows).
-    """
-    limit: Int = 100
-
-    """
-    Set to true to return distinct results.
-    """
-    distinct: Boolean = false
-
-    """
-    Filter condition to apply to the groups of aggregate queries.
-    """
-    having: Habit_Having
-  ): [Habit!]! @fdc_generated(from: "Habit.user", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
-  """
   ✨ List `HabitLog` objects in a one-to-many relationship (where `HabitLog`.`user` is this object).
   """
   habitLogs_on_user(
@@ -468,40 +434,6 @@ extend type User {
     """
     having: HabitLog_Having
   ): [HabitLog!]! @fdc_generated(from: "HabitLog.user", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
-  """
-  ✨ List `Task` objects in a one-to-many relationship (where `Task`.`user` is this object).
-  """
-  tasks_on_user(
-    """
-    Filter condition to narrow down the query results.
-    """
-    where: Task_Filter
-
-    """
-    Order the query results by specific fields.
-    """
-    orderBy: [Task_Order!]
-
-    """
-    Number of rows to skip before starting to return the results.
-    """
-    offset: Int
-
-    """
-    Maximum number of rows to return (defaults to 100 rows).
-    """
-    limit: Int = 100
-
-    """
-    Set to true to return distinct results.
-    """
-    distinct: Boolean = false
-
-    """
-    Filter condition to apply to the groups of aggregate queries.
-    """
-    having: Task_Having
-  ): [Task!]! @fdc_generated(from: "Task.user", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
   Implicit metadata field that cannot be written. It provides extra information about query results.
   """

@@ -8,3 +8,28 @@ query GetMyHabits @auth(level: USER) {
     startDate
   }
 }
+
+mutation CreateHabit(
+  $id: String!,
+  $name: String!, 
+  $description: String!,
+  $isHabitMode: Boolean!,
+  $startDate: Timestamp!,
+  $goalDaysPerWeek: Int!,
+  $priority: String!,
+  $colorHex: Float!,
+  $isArchived: Boolean!
+) @auth(level: USER) {
+  habit_insert(data: {
+    id: $id,
+    userId_expr: "auth.uid",
+    name: $name,
+    description: $description,
+    isHabitMode: $isHabitMode,
+    startDate: $startDate,
+    goalDaysPerWeek: $goalDaysPerWeek,
+    priority: $priority,
+    colorHex: $colorHex,
+    isArchived: $isArchived
+  }) 
+}

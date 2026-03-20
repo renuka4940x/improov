@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/dataconnect_generated/generated.dart';
 import 'package:improov/src/presentation/settings/provider/app_settings_notifier.dart';
 import 'package:improov/src/core/routing/router.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,8 +14,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  ExampleConnector.instance.dataConnect.useDataConnectEmulator('192.168.29.254', 9399);
+
   try {
-    //await FirebaseAuth.instance.useAuthEmulator('127.0.0.1', 9099);
     debugPrint("Connected to Firebase Auth Emulator!");
   } catch (e) {
     debugPrint("Failed to connect to Auth Emulator: $e");
