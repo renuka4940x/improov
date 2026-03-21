@@ -1,11 +1,9 @@
 type User @table(key: "id") {
-  id: String!
+  id: String! @col(name: "user_id")
   username: String!
   email: String!
   passwordHash: String!
   createdAt: Timestamp!
-  displayName: String
-  profilePictureUrl: String
 }
 
 type Habit @table(key: "id") {
@@ -22,22 +20,20 @@ type Habit @table(key: "id") {
   reminderTime: Timestamp
   isArchived: Boolean!
   colorHex: Float!
+
+  currentStreak: Int
+  bestStreak: Int
+  completedDays: [String!]
 }
 
-type Task @table {
+type Task @table(key: "id") {
+  id: String!
   userId: String!
   name: String!
-  dueDate: Date!
+  dueDate: Timestamp!
   isCompleted: Boolean!
   createdAt: Timestamp!
   description: String
   priority: String
 }
 
-type HabitLog @table {
-  habit: Habit!
-  user: User!
-  loggedDate: Date!
-  isCompleted: Boolean!
-  createdAt: Timestamp!
-}

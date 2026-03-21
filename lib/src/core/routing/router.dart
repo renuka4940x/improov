@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:improov/src/data/services/auth_service.dart';
 import 'package:improov/src/presentation/auth/auth_screen.dart';
@@ -8,93 +9,103 @@ import 'package:improov/src/presentation/streak/screen/streak_page.dart';
 import 'package:improov/src/core/routing/page_nav.dart';
 import 'package:improov/src/presentation/profile/screen/profile_page.dart';
 
-final _authService = AuthService();
+final authServiceProvider = ChangeNotifierProvider<AuthService>((ref) {
+  return AuthService(ref); 
+});
 
-final appRouter = GoRouter(
-  refreshListenable: _authService,
-  initialLocation: '/',
+// 🚀 1. Wrap the entire router in a Provider so it has access to 'ref'
+final routerProvider = Provider<GoRouter>((ref) {
+  
+  return GoRouter(
+    // 🚀 2. Use ref.watch so GoRouter reacts when AuthService notifies listeners
+    refreshListenable: ref.watch(authServiceProvider),
+    initialLocation: '/',
 
-  redirect: (context, state) {
-    final bool loggedIn = _authService.isAuthenticated;
-    final bool loggingIn = state.matchedLocation == '/auth';
+    redirect: (context, state) {
+      // 🚀 3. Grab the actual SERVICE instance, not the provider itself
+      final authService = ref.read(authServiceProvider);
+      
+      final bool loggedIn = authService.isAuthenticated;
+      final bool loggingIn = state.matchedLocation == '/auth';
 
-    //If not logged in and not on auth page, send to auth page
-    if (!loggedIn) {
-      return '/auth';
-    }
+      // 🚀 4. GATEKEEPER LOGIC
+      // If NOT logged in, send them to /auth
+      if (!loggedIn) {
+        return '/auth';
+      }
 
-    //If logged in and trying to go to auth page, send to home
-    if (loggedIn && loggingIn) {
-      return '/';
-    }
+      // If logged in and trying to go back to /auth, send them home
+      if (loggedIn && loggingIn) {
+        return '/';
+      }
 
-    //Otherwise, stay where you are
-    return null;
-  },
+      return null;
+    },
 
-  routes: [
-    GoRoute(
-      path: '/auth',
-      name: 'auth',
-      builder: (context, state) => const AuthScreen(),
-    ),
+    routes: [
+      GoRoute(
+        path: '/auth',
+        name: 'auth',
+        builder: (context, state) => const AuthScreen(),
+      ),
 
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
-        return PageNav(navigationShell: navigationShell);
-      },
-      branches: [
-        //home
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/',
-              builder: (context, state) => const HomePage(),
-            ),
-          ],
-        ),
-        
-        //calendar
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/calendar',
-              builder: (context, state) => const CalendarPage(),
-            ),
-          ],
-        ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return PageNav(navigationShell: navigationShell);
+        },
+        branches: [
+          // home
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (context, state) => const HomePage(),
+              ),
+            ],
+          ),
+          
+          // calendar
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/calendar',
+                builder: (context, state) => const CalendarPage(),
+              ),
+            ],
+          ),
 
-        //streak
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/streak',
-              builder: (context, state) => const StreakPage(),
-            ),
-          ],
-        ),
+          // streak
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/streak',
+                builder: (context, state) => const StreakPage(),
+              ),
+            ],
+          ),
 
-        //profile
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/profile',
-              builder: (context, state) => const ProfilePage(),
-            ),
-          ],
-        ),
+          // profile
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const ProfilePage(),
+              ),
+            ],
+          ),
 
-        //settings
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/settings',
-              name: 'settings',
-              builder: (context, state) => const SettingsPage(),
-            )
-          ]
-        ),
-      ],
-    ),
-  ],
-);
+          // settings
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/settings',
+                name: 'settings',
+                builder: (context, state) => const SettingsPage(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  );
+});

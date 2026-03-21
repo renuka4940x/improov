@@ -41,6 +41,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsAsync = ref.watch(appSettingsNotifierProvider);
+    final router = ref.watch(routerProvider);
 
     //handles the state
     return settingsAsync.when(
@@ -49,7 +50,7 @@ class MyApp extends ConsumerWidget {
 
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          routerConfig: appRouter,
+          routerConfig: router,
           theme: currentTheme.copyWith(
             textTheme: GoogleFonts.interTextTheme(currentTheme.textTheme),
             primaryTextTheme: GoogleFonts.jostTextTheme(currentTheme.primaryTextTheme),

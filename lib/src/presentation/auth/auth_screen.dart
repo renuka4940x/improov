@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:improov/src/data/services/auth_service.dart';
+import 'package:improov/src/core/routing/router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AuthScreen extends StatefulWidget {
+class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  ConsumerState<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
-  final AuthService _authService = AuthService();
+class _AuthScreenState extends ConsumerState<AuthScreen> {
 
   bool _isLogin = true;
   bool _isLoading = false;
@@ -21,10 +21,12 @@ class _AuthScreenState extends State<AuthScreen> {
   final _nicknameController = TextEditingController();
 
   Future<void> _submitForm() async {
+    final authService = ref.read(authServiceProvider);
+
     setState(() => _isLoading = true);
     try {
       if (_isLogin) {
-        await _authService.logIn(
+        await authService.logIn(
           _emailController.text.trim(),
           _passwordController.text.trim(),
         );
@@ -32,7 +34,7 @@ class _AuthScreenState extends State<AuthScreen> {
         if (_passwordController.text != _confirmPasswordController.text) {
           throw Exception("Passwords do not match!");
         }
-        await _authService.signUp(
+        await authService.signUp(
           _emailController.text.trim(),
           _passwordController.text.trim(),
           _nicknameController.text.trim(),
@@ -46,9 +48,11 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Future<void> _handleGoogleSignIn() async {
+    final authService = ref.read(authServiceProvider);
+
     setState(() => _isLoading = true);
     try {
-      await _authService.signInWithGoogle();
+      await authService.signInWithGoogle();
     } catch (e) {
       if (mounted) _showError("Google Log-In failed.");
     } finally {

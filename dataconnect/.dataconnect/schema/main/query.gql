@@ -24,32 +24,18 @@ extend type Query {
     first: Habit_FirstRow
   ): Habit @fdc_generated(from: "Habit", purpose: QUERY_SINGLE)
   """
-  ✨ Look up a single `HabitLog` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
-  """
-  habitLog(
-    """
-    The unique ID of the object.
-    """
-    id: UUID
-
-    """
-    The key used to identify the object.
-    """
-    key: HabitLog_Key
-
-    """
-    Fetch the first row based on the filters and ordering.
-    """
-    first: HabitLog_FirstRow
-  ): HabitLog @fdc_generated(from: "HabitLog", purpose: QUERY_SINGLE)
-  """
   ✨ Look up a single `Task` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
   """
   task(
     """
     The unique ID of the object.
     """
-    id: UUID
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
 
     """
     The key used to identify the object.
@@ -119,40 +105,6 @@ extend type Query {
     """
     having: Habit_Having
   ): [Habit!]! @fdc_generated(from: "Habit", purpose: QUERY_MULTIPLE)
-  """
-  ✨ List `HabitLog` objects in the table and return selected fields, optionally filtered by `where` conditions
-  """
-  habitLogs(
-    """
-    Filter condition to narrow down the query results.
-    """
-    where: HabitLog_Filter
-
-    """
-    Order the query results by specific fields.
-    """
-    orderBy: [HabitLog_Order!]
-
-    """
-    Number of rows to skip before starting to return the results.
-    """
-    offset: Int
-
-    """
-    Maximum number of rows to return (defaults to 100 rows).
-    """
-    limit: Int = 100
-
-    """
-    Set to true to return distinct results.
-    """
-    distinct: Boolean = false
-
-    """
-    Filter condition to apply to the groups of aggregate queries.
-    """
-    having: HabitLog_Having
-  ): [HabitLog!]! @fdc_generated(from: "HabitLog", purpose: QUERY_MULTIPLE)
   """
   ✨ List `Task` objects in the table and return selected fields, optionally filtered by `where` conditions
   """

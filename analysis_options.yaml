@@ -10,6 +10,7 @@
 analyzer:
   errors:
     deprecated_member_use: ignore
+    non_constant_identifier_names: ignore
     prefer_const_constructors_in_immutables: ignore
   exclude:
     - "**/*.g.dart"

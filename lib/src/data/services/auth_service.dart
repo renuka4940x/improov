@@ -1,16 +1,21 @@
+// ignore_for_file: await_only_futures
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_data_connect/firebase_data_connect.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
-// import 'package:improov/dataconnect/generated/default.dart'; 
+import 'package:improov/dataconnect_generated/generated.dart';
+import 'package:improov/src/data/database/cloud_backup.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  final Ref ref;
   
   User? _currentUser;
 
-  AuthService() {
+  AuthService(this.ref) {
     _auth.authStateChanges().listen((User? user) {
       _currentUser = user;
       notifyListeners();
@@ -20,7 +25,7 @@ class AuthService extends ChangeNotifier {
   User? get currentUser => _currentUser;
   bool get isAuthenticated => _currentUser != null;
 
-  //SIGN UP (Email/Password)
+  //SIGN UP
   Future<UserCredential?> signUp(String email, String password, String username) async {
     try {
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
@@ -30,7 +35,11 @@ class AuthService extends ChangeNotifier {
 
       if (userCredential.user != null) {
         // Sync the new user to Postgres
-        await _syncUserToPostgres(userCredential.user!, username: username);
+        await _syncUserToPostgres(
+          userCredential.user!, 
+          username: username,
+          isPremium: false,
+        );
       }
       return userCredential;
     } catch (e) {
@@ -65,7 +74,10 @@ class AuthService extends ChangeNotifier {
 
       if (userCredential.user != null) {
         // Sync the Google user to Postgres
-        await _syncUserToPostgres(userCredential.user!);
+        await _syncUserToPostgres(
+          userCredential.user!, 
+          isPremium: false
+        );
       }
       return userCredential;
     } catch (e) {
@@ -74,21 +86,30 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  //POSTGRES CLOUD SYNC
-  Future<void> _syncUserToPostgres(User user, {String? username}) async {
+  // POSTGRES CLOUD SYNC & BULK DATA MIGRATION
+  Future<void> _syncUserToPostgres(
+    User user, 
+    {String? username, 
+    required bool isPremium}
+  ) async {
     try {
-      /*
-      await DefaultConnector.instance.createUser(
+      await ExampleConnector.instance.createUser(
         id: user.uid,
         username: username ?? user.displayName ?? "Improover",
         email: user.email ?? "",
         passwordHash: "managed_by_firebase", 
-        createdAt: DateTime.now(),
-      );
-      */
-      debugPrint("✅ User synced to Postgres Cloud!");
+        createdAt: Timestamp.fromJson(DateTime.now().toUtc().toIso8601String()),
+      ).execute();
+      
+      debugPrint("User profile synced to Postgres Cloud!");
+
+      if (isPremium) {
+        debugPrint("💎 Premium detected! Starting bulk migration...");
+        await syncAllLocalDataToCloud(ref); 
+      }
+
     } catch (e) {
-      debugPrint("❌ Cloud Sync Failed: $e");
+      debugPrint("Cloud Sync Failed: $e");
     }
   }
 

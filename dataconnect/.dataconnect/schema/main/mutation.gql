@@ -9,15 +9,6 @@ extend type Mutation {
     data: Habit_Data!
   ): Habit_KeyOutput! @fdc_generated(from: "Habit", purpose: INSERT_SINGLE)
   """
-  ✨ Insert a single `HabitLog` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
-  """
-  habitLog_insert(
-    """
-    Data object to insert into the table.
-    """
-    data: HabitLog_Data!
-  ): HabitLog_KeyOutput! @fdc_generated(from: "HabitLog", purpose: INSERT_SINGLE)
-  """
   ✨ Insert a single `Task` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
   task_insert(
@@ -44,15 +35,6 @@ extend type Mutation {
     """
     data: [Habit_Data!]!
   ): [Habit_KeyOutput!]! @fdc_generated(from: "Habit", purpose: INSERT_MULTIPLE)
-  """
-  ✨ Insert `HabitLog` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
-  """
-  habitLog_insertMany(
-    """
-    List of data objects to insert into the table.
-    """
-    data: [HabitLog_Data!]!
-  ): [HabitLog_KeyOutput!]! @fdc_generated(from: "HabitLog", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert `Task` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -81,15 +63,6 @@ extend type Mutation {
     data: Habit_Data!
   ): Habit_KeyOutput! @fdc_generated(from: "Habit", purpose: UPSERT_SINGLE)
   """
-  ✨ Insert or update a single `HabitLog` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `HabitLog`.
-  """
-  habitLog_upsert(
-    """
-    Data object to insert or update if it already exists.
-    """
-    data: HabitLog_Data!
-  ): HabitLog_KeyOutput! @fdc_generated(from: "HabitLog", purpose: UPSERT_SINGLE)
-  """
   ✨ Insert or update a single `Task` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Task`.
   """
   task_upsert(
@@ -116,15 +89,6 @@ extend type Mutation {
     """
     data: [Habit_Data!]!
   ): [Habit_KeyOutput!]! @fdc_generated(from: "Habit", purpose: UPSERT_MULTIPLE)
-  """
-  ✨ Insert or update `HabitLog` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `HabitLog`.
-  """
-  habitLog_upsertMany(
-    """
-    List of data objects to insert or update if it already exists.
-    """
-    data: [HabitLog_Data!]!
-  ): [HabitLog_KeyOutput!]! @fdc_generated(from: "HabitLog", purpose: UPSERT_MULTIPLE)
   """
   ✨ Insert or update `Task` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Task`.
   """
@@ -173,37 +137,18 @@ extend type Mutation {
     data: Habit_Data!
   ): Habit_KeyOutput @fdc_generated(from: "Habit", purpose: UPDATE_SINGLE)
   """
-  ✨ Update a single `HabitLog` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `HabitLog` or `null` if not found.
-  """
-  habitLog_update(
-    """
-    The unique ID of the object.
-    """
-    id: UUID
-
-    """
-    The key used to identify the object.
-    """
-    key: HabitLog_Key
-
-    """
-    Fetch the first row based on the filters and ordering.
-    """
-    first: HabitLog_FirstRow
-
-    """
-    Data object containing fields to be updated.
-    """
-    data: HabitLog_Data!
-  ): HabitLog_KeyOutput @fdc_generated(from: "HabitLog", purpose: UPDATE_SINGLE)
-  """
   ✨ Update a single `Task` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Task` or `null` if not found.
   """
   task_update(
     """
     The unique ID of the object.
     """
-    id: UUID
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
 
     """
     The key used to identify the object.
@@ -269,25 +214,6 @@ extend type Mutation {
     data: Habit_Data!
   ): Int! @fdc_generated(from: "Habit", purpose: UPDATE_MULTIPLE)
   """
-  ✨ Update `HabitLog` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
-  """
-  habitLog_updateMany(
-    """
-    Filter condition to specify which rows to update.
-    """
-    where: HabitLog_Filter
-
-    """
-    Set to true to update all rows.
-    """
-    all: Boolean = false
-
-    """
-    Data object containing fields to update.
-    """
-    data: HabitLog_Data!
-  ): Int! @fdc_generated(from: "HabitLog", purpose: UPDATE_MULTIPLE)
-  """
   ✨ Update `Task` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
   task_updateMany(
@@ -350,32 +276,18 @@ extend type Mutation {
     first: Habit_FirstRow
   ): Habit_KeyOutput @fdc_generated(from: "Habit", purpose: DELETE_SINGLE)
   """
-  ✨ Delete a single `HabitLog` based on `id`, `key` or `first` and return its key (or `null` if not found).
-  """
-  habitLog_delete(
-    """
-    The unique ID of the object.
-    """
-    id: UUID
-
-    """
-    The key used to identify the object.
-    """
-    key: HabitLog_Key
-
-    """
-    Fetch the first row based on the filters and ordering.
-    """
-    first: HabitLog_FirstRow
-  ): HabitLog_KeyOutput @fdc_generated(from: "HabitLog", purpose: DELETE_SINGLE)
-  """
   ✨ Delete a single `Task` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
   task_delete(
     """
     The unique ID of the object.
     """
-    id: UUID
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
 
     """
     The key used to identify the object.
@@ -425,20 +337,6 @@ extend type Mutation {
     """
     all: Boolean = false
   ): Int! @fdc_generated(from: "Habit", purpose: DELETE_MULTIPLE)
-  """
-  ✨ Delete `HabitLog` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
-  """
-  habitLog_deleteMany(
-    """
-    Filter condition to specify which rows to delete.
-    """
-    where: HabitLog_Filter
-
-    """
-    Set to true to delete all rows.
-    """
-    all: Boolean = false
-  ): Int! @fdc_generated(from: "HabitLog", purpose: DELETE_MULTIPLE)
   """
   ✨ Delete `Task` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """

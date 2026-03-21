@@ -67,7 +67,7 @@ class HabitNotifier extends _$HabitNotifier {
       if (a.isCompleted != b.isCompleted) return a.isCompleted ? 1 : -1;
 
       double getPressure(Habit h) {
-        if (h.goalDaysPerWeek == 0) return 0.0; // Avoid division by zero
+        if (h.goalDaysPerWeek == 0) return 0.0;
         if (h.weeklyCount >= h.goalDaysPerWeek) return 0.0;
         return (h.goalDaysPerWeek - h.weeklyCount) / daysLeftInWeek.toDouble();
       }
@@ -161,7 +161,19 @@ class HabitNotifier extends _$HabitNotifier {
       
       ref.invalidateSelf();
       
-      // TODO: Firebase Sync - Push updated completedDays list to cloud
+      try {
+        await ExampleConnector.instance.updateHabitCompletion(
+          id: habit.uuid,
+          currentStreak: habit.currentStreak,
+          bestStreak: habit.bestStreak,
+          completedDays: habit.completedDays
+            .map((d) => d.toIso8601String()).toList(),
+        ).execute();
+        
+        debugPrint("Successfully synced completion to cloud!");
+      } catch (e) {
+        debugPrint("Update Habit Completion Error (Completion): $e");
+      }
     }
   }
 
@@ -192,7 +204,20 @@ class HabitNotifier extends _$HabitNotifier {
 
       ref.invalidateSelf();
       
-      // TODO: Firebase Sync - Update metadata in cloud
+      try {
+        await ExampleConnector.instance.updateHabit(
+          id: existingHabit.uuid,
+          name: name,
+          description: description,
+          goalDaysPerWeek: goal,
+          priority: priority.name,
+          colorHex: finalColor.toDouble(),
+        ).execute();
+        
+        debugPrint("Successfully updated habit in the cloud!");
+      } catch (e) {
+        debugPrint("Update Habit Sync Error (Update): $e");
+      }
     } else {
       await addHabit(
         name, 
@@ -211,7 +236,6 @@ class HabitNotifier extends _$HabitNotifier {
   Future<void> deleteHabit(int id) async {
     final service = await ref.read(isarDatabaseProvider.future);
     
-    // Grab the UUID before deleting so we can tell Firebase to delete it too
     final habit = await service.db.habits.get(id);
     final String? remoteId = habit?.uuid;
 
@@ -219,7 +243,14 @@ class HabitNotifier extends _$HabitNotifier {
     ref.invalidateSelf();
     
     if (remoteId != null) {
-       // TODO: Firebase Sync - Call delete mutation using remoteId
+      try {
+         await ExampleConnector.instance.deleteHabit(
+           id: remoteId
+         ).execute();
+         debugPrint("Successfully deleted habit in the cloud!");
+       } catch (e) {
+         debugPrint("Delete Habit Sync Error (Delete): $e");
+       }
     }
   }
 }

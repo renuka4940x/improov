@@ -1,3 +1,20 @@
+# --- CREATE USER PROFILE ---
+mutation CreateUser(
+  $id: String!,
+  $username: String!,
+  $email: String!,
+  $passwordHash: String!,
+  $createdAt: Timestamp!
+) @auth(level: PUBLIC) {
+  user_insert(data: {
+    id: $id,
+    username: $username,
+    email: $email,
+    passwordHash: $passwordHash,
+    createdAt: $createdAt
+  })
+}
+
 query GetMyHabits @auth(level: USER) {
   habits(where: {userId: {eq_expr: "auth.uid"}}) {
     id
@@ -9,6 +26,7 @@ query GetMyHabits @auth(level: USER) {
   }
 }
 
+# --- CREATE HABIT ---
 mutation CreateHabit(
   $id: String!,
   $name: String!, 
@@ -32,4 +50,95 @@ mutation CreateHabit(
     colorHex: $colorHex,
     isArchived: $isArchived
   }) 
+}
+
+# --- UPDATE HABIT ---
+mutation UpdateHabit(
+  $id: String!,
+  $name: String!, 
+  $description: String!,
+  $goalDaysPerWeek: Int!,
+  $priority: String!,
+  $colorHex: Float!
+) @auth(level: USER) {
+  habit_update(
+    id: $id, 
+    data: {
+      name: $name,
+      description: $description,
+      goalDaysPerWeek: $goalDaysPerWeek,
+      priority: $priority,
+      colorHex: $colorHex
+    }
+  )
+}
+
+# --- UPDATE COMPLETION & STREAKS ---
+mutation UpdateHabitCompletion(
+  $id: String!,
+  $currentStreak: Int!,
+  $bestStreak: Int!,
+  $completedDays: [String!]!
+) @auth(level: USER) {
+  habit_update(
+    id: $id, 
+    data: {
+      currentStreak: $currentStreak,
+      bestStreak: $bestStreak,
+      completedDays: $completedDays
+    }
+  )
+}
+
+# --- DELETE HABIT ---
+mutation DeleteHabit($id: String!) @auth(level: USER) {
+  habit_delete(id: $id)
+}
+
+# --- CREATE TASK ---
+mutation CreateTask(
+  $id: String!,
+  $name: String!, 
+  $description: String!,
+  $dueDate: Timestamp!,
+  $isCompleted: Boolean!,
+  $createdAt: Timestamp!,
+  $priority: String!
+) @auth(level: USER) {
+  task_insert(data: {
+    id: $id,
+    userId_expr: "auth.uid", # Secure token mapping
+    name: $name,
+    description: $description,
+    dueDate: $dueDate,
+    isCompleted: $isCompleted,
+    createdAt: $createdAt,
+    priority: $priority
+  }) 
+}
+
+# --- UPDATE TASK ---
+mutation UpdateTask(
+  $id: String!,
+  $name: String!, 
+  $description: String!,
+  $dueDate: Timestamp!,
+  $isCompleted: Boolean!,
+  $priority: String!
+) @auth(level: USER) {
+  task_update(
+    id: $id, 
+    data: {
+      name: $name,
+      description: $description,
+      dueDate: $dueDate,
+      isCompleted: $isCompleted,
+      priority: $priority
+    }
+  )
+}
+
+# --- DELETE TASK ---
+mutation DeleteTask($id: String!) @auth(level: USER) {
+  task_delete(id: $id)
 }

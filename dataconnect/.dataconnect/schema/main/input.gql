@@ -5,12 +5,6 @@ It has the same format as `Habit_Key`, but is only used as mutation return value
 """
 scalar Habit_KeyOutput
 """
-✨ `HabitLog_KeyOutput` returns the primary key fields of table type `HabitLog`.
-
-It has the same format as `HabitLog_Key`, but is only used as mutation return value.
-"""
-scalar HabitLog_KeyOutput
-"""
 ✨ `Task_KeyOutput` returns the primary key fields of table type `Task`.
 
 It has the same format as `Task_Key`, but is only used as mutation return value.
@@ -35,6 +29,18 @@ input Habit_Data {
   """
   id_expr: String_Expr
   """
+  ✨ Generated from Field `Habit`.`bestStreak` of type `Int`
+  """
+  bestStreak: Int
+  """
+  ✨ `_expr` server value variant of `bestStreak` (✨ Generated from Field `Habit`.`bestStreak` of type `Int`)
+  """
+  bestStreak_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `bestStreak` (✨ Generated from Field `Habit`.`bestStreak` of type `Int`)
+  """
+  bestStreak_update: [Int_Update!]
+  """
   ✨ Generated from Field `Habit`.`colorHex` of type `Float!`
   """
   colorHex: Float
@@ -46,6 +52,26 @@ input Habit_Data {
   ✨ `_update` server value variant of `colorHex` (✨ Generated from Field `Habit`.`colorHex` of type `Float!`)
   """
   colorHex_update: [Float_Update!]
+  """
+  ✨ Generated from Field `Habit`.`completedDays` of type `[String!]`
+  """
+  completedDays: [String!]
+  """
+  ✨ `_update` server value variant of `completedDays` (✨ Generated from Field `Habit`.`completedDays` of type `[String!]`)
+  """
+  completedDays_update: [String_ListUpdate!]
+  """
+  ✨ Generated from Field `Habit`.`currentStreak` of type `Int`
+  """
+  currentStreak: Int
+  """
+  ✨ `_expr` server value variant of `currentStreak` (✨ Generated from Field `Habit`.`currentStreak` of type `Int`)
+  """
+  currentStreak_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `currentStreak` (✨ Generated from Field `Habit`.`currentStreak` of type `Int`)
+  """
+  currentStreak_update: [Int_Update!]
   """
   ✨ Generated from Field `Habit`.`description` of type `String!`
   """
@@ -160,9 +186,21 @@ input Habit_Filter {
   """
   id: String_Filter
   """
+  ✨ Generated from Field `Habit`.`bestStreak` of type `Int`
+  """
+  bestStreak: Int_Filter
+  """
   ✨ Generated from Field `Habit`.`colorHex` of type `Float!`
   """
   colorHex: Float_Filter
+  """
+  ✨ Generated from Field `Habit`.`completedDays` of type `[String!]`
+  """
+  completedDays: String_ListFilter
+  """
+  ✨ Generated from Field `Habit`.`currentStreak` of type `Int`
+  """
+  currentStreak: Int_Filter
   """
   ✨ Generated from Field `Habit`.`description` of type `String!`
   """
@@ -199,10 +237,6 @@ input Habit_Filter {
   ✨ Generated from Field `Habit`.`userId` of type `String!`
   """
   userId: String_Filter
-  """
-  ✨ Generated from Field `Habit`.`habitLogs_on_habit` of type `[HabitLog!]!`
-  """
-  habitLogs_on_habit: HabitLog_ListFilter
 }
 """
 ✨ Generated first-row input type for table 'Habit'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -242,9 +276,17 @@ input Habit_Having {
   """
   _count: Int_Filter
   """
+  ✨ Generated from Field `Habit`.`bestStreak_count` of type `Int!`
+  """
+  bestStreak_count: Int_Filter
+  """
   ✨ Generated from Field `Habit`.`colorHex_count` of type `Int!`
   """
   colorHex_count: Int_Filter
+  """
+  ✨ Generated from Field `Habit`.`currentStreak_count` of type `Int!`
+  """
+  currentStreak_count: Int_Filter
   """
   ✨ Generated from Field `Habit`.`description_count` of type `Int!`
   """
@@ -286,25 +328,49 @@ input Habit_Having {
   """
   userId_count: Int_Filter
   """
+  ✨ Generated from Field `Habit`.`bestStreak_sum` of type `Int`
+  """
+  bestStreak_sum: Int_Filter
+  """
   ✨ Generated from Field `Habit`.`colorHex_sum` of type `Float`
   """
   colorHex_sum: Float_Filter
+  """
+  ✨ Generated from Field `Habit`.`currentStreak_sum` of type `Int`
+  """
+  currentStreak_sum: Int_Filter
   """
   ✨ Generated from Field `Habit`.`goalDaysPerWeek_sum` of type `Int`
   """
   goalDaysPerWeek_sum: Int_Filter
   """
+  ✨ Generated from Field `Habit`.`bestStreak_avg` of type `Float`
+  """
+  bestStreak_avg: Float_Filter
+  """
   ✨ Generated from Field `Habit`.`colorHex_avg` of type `Float`
   """
   colorHex_avg: Float_Filter
+  """
+  ✨ Generated from Field `Habit`.`currentStreak_avg` of type `Float`
+  """
+  currentStreak_avg: Float_Filter
   """
   ✨ Generated from Field `Habit`.`goalDaysPerWeek_avg` of type `Float`
   """
   goalDaysPerWeek_avg: Float_Filter
   """
+  ✨ Generated from Field `Habit`.`bestStreak_min` of type `Int`
+  """
+  bestStreak_min: Int_Filter
+  """
   ✨ Generated from Field `Habit`.`colorHex_min` of type `Float`
   """
   colorHex_min: Float_Filter
+  """
+  ✨ Generated from Field `Habit`.`currentStreak_min` of type `Int`
+  """
+  currentStreak_min: Int_Filter
   """
   ✨ Generated from Field `Habit`.`goalDaysPerWeek_min` of type `Int`
   """
@@ -318,9 +384,17 @@ input Habit_Having {
   """
   startDate_min: Timestamp_Filter
   """
+  ✨ Generated from Field `Habit`.`bestStreak_max` of type `Int`
+  """
+  bestStreak_max: Int_Filter
+  """
   ✨ Generated from Field `Habit`.`colorHex_max` of type `Float`
   """
   colorHex_max: Float_Filter
+  """
+  ✨ Generated from Field `Habit`.`currentStreak_max` of type `Int`
+  """
+  currentStreak_max: Int_Filter
   """
   ✨ Generated from Field `Habit`.`goalDaysPerWeek_max` of type `Int`
   """
@@ -369,9 +443,17 @@ input Habit_Order {
   """
   id: OrderDirection
   """
+  ✨ Generated from Field `Habit`.`bestStreak` of type `Int`
+  """
+  bestStreak: OrderDirection
+  """
   ✨ Generated from Field `Habit`.`colorHex` of type `Float!`
   """
   colorHex: OrderDirection
+  """
+  ✨ Generated from Field `Habit`.`currentStreak` of type `Int`
+  """
+  currentStreak: OrderDirection
   """
   ✨ Generated from Field `Habit`.`description` of type `String!`
   """
@@ -413,9 +495,17 @@ input Habit_Order {
   """
   _count: OrderDirection
   """
+  ✨ Generated from Field `Habit`.`bestStreak_count` of type `Int!`
+  """
+  bestStreak_count: OrderDirection
+  """
   ✨ Generated from Field `Habit`.`colorHex_count` of type `Int!`
   """
   colorHex_count: OrderDirection
+  """
+  ✨ Generated from Field `Habit`.`currentStreak_count` of type `Int!`
+  """
+  currentStreak_count: OrderDirection
   """
   ✨ Generated from Field `Habit`.`description_count` of type `Int!`
   """
@@ -457,25 +547,49 @@ input Habit_Order {
   """
   userId_count: OrderDirection
   """
+  ✨ Generated from Field `Habit`.`bestStreak_sum` of type `Int`
+  """
+  bestStreak_sum: OrderDirection
+  """
   ✨ Generated from Field `Habit`.`colorHex_sum` of type `Float`
   """
   colorHex_sum: OrderDirection
+  """
+  ✨ Generated from Field `Habit`.`currentStreak_sum` of type `Int`
+  """
+  currentStreak_sum: OrderDirection
   """
   ✨ Generated from Field `Habit`.`goalDaysPerWeek_sum` of type `Int`
   """
   goalDaysPerWeek_sum: OrderDirection
   """
+  ✨ Generated from Field `Habit`.`bestStreak_avg` of type `Float`
+  """
+  bestStreak_avg: OrderDirection
+  """
   ✨ Generated from Field `Habit`.`colorHex_avg` of type `Float`
   """
   colorHex_avg: OrderDirection
+  """
+  ✨ Generated from Field `Habit`.`currentStreak_avg` of type `Float`
+  """
+  currentStreak_avg: OrderDirection
   """
   ✨ Generated from Field `Habit`.`goalDaysPerWeek_avg` of type `Float`
   """
   goalDaysPerWeek_avg: OrderDirection
   """
+  ✨ Generated from Field `Habit`.`bestStreak_min` of type `Int`
+  """
+  bestStreak_min: OrderDirection
+  """
   ✨ Generated from Field `Habit`.`colorHex_min` of type `Float`
   """
   colorHex_min: OrderDirection
+  """
+  ✨ Generated from Field `Habit`.`currentStreak_min` of type `Int`
+  """
+  currentStreak_min: OrderDirection
   """
   ✨ Generated from Field `Habit`.`goalDaysPerWeek_min` of type `Int`
   """
@@ -489,9 +603,17 @@ input Habit_Order {
   """
   startDate_min: OrderDirection
   """
+  ✨ Generated from Field `Habit`.`bestStreak_max` of type `Int`
+  """
+  bestStreak_max: OrderDirection
+  """
   ✨ Generated from Field `Habit`.`colorHex_max` of type `Float`
   """
   colorHex_max: OrderDirection
+  """
+  ✨ Generated from Field `Habit`.`currentStreak_max` of type `Int`
+  """
+  currentStreak_max: OrderDirection
   """
   ✨ Generated from Field `Habit`.`goalDaysPerWeek_max` of type `Int`
   """
@@ -506,328 +628,17 @@ input Habit_Order {
   startDate_max: OrderDirection
 }
 """
-✨ Generated data input type for table 'HabitLog'. It includes all necessary fields for creating or upserting rows into table.
-"""
-input HabitLog_Data {
-  """
-  ✨ Generated from Field `HabitLog`.`id` of type `UUID!`
-  """
-  id: UUID
-  """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `HabitLog`.`id` of type `UUID!`)
-  """
-  id_expr: UUID_Expr
-  """
-  ✨ Generated from Field `HabitLog`.`habitId` of type `String!`
-  """
-  habitId: String
-  """
-  ✨ `_expr` server value variant of `habitId` (✨ Generated from Field `HabitLog`.`habitId` of type `String!`)
-  """
-  habitId_expr: String_Expr
-  """
-  ✨ Generated from Field `HabitLog`.`userId` of type `String!`
-  """
-  userId: String
-  """
-  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `HabitLog`.`userId` of type `String!`)
-  """
-  userId_expr: String_Expr
-  """
-  ✨ Generated from Field `HabitLog`.`habit` of type `Habit!`
-  """
-  habit: Habit_Key
-  """
-  ✨ Generated from Field `HabitLog`.`user` of type `User!`
-  """
-  user: User_Key
-  """
-  ✨ Generated from Field `HabitLog`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `HabitLog`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `HabitLog`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_time: Timestamp_Relative
-  """
-  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `HabitLog`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_update: [Timestamp_Update!]
-  """
-  ✨ Generated from Field `HabitLog`.`isCompleted` of type `Boolean!`
-  """
-  isCompleted: Boolean
-  """
-  ✨ `_expr` server value variant of `isCompleted` (✨ Generated from Field `HabitLog`.`isCompleted` of type `Boolean!`)
-  """
-  isCompleted_expr: Boolean_Expr
-  """
-  ✨ Generated from Field `HabitLog`.`loggedDate` of type `Date!`
-  """
-  loggedDate: Date
-  """
-  ✨ `_date` server value variant of `loggedDate` (✨ Generated from Field `HabitLog`.`loggedDate` of type `Date!`)
-  """
-  loggedDate_date: Date_Relative
-  """
-  ✨ `_expr` server value variant of `loggedDate` (✨ Generated from Field `HabitLog`.`loggedDate` of type `Date!`)
-  """
-  loggedDate_expr: Date_Expr
-  """
-  ✨ `_update` server value variant of `loggedDate` (✨ Generated from Field `HabitLog`.`loggedDate` of type `Date!`)
-  """
-  loggedDate_update: [Date_Update!]
-}
-"""
-✨ Generated filter input type for table 'HabitLog'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
-"""
-input HabitLog_Filter {
-  """
-  Apply multiple filter conditions using `AND` logic.
-  """
-  _and: [HabitLog_Filter!]
-  """
-  Negate the result of the provided filter condition.
-  """
-  _not: HabitLog_Filter
-  """
-  Apply multiple filter conditions using `OR` logic.
-  """
-  _or: [HabitLog_Filter!]
-  """
-  ✨ Generated from Field `HabitLog`.`id` of type `UUID!`
-  """
-  id: UUID_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`habitId` of type `String!`
-  """
-  habitId: String_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`userId` of type `String!`
-  """
-  userId: String_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`habit` of type `Habit!`
-  """
-  habit: Habit_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`user` of type `User!`
-  """
-  user: User_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`isCompleted` of type `Boolean!`
-  """
-  isCompleted: Boolean_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`loggedDate` of type `Date!`
-  """
-  loggedDate: Date_Filter
-}
-"""
-✨ Generated first-row input type for table 'HabitLog'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
-"""
-input HabitLog_FirstRow {
-  """
-  Order the result by the specified fields.
-  """
-  orderBy: [HabitLog_Order!]
-  """
-  Filters rows based on the specified conditions.
-  """
-  where: HabitLog_Filter
-}
-"""
-✨ Generated having input type for table 'HabitLog'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
-"""
-input HabitLog_Having {
-  """
-  Apply multiple Having conditions using `AND` logic.
-  """
-  _and: [HabitLog_Having!]
-  """
-  Whether to apply DISTINCT to the aggregate function.
-  """
-  _distinct: Boolean
-  """
-  Negate the result of the provided Having condition.
-  """
-  _not: HabitLog_Having
-  """
-  Apply multiple Having conditions using `OR` logic.
-  """
-  _or: [HabitLog_Having!]
-  """
-  ✨ Generated from Field `HabitLog`.`_count` of type `Int!`
-  """
-  _count: Int_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`createdAt_count` of type `Int!`
-  """
-  createdAt_count: Int_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`habitId_count` of type `Int!`
-  """
-  habitId_count: Int_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`id_count` of type `Int!`
-  """
-  id_count: Int_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`isCompleted_count` of type `Int!`
-  """
-  isCompleted_count: Int_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`loggedDate_count` of type `Int!`
-  """
-  loggedDate_count: Int_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`userId_count` of type `Int!`
-  """
-  userId_count: Int_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`createdAt_min` of type `Timestamp`
-  """
-  createdAt_min: Timestamp_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`loggedDate_min` of type `Date`
-  """
-  loggedDate_min: Date_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`createdAt_max` of type `Timestamp`
-  """
-  createdAt_max: Timestamp_Filter
-  """
-  ✨ Generated from Field `HabitLog`.`loggedDate_max` of type `Date`
-  """
-  loggedDate_max: Date_Filter
-}
-"""
-✨ Generated key input type for table 'HabitLog'. It represents the primary key fields used to uniquely identify a row in the table.
-"""
-input HabitLog_Key {
-  """
-  ✨ Generated from Field `HabitLog`.`id` of type `UUID!`
-  """
-  id: UUID
-  """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `HabitLog`.`id` of type `UUID!`)
-  """
-  id_expr: UUID_Expr
-}
-"""
-✨ Generated list filter input type for table 'HabitLog'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
-"""
-input HabitLog_ListFilter {
-  """
-  The desired number of objects that match the condition (defaults to at least one).
-  """
-  count: Int_Filter = {gt:0}
-  """
-  Condition of the related objects to filter for.
-  """
-  exist: HabitLog_Filter
-}
-"""
-✨ Generated order input type for table 'HabitLog'. This input defines the sorting order of rows in query results based on one or more fields.
-"""
-input HabitLog_Order {
-  """
-  ✨ Generated from Field `HabitLog`.`id` of type `UUID!`
-  """
-  id: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`habitId` of type `String!`
-  """
-  habitId: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`userId` of type `String!`
-  """
-  userId: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`habit` of type `Habit!`
-  """
-  habit: Habit_Order
-  """
-  ✨ Generated from Field `HabitLog`.`user` of type `User!`
-  """
-  user: User_Order
-  """
-  ✨ Generated from Field `HabitLog`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`isCompleted` of type `Boolean!`
-  """
-  isCompleted: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`loggedDate` of type `Date!`
-  """
-  loggedDate: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`_count` of type `Int!`
-  """
-  _count: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`createdAt_count` of type `Int!`
-  """
-  createdAt_count: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`habitId_count` of type `Int!`
-  """
-  habitId_count: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`id_count` of type `Int!`
-  """
-  id_count: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`isCompleted_count` of type `Int!`
-  """
-  isCompleted_count: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`loggedDate_count` of type `Int!`
-  """
-  loggedDate_count: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`userId_count` of type `Int!`
-  """
-  userId_count: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`createdAt_min` of type `Timestamp`
-  """
-  createdAt_min: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`loggedDate_min` of type `Date`
-  """
-  loggedDate_min: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`createdAt_max` of type `Timestamp`
-  """
-  createdAt_max: OrderDirection
-  """
-  ✨ Generated from Field `HabitLog`.`loggedDate_max` of type `Date`
-  """
-  loggedDate_max: OrderDirection
-}
-"""
 ✨ Generated data input type for table 'Task'. It includes all necessary fields for creating or upserting rows into table.
 """
 input Task_Data {
   """
-  ✨ Generated from Field `Task`.`id` of type `UUID!`
+  ✨ Generated from Field `Task`.`id` of type `String!`
   """
-  id: UUID
+  id: String
   """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Task`.`id` of type `UUID!`)
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Task`.`id` of type `String!`)
   """
-  id_expr: UUID_Expr
+  id_expr: String_Expr
   """
   ✨ Generated from Field `Task`.`createdAt` of type `Timestamp!`
   """
@@ -853,21 +664,21 @@ input Task_Data {
   """
   description_expr: String_Expr
   """
-  ✨ Generated from Field `Task`.`dueDate` of type `Date!`
+  ✨ Generated from Field `Task`.`dueDate` of type `Timestamp!`
   """
-  dueDate: Date
+  dueDate: Timestamp
   """
-  ✨ `_date` server value variant of `dueDate` (✨ Generated from Field `Task`.`dueDate` of type `Date!`)
+  ✨ `_expr` server value variant of `dueDate` (✨ Generated from Field `Task`.`dueDate` of type `Timestamp!`)
   """
-  dueDate_date: Date_Relative
+  dueDate_expr: Timestamp_Expr
   """
-  ✨ `_expr` server value variant of `dueDate` (✨ Generated from Field `Task`.`dueDate` of type `Date!`)
+  ✨ `_time` server value variant of `dueDate` (✨ Generated from Field `Task`.`dueDate` of type `Timestamp!`)
   """
-  dueDate_expr: Date_Expr
+  dueDate_time: Timestamp_Relative
   """
-  ✨ `_update` server value variant of `dueDate` (✨ Generated from Field `Task`.`dueDate` of type `Date!`)
+  ✨ `_update` server value variant of `dueDate` (✨ Generated from Field `Task`.`dueDate` of type `Timestamp!`)
   """
-  dueDate_update: [Date_Update!]
+  dueDate_update: [Timestamp_Update!]
   """
   ✨ Generated from Field `Task`.`isCompleted` of type `Boolean!`
   """
@@ -918,9 +729,9 @@ input Task_Filter {
   """
   _or: [Task_Filter!]
   """
-  ✨ Generated from Field `Task`.`id` of type `UUID!`
+  ✨ Generated from Field `Task`.`id` of type `String!`
   """
-  id: UUID_Filter
+  id: String_Filter
   """
   ✨ Generated from Field `Task`.`createdAt` of type `Timestamp!`
   """
@@ -930,9 +741,9 @@ input Task_Filter {
   """
   description: String_Filter
   """
-  ✨ Generated from Field `Task`.`dueDate` of type `Date!`
+  ✨ Generated from Field `Task`.`dueDate` of type `Timestamp!`
   """
-  dueDate: Date_Filter
+  dueDate: Timestamp_Filter
   """
   ✨ Generated from Field `Task`.`isCompleted` of type `Boolean!`
   """
@@ -1024,30 +835,30 @@ input Task_Having {
   """
   createdAt_min: Timestamp_Filter
   """
-  ✨ Generated from Field `Task`.`dueDate_min` of type `Date`
+  ✨ Generated from Field `Task`.`dueDate_min` of type `Timestamp`
   """
-  dueDate_min: Date_Filter
+  dueDate_min: Timestamp_Filter
   """
   ✨ Generated from Field `Task`.`createdAt_max` of type `Timestamp`
   """
   createdAt_max: Timestamp_Filter
   """
-  ✨ Generated from Field `Task`.`dueDate_max` of type `Date`
+  ✨ Generated from Field `Task`.`dueDate_max` of type `Timestamp`
   """
-  dueDate_max: Date_Filter
+  dueDate_max: Timestamp_Filter
 }
 """
 ✨ Generated key input type for table 'Task'. It represents the primary key fields used to uniquely identify a row in the table.
 """
 input Task_Key {
   """
-  ✨ Generated from Field `Task`.`id` of type `UUID!`
+  ✨ Generated from Field `Task`.`id` of type `String!`
   """
-  id: UUID
+  id: String
   """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Task`.`id` of type `UUID!`)
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Task`.`id` of type `String!`)
   """
-  id_expr: UUID_Expr
+  id_expr: String_Expr
 }
 """
 ✨ Generated list filter input type for table 'Task'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -1067,7 +878,7 @@ input Task_ListFilter {
 """
 input Task_Order {
   """
-  ✨ Generated from Field `Task`.`id` of type `UUID!`
+  ✨ Generated from Field `Task`.`id` of type `String!`
   """
   id: OrderDirection
   """
@@ -1079,7 +890,7 @@ input Task_Order {
   """
   description: OrderDirection
   """
-  ✨ Generated from Field `Task`.`dueDate` of type `Date!`
+  ✨ Generated from Field `Task`.`dueDate` of type `Timestamp!`
   """
   dueDate: OrderDirection
   """
@@ -1139,7 +950,7 @@ input Task_Order {
   """
   createdAt_min: OrderDirection
   """
-  ✨ Generated from Field `Task`.`dueDate_min` of type `Date`
+  ✨ Generated from Field `Task`.`dueDate_min` of type `Timestamp`
   """
   dueDate_min: OrderDirection
   """
@@ -1147,7 +958,7 @@ input Task_Order {
   """
   createdAt_max: OrderDirection
   """
-  ✨ Generated from Field `Task`.`dueDate_max` of type `Date`
+  ✨ Generated from Field `Task`.`dueDate_max` of type `Timestamp`
   """
   dueDate_max: OrderDirection
 }
@@ -1180,14 +991,6 @@ input User_Data {
   """
   createdAt_update: [Timestamp_Update!]
   """
-  ✨ Generated from Field `User`.`displayName` of type `String`
-  """
-  displayName: String
-  """
-  ✨ `_expr` server value variant of `displayName` (✨ Generated from Field `User`.`displayName` of type `String`)
-  """
-  displayName_expr: String_Expr
-  """
   ✨ Generated from Field `User`.`email` of type `String!`
   """
   email: String
@@ -1203,14 +1006,6 @@ input User_Data {
   ✨ `_expr` server value variant of `passwordHash` (✨ Generated from Field `User`.`passwordHash` of type `String!`)
   """
   passwordHash_expr: String_Expr
-  """
-  ✨ Generated from Field `User`.`profilePictureUrl` of type `String`
-  """
-  profilePictureUrl: String
-  """
-  ✨ `_expr` server value variant of `profilePictureUrl` (✨ Generated from Field `User`.`profilePictureUrl` of type `String`)
-  """
-  profilePictureUrl_expr: String_Expr
   """
   ✨ Generated from Field `User`.`username` of type `String!`
   """
@@ -1245,10 +1040,6 @@ input User_Filter {
   """
   createdAt: Timestamp_Filter
   """
-  ✨ Generated from Field `User`.`displayName` of type `String`
-  """
-  displayName: String_Filter
-  """
   ✨ Generated from Field `User`.`email` of type `String!`
   """
   email: String_Filter
@@ -1257,17 +1048,9 @@ input User_Filter {
   """
   passwordHash: String_Filter
   """
-  ✨ Generated from Field `User`.`profilePictureUrl` of type `String`
-  """
-  profilePictureUrl: String_Filter
-  """
   ✨ Generated from Field `User`.`username` of type `String!`
   """
   username: String_Filter
-  """
-  ✨ Generated from Field `User`.`habitLogs_on_user` of type `[HabitLog!]!`
-  """
-  habitLogs_on_user: HabitLog_ListFilter
 }
 """
 ✨ Generated first-row input type for table 'User'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -1311,10 +1094,6 @@ input User_Having {
   """
   createdAt_count: Int_Filter
   """
-  ✨ Generated from Field `User`.`displayName_count` of type `Int!`
-  """
-  displayName_count: Int_Filter
-  """
   ✨ Generated from Field `User`.`email_count` of type `Int!`
   """
   email_count: Int_Filter
@@ -1326,10 +1105,6 @@ input User_Having {
   ✨ Generated from Field `User`.`passwordHash_count` of type `Int!`
   """
   passwordHash_count: Int_Filter
-  """
-  ✨ Generated from Field `User`.`profilePictureUrl_count` of type `Int!`
-  """
-  profilePictureUrl_count: Int_Filter
   """
   ✨ Generated from Field `User`.`username_count` of type `Int!`
   """
@@ -1382,10 +1157,6 @@ input User_Order {
   """
   createdAt: OrderDirection
   """
-  ✨ Generated from Field `User`.`displayName` of type `String`
-  """
-  displayName: OrderDirection
-  """
   ✨ Generated from Field `User`.`email` of type `String!`
   """
   email: OrderDirection
@@ -1393,10 +1164,6 @@ input User_Order {
   ✨ Generated from Field `User`.`passwordHash` of type `String!`
   """
   passwordHash: OrderDirection
-  """
-  ✨ Generated from Field `User`.`profilePictureUrl` of type `String`
-  """
-  profilePictureUrl: OrderDirection
   """
   ✨ Generated from Field `User`.`username` of type `String!`
   """
@@ -1410,10 +1177,6 @@ input User_Order {
   """
   createdAt_count: OrderDirection
   """
-  ✨ Generated from Field `User`.`displayName_count` of type `Int!`
-  """
-  displayName_count: OrderDirection
-  """
   ✨ Generated from Field `User`.`email_count` of type `Int!`
   """
   email_count: OrderDirection
@@ -1425,10 +1188,6 @@ input User_Order {
   ✨ Generated from Field `User`.`passwordHash_count` of type `Int!`
   """
   passwordHash_count: OrderDirection
-  """
-  ✨ Generated from Field `User`.`profilePictureUrl_count` of type `Int!`
-  """
-  profilePictureUrl_count: OrderDirection
   """
   ✨ Generated from Field `User`.`username_count` of type `Int!`
   """
