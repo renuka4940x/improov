@@ -4,7 +4,7 @@ class AppColors {
   // LI G H T  T H E M E
   static const Color lightSurface = Color(0xFFF5F5F5);
   static const Color lightPrimary = Color(0xFFF0F0F0);
-  static const Color lightSecondary = Color(0xFFF7F7F7);
+  static const Color lightSecondary = Color(0xFFD5D5D5);
   static const Color lightTertiary = Color(0xFF87EB82);
   static const Color lightInversePrimary = Color(0xFF262626);
 

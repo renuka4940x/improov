@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/dataconnect_generated/generated.dart';
+import 'package:improov/src/data/database/isar_service.dart';
+import 'package:improov/src/features/notifications/notification_service.dart';
 import 'package:improov/src/presentation/settings/provider/app_settings_notifier.dart';
 import 'package:improov/src/core/routing/router.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,12 +11,21 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  final isarService = await IsarService.init();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   ExampleConnector.instance.dataConnect.useDataConnectEmulator('192.168.29.254', 9399);
+
+  final notificationService = NotificationService();
+  await notificationService.initNotification();
+  await notificationService.requestPermissions();
+
+  notificationService.listenToHabitChanges(isarService.db);
+  notificationService.listenToTaskChanges(isarService.db);
 
   try {
     debugPrint("Connected to Firebase Auth Emulator!");
