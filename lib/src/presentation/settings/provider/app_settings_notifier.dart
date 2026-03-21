@@ -18,7 +18,7 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     return await service.db.appSettings.get(0) ?? (AppSettings()..id = 0);
   }
 
-  ThemeData get themeData => state.value?.isDarkMode == true ? darkMode : lightMode;
+  ThemeData get themeData => state.asData?.value.isDarkMode == true ? darkMode : lightMode;
 
   // U P D A T E - Nickname
   Future<void> updateNickname(String newName) async {
