@@ -1,52 +1,60 @@
-Improov
+# Improov
 
 A high-performance, offline-first productivity powerhouse.
 Improov is an Android productivity application designed to bridge the gap between complex task management and intuitive habit tracking. Built with a "Product Engineer" mindset, the app prioritizes a seamless, low-latency user experience through an offline-first architecture and performance-tuned UI.
 
-____________________________________________________________
-Key Features
 
-Offline-First Reliability: Built using Isar as an embedded NoSQL database, ensuring the app remains fully functional regardless of internet connectivity.
+## Key Features
 
-Seamless Cloud Sync: Engineered a synchronization pipeline that pushes local data to PostgreSQL via Firebase Data Connect for secure, cross-device persistence.
+* **Offline-First Reliability:** Built using Isar as an embedded NoSQL database, ensuring the app remains fully functional regardless of internet connectivity.
 
-Extreme Performance: Optimized the Flutter render pipeline to maintain a stable 120Hz refresh rate, providing fluid interactions on mid-range Android devices.
+* **Seamless Cloud Sync:** Engineered a synchronization pipeline that pushes local data to PostgreSQL via Firebase Data Connect for secure, cross-device persistence.
 
-Robust Security: Implemented a multi-layered Firebase Authentication flow featuring secure session management and Google Sign-In.
+* **Extreme Performance:** Optimized the Flutter render pipeline to maintain a stable 120Hz refresh rate, providing fluid interactions on mid-range Android devices.
 
-Pro-Tier Monetization: Integrated RevenueCat to manage subscription logic, enabling a freemium model ahead of the production launch.
+* **Robust Security:** Implemented a multi-layered Firebase Authentication flow featuring secure session management and Google Sign-In.
 
-Automated Analytics (WIP): Backend pipeline in development to aggregate habit data and distribute monthly insight reports via email.
+* **Pro-Tier Monetization:** Integrated RevenueCat to manage subscription logic, enabling a freemium model ahead of the production launch.
 
-____________________________________________________________
-Tech Stack
+* **Automated Analytics (WIP):** Backend pipeline in development to aggregate habit data and distribute monthly insight reports via email.
 
-Frontend: Flutter & Dart.
 
-State Management: Riverpod (Reactive architecture).
+## Tech Stack
 
-Navigation: go_router.
+* **Frontend:** Flutter & Dart.
 
-Local Database: Isar (NoSQL).
+* **State Management:** Riverpod (Reactive architecture).
 
-Cloud Database: PostgreSQL & Firebase Firestore.
+* **Navigation:** go_router.
 
-Backend: Firebase (Auth, Cloud Functions, Data Connect).
+* **Local Database:** Isar (NoSQL).
 
-Infrastructure: RevenueCat, GitHub Actions (CI/CD), Google Play Console.
+* **Cloud Database:** PostgreSQL & Firebase Firestore.
 
-Design: Figma.
+* **Backend:** Firebase (Auth, Cloud Functions, Data Connect).
 
-____________________________________________________________
-Architecture
+* **Infrastructure:** RevenueCat, GitHub Actions (CI/CD), Google Play Console.
+
+* **Design:** Figma.
+
+
+## Architecture
 
 The project follows a clean, reactive architecture enforced by Riverpod, ensuring a strict separation of concerns between UI, business logic, and data layers.
 By decoupling the local storage layer (Isar) from the remote persistence layer (PostgreSQL), Improov provides instantaneous UI updates while maintaining eventual consistency across the cloud.
 
-Status & Deployment
+## Status & Deployment
 
-Development Stage: Beta / Production-Prep.
+* **Development Stage:** Beta / Production-Prep.
 
-Platform: Android.
+* **Platform:** Android.
 
-Play Store Status: Environment fully configured with a verified Google Play Console developer account.
+* **Play Store Status:** Environment fully configured with a verified Google Play Console developer account.
+
+## Author
+**Renuka Mishra**
+
+* **Role:** Lead Product Engineer.
+
+* **LinkedIn:** https://www.linkedin.com/in/renuka-mishra-001323285/
+
