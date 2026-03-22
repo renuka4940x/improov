@@ -3,7 +3,7 @@ Improov
 A high-performance, offline-first productivity powerhouse.
 Improov is an Android productivity application designed to bridge the gap between complex task management and intuitive habit tracking. Built with a "Product Engineer" mindset, the app prioritizes a seamless, low-latency user experience through an offline-first architecture and performance-tuned UI.
 
-
+____________________________________________________________
 Key Features
 
 Offline-First Reliability: Built using Isar as an embedded NoSQL database, ensuring the app remains fully functional regardless of internet connectivity.
@@ -18,7 +18,7 @@ Pro-Tier Monetization: Integrated RevenueCat to manage subscription logic, enabl
 
 Automated Analytics (WIP): Backend pipeline in development to aggregate habit data and distribute monthly insight reports via email.
 
-
+____________________________________________________________
 Tech Stack
 
 Frontend: Flutter & Dart.
@@ -37,7 +37,7 @@ Infrastructure: RevenueCat, GitHub Actions (CI/CD), Google Play Console.
 
 Design: Figma.
 
-
+____________________________________________________________
 Architecture
 
 The project follows a clean, reactive architecture enforced by Riverpod, ensuring a strict separation of concerns between UI, business logic, and data layers.
