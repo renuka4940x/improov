@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:improov/src/features/services/subscription_services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:improov/src/data/models/app_settings/app_settings.dart';
 import 'package:improov/src/data/enums/subscription_type.dart';
@@ -93,5 +94,21 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     });
     
     ref.invalidateSelf();
+  }
+
+  // Syncs RevenueCat status and updates the UI state
+  Future<void> syncSubscriptionStatus() async {
+    // database instance
+    final service = await ref.read(isarDatabaseProvider.future);
+
+    await SubscriptionService.syncSubscriptionToIsar(service.db); 
+    
+    // Fetch the settings
+    final updatedSettings = await service.db.appSettings.get(0);
+    
+    // Update the UI 
+    if (updatedSettings != null) {
+      state = AsyncValue.data(updatedSettings);
+    }
   }
 }

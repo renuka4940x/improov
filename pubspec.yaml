@@ -53,6 +53,8 @@ dependencies:
   firebase_core: ^4.5.0
   firebase_data_connect: ^0.2.3
   firebase_auth: ^6.2.0
+  purchases_flutter: ^9.15.0
+  purchases_ui_flutter: ^9.15.0
 
 dev_dependencies:
   flutter_test:

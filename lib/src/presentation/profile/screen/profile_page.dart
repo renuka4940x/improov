@@ -5,6 +5,7 @@ import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/widgets/build_row.dart';
 import 'package:improov/src/presentation/settings/provider/app_settings_notifier.dart';
 import 'package:improov/src/presentation/profile/provider/stats_provider.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 class ProfilePage extends ConsumerWidget {
   final bool isPro;
@@ -15,6 +16,18 @@ class ProfilePage extends ConsumerWidget {
     //new Stats provider
     final statsAsync = ref.watch(globalStatsProvider);
     final settingsAsync = ref.watch(appSettingsNotifierProvider);
+
+    void _openSubscriptionManagement() async {
+      await RevenueCatUI.presentCustomerCenter();
+    }
+
+    void _showPaywall() async {
+      final result = await RevenueCatUI.presentPaywallIfNeeded("Improov Premium");
+      
+      if (result == PaywallResult.purchased || result == PaywallResult.restored) {
+        await ref.read(appSettingsNotifierProvider.notifier).syncSubscriptionStatus();
+      }
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -123,6 +136,48 @@ class ProfilePage extends ConsumerWidget {
                   ),
 
                   Divider(color: Colors.grey.withValues(alpha: 0.5)),
+
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: _showPaywall,
+                      child: BuildRow(
+                        label: "Improov Premium", 
+                        trailing: Row(
+                          children: [
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                        isBold: true,
+                      ),
+                    ),
+                  ),
+
+                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
+
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: _openSubscriptionManagement,
+                      child: BuildRow(
+                        label: "Handle Subscription", 
+                        trailing: Row(
+                          children: [
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                        isBold: true,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
