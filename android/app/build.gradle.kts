@@ -30,6 +30,9 @@ android {
         applicationId = "app.improov.mobile"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdk = 24
+        multiDexEnabled = true
+
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -46,6 +49,7 @@ android {
 
     buildFeatures {
         buildConfig = true
+        viewBinding = true
     }
 }
 
@@ -54,5 +58,11 @@ flutter {
 }
 
 dependencies {
+    implementation("androidx.fragment:fragment:1.7.1")
+    implementation("androidx.fragment:fragment-ktx:1.8.5") 
+    implementation("androidx.multidex:multidex:2.0.1")
+
+    implementation("com.google.android.material:material:1.11.0")
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
