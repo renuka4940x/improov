@@ -18,45 +18,11 @@ class DeleteTaskVariablesBuilder {
 }
 
 @immutable
-class DeleteTaskTaskDelete {
-  final String id;
-  DeleteTaskTaskDelete.fromJson(dynamic json):
-  
-  id = nativeFromJson<String>(json['id']);
-  @override
-  bool operator ==(Object other) {
-    if(identical(this, other)) {
-      return true;
-    }
-    if(other.runtimeType != runtimeType) {
-      return false;
-    }
-
-    final DeleteTaskTaskDelete otherTyped = other as DeleteTaskTaskDelete;
-    return id == otherTyped.id;
-    
-  }
-  @override
-  int get hashCode => id.hashCode;
-  
-
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json['id'] = nativeToJson<String>(id);
-    return json;
-  }
-
-  DeleteTaskTaskDelete({
-    required this.id,
-  });
-}
-
-@immutable
 class DeleteTaskData {
-  final DeleteTaskTaskDelete? task_delete;
+  final int task_deleteMany;
   DeleteTaskData.fromJson(dynamic json):
   
-  task_delete = json['task_delete'] == null ? null : DeleteTaskTaskDelete.fromJson(json['task_delete']);
+  task_deleteMany = nativeFromJson<int>(json['task_deleteMany']);
   @override
   bool operator ==(Object other) {
     if(identical(this, other)) {
@@ -67,23 +33,21 @@ class DeleteTaskData {
     }
 
     final DeleteTaskData otherTyped = other as DeleteTaskData;
-    return task_delete == otherTyped.task_delete;
+    return task_deleteMany == otherTyped.task_deleteMany;
     
   }
   @override
-  int get hashCode => task_delete.hashCode;
+  int get hashCode => task_deleteMany.hashCode;
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    if (task_delete != null) {
-      json['task_delete'] = task_delete!.toJson();
-    }
+    json['task_deleteMany'] = nativeToJson<int>(task_deleteMany);
     return json;
   }
 
   DeleteTaskData({
-    this.task_delete,
+    required this.task_deleteMany,
   });
 }
 

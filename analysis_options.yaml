@@ -12,6 +12,7 @@ analyzer:
     deprecated_member_use: ignore
     non_constant_identifier_names: ignore
     prefer_const_constructors_in_immutables: ignore
+    unnecessary_library_name: ignore
   exclude:
     - "**/*.g.dart"
     - "lib/generated/**"

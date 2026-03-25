@@ -135,9 +135,21 @@ class NotificationService {
     );
   }
 
+  // Removes recurring notification for deleted habit
+  Future<void> cancelHabitNotifications(int habitId) async {
+    for (int i = 0; i < 7; i++) {
+      final notificationId = (habitId * 100000) + i; 
+      
+      await _notificationsPlugin.cancel(id: notificationId); 
+    }
+    
+    debugPrint("🛑 Canceled all recurring notifications for Habit ID: $habitId");
+  }
+
   // Removes a specific notification
   Future<void> cancelNotification(int id) async {
     await _notificationsPlugin.cancel(id: id);
+    debugPrint("🛑 Canceled single notification ID: $id");
   }
 
   //HABIT WATCHER
@@ -191,8 +203,22 @@ class NotificationService {
   }
 
   int _getCompletionsForCurrentWeek(List<DateTime> completedDays) {
-    // TODO: Write logic to count completions for the current Mon-Sun week.
-    return 0; 
+    if (completedDays.isEmpty) return 0;
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final startOfWeek = today.subtract(Duration(days: today.weekday - 1));    
+    final endOfWeekCutoff = startOfWeek.add(const Duration(days: 7));
+
+    return completedDays.where((date) {
+      final normalizedDate = DateTime(date.year, date.month, date.day);
+      
+      // Is it >= Monday AND < Next Monday?
+      return (
+        normalizedDate.isAtSameMomentAs(startOfWeek) 
+        || normalizedDate.isAfter(startOfWeek)
+      ) && normalizedDate.isBefore(endOfWeekCutoff);
+    }).length;
   }
 
   //TASK SCHEDULER

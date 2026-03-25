@@ -62,6 +62,7 @@ class AuthService extends ChangeNotifier {
   Future<UserCredential?> signInWithGoogle() async {
     try {
       await _googleSignIn.initialize();
+      // ignore: unnecessary_nullable_for_final_variable_declarations
       final GoogleSignInAccount? googleUser = await _googleSignIn.authenticate();
       if (googleUser == null) return null; 
 
@@ -94,17 +95,16 @@ class AuthService extends ChangeNotifier {
   ) async {
     try {
       await ExampleConnector.instance.createUser(
-        id: user.uid,
         username: username ?? user.displayName ?? "Improover",
         email: user.email ?? "",
         passwordHash: "managed_by_firebase", 
         createdAt: Timestamp.fromJson(DateTime.now().toUtc().toIso8601String()),
       ).execute();
       
-      debugPrint("User profile synced to Postgres Cloud!");
+      debugPrint("User profile ${user.uid} synced to Postgres Cloud!");
 
       if (isPremium) {
-        debugPrint("💎 Premium detected! Starting bulk migration...");
+        debugPrint("Premium detected! Starting bulk migration...");
         await syncAllLocalDataToCloud(ref); 
       }
 

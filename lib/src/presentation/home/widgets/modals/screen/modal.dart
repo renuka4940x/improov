@@ -11,6 +11,7 @@ import 'package:improov/src/data/enums/priority.dart';
 import 'package:improov/src/data/models/habit/habit.dart';
 import 'package:improov/src/data/models/task/task.dart';
 import 'package:improov/src/core/widgets/button.dart';
+import 'package:improov/src/data/provider/subscription_provider.dart';
 
 class Modal extends ConsumerStatefulWidget {
   final Task? taskToEdit;
@@ -87,6 +88,8 @@ class _ModalState extends ConsumerState<Modal> {
 
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.watch(premiumProvider);
+
     return RepaintBoundary(
       child: Container(
         padding: EdgeInsets.only(left: 24, right: 24, top: 20),
@@ -147,6 +150,10 @@ class _ModalState extends ConsumerState<Modal> {
                 //rest of the field based on the toggle
                 if (isHabitMode) 
                   BuildHabitForm(
+                    isPremium: isPremium, 
+                    onPremiumLockedTap: () async {
+                       await ref.read(premiumProvider.notifier).showPaywall();
+                    },
                     currentPriority: _selectedHabitPriority,
                     currentGoal: _selectedGoal,
                     currentReminder: _habitReminder,
@@ -162,6 +169,10 @@ class _ModalState extends ConsumerState<Modal> {
                   )
                 else
                   BuildTaskForm(
+                    isPremium: isPremium, 
+                    onPremiumLockedTap: () async {
+                       await ref.read(premiumProvider.notifier).showPaywall();
+                    },
                     currentStartDate: _selectedDate,
                     currentPriority: _selectedTaskPriority,
                     currentReminder: _taskReminder,

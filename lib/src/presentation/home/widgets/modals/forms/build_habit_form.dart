@@ -6,6 +6,9 @@ import 'package:improov/src/presentation/home/widgets/modals/components/pickers/
 import 'package:improov/src/data/enums/priority.dart';
 
 class BuildHabitForm extends StatelessWidget {
+  //revenueCat parameters
+  final bool isPremium;
+  final VoidCallback onPremiumLockedTap;
   //variables
   final Priority currentPriority;
   final int currentGoal;
@@ -18,6 +21,8 @@ class BuildHabitForm extends StatelessWidget {
 
   const BuildHabitForm({
     super.key,
+    required this.isPremium,
+    required this.onPremiumLockedTap,
     required this.currentPriority,
     required this.currentGoal,
     required this.currentReminder,
@@ -50,13 +55,26 @@ class BuildHabitForm extends StatelessWidget {
 
         //reminders
         BuildRow(
-          label: "Reminder", 
-          trailing: DateTimePicker(
-            selectedDateTime: currentReminder,
-            label: "Off", 
-            onDateTimeSelected: onDateTimeSelected,
-          ), 
-          isPro: true
+          label: "Reminder",
+          isPro: !isPremium,
+          trailing: GestureDetector(
+            onTap: isPremium 
+              ? null 
+              : onPremiumLockedTap,
+            child: AbsorbPointer(
+              absorbing: !isPremium,
+              child: Opacity(
+                opacity: isPremium 
+                  ? 1.0 
+                  : 0.5,
+                child: DateTimePicker(
+                  selectedDateTime: currentReminder,
+                  label: "Off", 
+                  onDateTimeSelected: onDateTimeSelected,
+                ),
+              ),
+            ),
+          ),
         ),
       ]
     );

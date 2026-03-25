@@ -30,8 +30,8 @@ part 'delete_task.dart';
 class ExampleConnector {
   
   
-  CreateUserVariablesBuilder createUser ({required String id, required String username, required String email, required String passwordHash, required Timestamp createdAt, }) {
-    return CreateUserVariablesBuilder(dataConnect, id: id,username: username,email: email,passwordHash: passwordHash,createdAt: createdAt,);
+  CreateUserVariablesBuilder createUser ({required String username, required String email, required String passwordHash, required Timestamp createdAt, }) {
+    return CreateUserVariablesBuilder(dataConnect, username: username,email: email,passwordHash: passwordHash,createdAt: createdAt,);
   }
   
   

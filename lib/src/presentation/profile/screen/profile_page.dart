@@ -17,11 +17,11 @@ class ProfilePage extends ConsumerWidget {
     final statsAsync = ref.watch(globalStatsProvider);
     final settingsAsync = ref.watch(appSettingsNotifierProvider);
 
-    void _openSubscriptionManagement() async {
+    void openSubscriptionManagement() async {
       await RevenueCatUI.presentCustomerCenter();
     }
 
-    void _showPaywall() async {
+    void showPaywall() async {
       final result = await RevenueCatUI.presentPaywallIfNeeded("Improov Premium");
       
       if (result == PaywallResult.purchased || result == PaywallResult.restored) {
@@ -141,7 +141,7 @@ class ProfilePage extends ConsumerWidget {
                     padding: const EdgeInsets.all(8),
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onTap: _showPaywall,
+                      onTap: showPaywall,
                       child: BuildRow(
                         label: "Improov Premium", 
                         trailing: Row(
@@ -163,7 +163,7 @@ class ProfilePage extends ConsumerWidget {
                     padding: const EdgeInsets.all(8),
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onTap: _openSubscriptionManagement,
+                      onTap: openSubscriptionManagement,
                       child: BuildRow(
                         label: "Handle Subscription", 
                         trailing: Row(
@@ -217,7 +217,6 @@ class ProfilePage extends ConsumerWidget {
     );
   }
   
-  // 
   void _showEditNicknameDialog(BuildContext context, WidgetRef ref) {
     final TextEditingController controller = TextEditingController();
   

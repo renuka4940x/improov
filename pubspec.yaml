@@ -55,6 +55,7 @@ dependencies:
   firebase_auth: ^6.2.0
   purchases_flutter: ^9.15.0
   purchases_ui_flutter: ^9.15.0
+  timezone: ^0.10.1
 
 dev_dependencies:
   flutter_test:

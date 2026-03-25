@@ -1,13 +1,12 @@
-# --- CREATE USER PROFILE ---
+# --- CREATE USER PROFILE (SECURED) ---
 mutation CreateUser(
-  $id: String!,
   $username: String!,
   $email: String!,
   $passwordHash: String!,
   $createdAt: Timestamp!
-) @auth(level: PUBLIC) {
+) @auth(level: USER) {
   user_insert(data: {
-    id: $id,
+    id_expr: "auth.uid",
     username: $username,
     email: $email,
     passwordHash: $passwordHash,
@@ -16,7 +15,11 @@ mutation CreateUser(
 }
 
 query GetMyHabits @auth(level: USER) {
-  habits(where: {userId: {eq_expr: "auth.uid"}}) {
+  habits(
+    where: {
+      userId: {eq_expr: "auth.uid"}
+    }
+  ) {
     id
     name
     description
@@ -61,8 +64,11 @@ mutation UpdateHabit(
   $priority: String!,
   $colorHex: Float!
 ) @auth(level: USER) {
-  habit_update(
-    id: $id, 
+  habit_updateMany(
+    where: { 
+      id: { eq: $id }, 
+      userId: { eq_expr: "auth.uid" } 
+    }, 
     data: {
       name: $name,
       description: $description,
@@ -80,8 +86,11 @@ mutation UpdateHabitCompletion(
   $bestStreak: Int!,
   $completedDays: [String!]!
 ) @auth(level: USER) {
-  habit_update(
-    id: $id, 
+  habit_updateMany(
+    where: { 
+      id: { eq: $id }, 
+      userId: { eq_expr: "auth.uid" } 
+    }, 
     data: {
       currentStreak: $currentStreak,
       bestStreak: $bestStreak,
@@ -92,7 +101,12 @@ mutation UpdateHabitCompletion(
 
 # --- DELETE HABIT ---
 mutation DeleteHabit($id: String!) @auth(level: USER) {
-  habit_delete(id: $id)
+  habit_deleteMany(
+    where: { 
+      id: { eq: $id }, 
+      userId: { eq_expr: "auth.uid" } 
+    }
+  )
 }
 
 # --- CREATE TASK ---
@@ -107,7 +121,7 @@ mutation CreateTask(
 ) @auth(level: USER) {
   task_insert(data: {
     id: $id,
-    userId_expr: "auth.uid", # Secure token mapping
+    userId_expr: "auth.uid",
     name: $name,
     description: $description,
     dueDate: $dueDate,
@@ -126,8 +140,11 @@ mutation UpdateTask(
   $isCompleted: Boolean!,
   $priority: String!
 ) @auth(level: USER) {
-  task_update(
-    id: $id, 
+  task_updateMany(
+    where: { 
+      id: { eq: $id }, 
+      userId: { eq_expr: "auth.uid" } 
+    }, 
     data: {
       name: $name,
       description: $description,
@@ -140,5 +157,10 @@ mutation UpdateTask(
 
 # --- DELETE TASK ---
 mutation DeleteTask($id: String!) @auth(level: USER) {
-  task_delete(id: $id)
+  task_deleteMany(
+    where: { 
+      id: { eq: $id }, 
+      userId: { eq_expr: "auth.uid" } 
+    }
+  )
 }

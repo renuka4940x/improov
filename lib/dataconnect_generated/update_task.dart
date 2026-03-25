@@ -23,45 +23,11 @@ class UpdateTaskVariablesBuilder {
 }
 
 @immutable
-class UpdateTaskTaskUpdate {
-  final String id;
-  UpdateTaskTaskUpdate.fromJson(dynamic json):
-  
-  id = nativeFromJson<String>(json['id']);
-  @override
-  bool operator ==(Object other) {
-    if(identical(this, other)) {
-      return true;
-    }
-    if(other.runtimeType != runtimeType) {
-      return false;
-    }
-
-    final UpdateTaskTaskUpdate otherTyped = other as UpdateTaskTaskUpdate;
-    return id == otherTyped.id;
-    
-  }
-  @override
-  int get hashCode => id.hashCode;
-  
-
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json['id'] = nativeToJson<String>(id);
-    return json;
-  }
-
-  UpdateTaskTaskUpdate({
-    required this.id,
-  });
-}
-
-@immutable
 class UpdateTaskData {
-  final UpdateTaskTaskUpdate? task_update;
+  final int task_updateMany;
   UpdateTaskData.fromJson(dynamic json):
   
-  task_update = json['task_update'] == null ? null : UpdateTaskTaskUpdate.fromJson(json['task_update']);
+  task_updateMany = nativeFromJson<int>(json['task_updateMany']);
   @override
   bool operator ==(Object other) {
     if(identical(this, other)) {
@@ -72,23 +38,21 @@ class UpdateTaskData {
     }
 
     final UpdateTaskData otherTyped = other as UpdateTaskData;
-    return task_update == otherTyped.task_update;
+    return task_updateMany == otherTyped.task_updateMany;
     
   }
   @override
-  int get hashCode => task_update.hashCode;
+  int get hashCode => task_updateMany.hashCode;
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    if (task_update != null) {
-      json['task_update'] = task_update!.toJson();
-    }
+    json['task_updateMany'] = nativeToJson<int>(task_updateMany);
     return json;
   }
 
   UpdateTaskData({
-    this.task_update,
+    required this.task_updateMany,
   });
 }
 

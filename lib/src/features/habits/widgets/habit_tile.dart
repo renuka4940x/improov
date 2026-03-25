@@ -126,6 +126,8 @@ class HabitTile extends ConsumerWidget {
                   //name & description
                   Expanded(
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(

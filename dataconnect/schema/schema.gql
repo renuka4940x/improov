@@ -36,4 +36,3 @@ type Task @table(key: "id") {
   description: String
   priority: String
 }
-

@@ -23,45 +23,11 @@ class UpdateHabitVariablesBuilder {
 }
 
 @immutable
-class UpdateHabitHabitUpdate {
-  final String id;
-  UpdateHabitHabitUpdate.fromJson(dynamic json):
-  
-  id = nativeFromJson<String>(json['id']);
-  @override
-  bool operator ==(Object other) {
-    if(identical(this, other)) {
-      return true;
-    }
-    if(other.runtimeType != runtimeType) {
-      return false;
-    }
-
-    final UpdateHabitHabitUpdate otherTyped = other as UpdateHabitHabitUpdate;
-    return id == otherTyped.id;
-    
-  }
-  @override
-  int get hashCode => id.hashCode;
-  
-
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json['id'] = nativeToJson<String>(id);
-    return json;
-  }
-
-  UpdateHabitHabitUpdate({
-    required this.id,
-  });
-}
-
-@immutable
 class UpdateHabitData {
-  final UpdateHabitHabitUpdate? habit_update;
+  final int habit_updateMany;
   UpdateHabitData.fromJson(dynamic json):
   
-  habit_update = json['habit_update'] == null ? null : UpdateHabitHabitUpdate.fromJson(json['habit_update']);
+  habit_updateMany = nativeFromJson<int>(json['habit_updateMany']);
   @override
   bool operator ==(Object other) {
     if(identical(this, other)) {
@@ -72,23 +38,21 @@ class UpdateHabitData {
     }
 
     final UpdateHabitData otherTyped = other as UpdateHabitData;
-    return habit_update == otherTyped.habit_update;
+    return habit_updateMany == otherTyped.habit_updateMany;
     
   }
   @override
-  int get hashCode => habit_update.hashCode;
+  int get hashCode => habit_updateMany.hashCode;
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    if (habit_update != null) {
-      json['habit_update'] = habit_update!.toJson();
-    }
+    json['habit_updateMany'] = nativeToJson<int>(habit_updateMany);
     return json;
   }
 
   UpdateHabitData({
-    this.habit_update,
+    required this.habit_updateMany,
   });
 }
 

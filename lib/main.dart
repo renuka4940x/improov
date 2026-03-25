@@ -45,7 +45,7 @@ void main() async {
   const bool useEmulator = true;
   
   if (useEmulator) {
-    print("RAHHHHHH! Data Connect Emulator is Live!");
+    debugPrint("RAHHHHHH! Data Connect Emulator is Live!");
   }
 
   runApp(
