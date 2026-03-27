@@ -1,5 +1,7 @@
 {
   "projects": {
     "default": "improov-2026"
-  }
+  },
+  "targets": {},
+  "etags": {}
 }

@@ -11,7 +11,6 @@ class IsarService {
   // Private constructor
   IsarService._(this.db);
 
-  // This creates the ONE instance to be passed to all providers
   static Future<IsarService> init() async {
     final dir = await getApplicationDocumentsDirectory();
 

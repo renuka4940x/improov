@@ -18,7 +18,6 @@ class HeatmapEngine {
 
     List<List<HabitSquareStatus>> allRows = [];
 
-    // --- STEP 1: CALCULATE THE FIRST WEEK FRAGMENT ---
     int daysInFirstWeek = 8 - monthStart.weekday;
     if (daysInFirstWeek > 7) daysInFirstWeek = 7;
     if (daysInFirstWeek > monthEnd.day) daysInFirstWeek = monthEnd.day;
@@ -31,7 +30,6 @@ class HeatmapEngine {
       completions: completionDates,
     ));
 
-    // --- STEP 2: CALCULATE THE MIDDLE AND END WEEKS ---
     DateTime currentPtr = monthStart.add(Duration(days: daysInFirstWeek));
 
     while (currentPtr.isBefore(monthEnd) || currentPtr.isAtSameMomentAs(monthEnd)) {
@@ -83,14 +81,6 @@ class HeatmapEngine {
     // Fill contract squares
     for (int i = 0; i < adjustedGoal; i++) {
       results.add(i < count ? HabitSquareStatus.completed : HabitSquareStatus.empty);
-    }
-
-    // Interleave Gold (Overflow)
-    if (count > adjustedGoal) {
-      int overflowCount = count - adjustedGoal;
-      for (int i = 0; i < overflowCount; i++) {
-        results.add(HabitSquareStatus.overflow);
-      }
     }
 
     return results;

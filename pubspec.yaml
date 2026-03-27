@@ -56,6 +56,8 @@ dependencies:
   purchases_flutter: ^9.15.0
   purchases_ui_flutter: ^9.15.0
   timezone: ^0.10.1
+  url_launcher: ^6.3.2
+  share_plus: ^12.0.1
 
 dev_dependencies:
   flutter_test:
@@ -121,6 +123,6 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/logo/temporary_logo.jpg" 
+  image_path: "assets/logo/Improov_logo.png" 
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/logo/temporary_logo.jpg"
+  adaptive_icon_foreground: "assets/logo/Improov_logo.png"

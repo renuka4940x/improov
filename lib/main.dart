@@ -32,7 +32,7 @@ void main() async {
   notificationService.listenToTaskChanges(isarService.db);
 
   //RevenueCat init
-  await SubscriptionService.init();
+  await SubscriptionService.init(isarService.db);
 
   await SubscriptionService.syncSubscriptionToIsar(isarService.db);
   
@@ -40,12 +40,6 @@ void main() async {
     debugPrint("Connected to Firebase Auth Emulator!");
   } catch (e) {
     debugPrint("Failed to connect to Auth Emulator: $e");
-  }
-
-  const bool useEmulator = true;
-  
-  if (useEmulator) {
-    debugPrint("RAHHHHHH! Data Connect Emulator is Live!");
   }
 
   runApp(

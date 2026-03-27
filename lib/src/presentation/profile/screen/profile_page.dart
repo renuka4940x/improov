@@ -3,31 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/widgets/build_row.dart';
+import 'package:improov/src/features/services/subscription_services.dart';
 import 'package:improov/src/presentation/settings/provider/app_settings_notifier.dart';
 import 'package:improov/src/presentation/profile/provider/stats_provider.dart';
-import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
+import 'package:improov/src/data/provider/subscription_provider.dart'; 
 
 class ProfilePage extends ConsumerWidget {
-  final bool isPro;
-  const ProfilePage({super.key, this.isPro = false});
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //new Stats provider
     final statsAsync = ref.watch(globalStatsProvider);
     final settingsAsync = ref.watch(appSettingsNotifierProvider);
-
-    void openSubscriptionManagement() async {
-      await RevenueCatUI.presentCustomerCenter();
-    }
-
-    void showPaywall() async {
-      final result = await RevenueCatUI.presentPaywallIfNeeded("Improov Premium");
-      
-      if (result == PaywallResult.purchased || result == PaywallResult.restored) {
-        await ref.read(appSettingsNotifierProvider.notifier).syncSubscriptionStatus();
-      }
-    }
+    
+    final isPremium = ref.watch(premiumProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -72,10 +61,7 @@ class ProfilePage extends ConsumerWidget {
                                 children: [
                                   Text("Edit"), 
                                   Spacer(), 
-                                  Icon(
-                                    Icons.edit, 
-                                    size: 18
-                                  ),
+                                  Icon(Icons.edit, size: 18),
                                 ],
                               ),
                             ),
@@ -86,11 +72,11 @@ class ProfilePage extends ConsumerWidget {
                     loading: () => const Text("Loading..."),
                     error: (err, stack) => const Text("Yoo, mate!"),
                   ),
+                  
                   const Divider(color: Colors.grey),
                   const SizedBox(height: 16),
                   Text("Achievements:", style: AppStyle.title(context)),
 
-                  //build Stats Cards
                   statsAsync.when(
                     data: (stats) => Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -115,69 +101,62 @@ class ProfilePage extends ConsumerWidget {
 
                   Divider(color: Colors.grey.withValues(alpha: 0.5)),
 
+                  // Dynamic Premium / Manage Row
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      // If free: show Paywall. If Premium: open native settings to cancel/manage.
+                      onTap: isPremium 
+                        ? () => SubscriptionService.openSubscriptionManager() 
+                        : () => SubscriptionService.showPaywall(ref),
+                      child: BuildRow(
+                        label: isPremium 
+                          ? "Manage Subscription" 
+                          : "Improov Premium", 
+                        trailing: Row(
+                          children: [
+                            if (!isPremium) 
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                margin: const EdgeInsets.only(right: 8),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.tertiary.withAlpha(170),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  "PRO", 
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.inversePrimary, 
+                                    fontSize: 10, 
+                                    fontWeight: FontWeight.bold
+                                  )
+                                ),
+                              ),
+                            const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                          ],
+                        ),
+                        isBold: true,
+                      ),
+                    ),
+                  ),
+
+                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
+
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: () => context.pushNamed('settings'),
-                      child: BuildRow(
+                      child: const BuildRow(
                         label: "Settings", 
-                        trailing: Row(
-                          children: [
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 16,
-                            ),
-                          ],
-                        ),
+                        trailing: Icon(Icons.arrow_forward_ios_rounded, size: 16),
                         isBold: true,
                       ),
                     ),
                   ),
 
                   Divider(color: Colors.grey.withValues(alpha: 0.5)),
-
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: showPaywall,
-                      child: BuildRow(
-                        label: "Improov Premium", 
-                        trailing: Row(
-                          children: [
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 16,
-                            ),
-                          ],
-                        ),
-                        isBold: true,
-                      ),
-                    ),
-                  ),
-
-                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
-
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: openSubscriptionManagement,
-                      child: BuildRow(
-                        label: "Handle Subscription", 
-                        trailing: Row(
-                          children: [
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 16,
-                            ),
-                          ],
-                        ),
-                        isBold: true,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

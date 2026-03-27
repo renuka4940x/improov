@@ -1,11 +1,23 @@
+import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/src/data/provider/subscription_provider.dart';
+import 'package:improov/src/features/services/subscription_services.dart';
+import 'package:improov/src/features/tasks/provider/task_notifier.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:isar/isar.dart';
+
 import 'package:improov/src/features/notifications/notification_service.dart';
 import 'package:improov/src/presentation/settings/provider/app_settings_notifier.dart';
-import 'package:flutter/services.dart';
+import 'package:improov/src/features/habits/provider/habit_notifier.dart'; 
+import 'package:improov/src/presentation/profile/provider/stats_provider.dart';
+
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -15,21 +27,183 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-  void _testNotification() async {
-    final service = NotificationService();
-    
-    await service.requestPermissions();
 
-    await service.showNotification(
-      id: 999,
-      title: "Yoo!",
-      body: "This is a notification from Improov",
+  // CSV EXPORT LOGIC
+  Future<void> exportDataAsCSV() async {
+    try {
+      // Grab current habits from Riverpod
+      final habitsAsync = ref.read(habitNotifierProvider);
+      
+      // Safety check: wait for data if it's currently loading
+      final habits = habitsAsync.value ?? [];
+      
+      if (habits.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("No data to export yet!")),
+        );
+        return;
+      }
+
+      // Build the CSV String
+      StringBuffer csvData = StringBuffer();
+      csvData.writeln("Habit Name,Goal Days/Week,Start Date,Total Completed Days");
+
+      for (var habit in habits) {
+        final startDateStr = "${habit.startDate.year}-${habit.startDate.month}-${habit.startDate.day}";
+        csvData.writeln("${habit.name},${habit.goalDaysPerWeek},$startDateStr,${habit.completedDays.length}");
+      }
+
+      // Save to a temporary file
+      final directory = await getApplicationDocumentsDirectory();
+      final path = "${directory.path}/improov_data.csv";
+      final file = File(path);
+      await file.writeAsString(csvData.toString());
+
+      // Open the native Share Sheet
+      await Share.shareXFiles([XFile(path)], text: 'My Improov Habit Data');
+      
+    } catch (e) {
+      debugPrint("Export Error: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Export failed: $e"), 
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
+  //DELETE ALL DATA LOGIC
+  void showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: Text(
+          "Wipe All Data?", 
+          style: TextStyle(
+            color: Colors.red.shade300, 
+            fontWeight: FontWeight.bold
+          )
+        ),
+        content: const Text(
+          "This will permanently delete all your habits, tasks, and streak history. This action cannot be undone.\n\nAre you absolutely sure?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Cancel", 
+              style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary)
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade300, 
+            ),
+            onPressed: () async {
+              // Close Dialog
+              Navigator.pop(context);
+              
+              // Nuke the Isar Database
+              final isar = Isar.getInstance('improov_db');
+              if (isar != null) {
+                await isar.writeTxn(() async {
+                  await isar.clear();
+                });
+              }
+
+              // Force Riverpod to reload the empty UI
+              ref.invalidate(habitNotifierProvider);
+              ref.invalidate(taskNotifierProvider);
+              ref.invalidate(globalStatsProvider);
+              
+              if (!context.mounted) return; 
+              
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("All data has been wiped.")),
+              );
+            },
+            child: const Text(
+              "Delete", 
+              style: TextStyle(
+                color: Colors.white, 
+                fontWeight: FontWeight.bold
+              )
+            ),
+          ),
+        ],
+      ),
     );
   }
+
+  //DELETE THE ACCOUNT
+  void showAccountDeletionDialog() {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text(
+        "Delete Account?", 
+        style: TextStyle(
+          color: Colors.red, 
+          fontWeight: FontWeight.bold)
+      ),
+      content: const Text(
+        "This will permanently delete your Improov account and all synced data. "
+        "Your premium subscription (if any) must be cancelled manually via the Play Store/App Store.\n\n"
+        "This cannot be undone. Proceed?",
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text("Cancel"),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+          onPressed: () async {
+            try {
+              final user = FirebaseAuth.instance.currentUser;
+              if (user != null) {
+                // Delete the Auth User
+                await user.delete();
+                
+                // Clear local Isar data
+                final isar = Isar.getInstance('improov_db');
+                if (isar != null) {
+                  await isar.writeTxn(() => isar.clear());
+                }
+
+                if (!context.mounted) return; 
+
+                Navigator.pop(context);
+                context.go('/login');
+              }
+            } on FirebaseAuthException catch (e) {
+              if (e.code == 'requires-recent-login') {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      "Please log out and log back in to verify it's you, then try deleting again."
+                    )
+                  ),
+                );
+              }
+            }
+          },
+          child: const Text("Delete Account", style: TextStyle(color: Colors.white)),
+        ),
+      ],
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
     final settingsAsync = ref.watch(appSettingsNotifierProvider);
+    
+    final isPremium = ref.watch(premiumProvider);
     
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -63,18 +237,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     onChanged: (_) => ref.read(appSettingsNotifierProvider.notifier).toggleTheme(),
                   ),
 
-                  //haptic Feedback Toggle
-                  _buildToggleTile(
-                    title: "Haptic Feedback",
-                    subtitle: "Satisfying vibrations on interaction",
-                    icon: Icons.vibration,
-                    value: settings.hapticsEnabled,
-                    onChanged: (val) {
-                      ref.read(appSettingsNotifierProvider.notifier).toggleHaptics();
-                      if (val) HapticFeedback.mediumImpact();
-                    },
-                  ),
-
                   //notifications Toggle
                   _buildToggleTile(
                     title: "Notifications",
@@ -86,7 +248,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         // Trigger the system permission dialog if turning ON
                         await NotificationService().requestPermissions();
                       }
-                      _testNotification();
                       ref.read(appSettingsNotifierProvider.notifier).toggleNotifications();
                     },
                   ),
@@ -103,7 +264,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               title: "Export Data",
               subtitle: "Download your habit history as CSV file",
               icon: Icons.download_outlined,
-              onTap: () { /* Handle export */ },
+              isProFeature: !isPremium, 
+              onTap: isPremium 
+                  ? exportDataAsCSV 
+                  : () => SubscriptionService.showPaywall(ref),
             ),
         
             _buildActionTile(
@@ -111,7 +275,15 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               subtitle: "Permanently wipe all data",
               icon: Icons.delete_outlined,
               isDestructive: true,
-              onTap: () { /* Show confirmation dialog */ },
+              onTap: showDeleteConfirmation,
+            ),
+
+            _buildActionTile(
+              title: "Delete Account",
+              subtitle: "Permanently remove your account and cloud data",
+              icon: Icons.person_off_outlined,
+              isDestructive: true,
+              onTap: showAccountDeletionDialog,
             ),
 
             _buildSectionHeader("About"),
@@ -121,16 +293,15 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               subtitle: "Learn more about the app and team",
               icon: Icons.info_outline_rounded,
               onTap: () {
-                // We use a separate function to show the dialog so we can wrap the theme
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return Theme(
                       data: Theme.of(context).copyWith(
-                        // This targets the "VIEW LICENSES" and "CLOSE" buttons specifically
                         textButtonTheme: TextButtonThemeData(
                           style: TextButton.styleFrom(
-                            foregroundColor: Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9), // Your brand color
+                            foregroundColor: Theme.of(context).colorScheme.inversePrimary
+                              .withValues(alpha: 0.9),
                             textStyle: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -250,6 +421,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     required IconData icon,
     required VoidCallback onTap,
     bool isDestructive = false,
+    bool isProFeature = false,
   }) {
     final color = isDestructive 
       ? Colors.red.shade300 
@@ -274,6 +446,23 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 color: Colors.grey
               )
             ),
+            trailing: isProFeature 
+              ? Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.8),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    "PRO", 
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.inversePrimary, 
+                      fontSize: 10, 
+                      fontWeight: FontWeight.bold
+                    )
+                  ),
+                )
+              : null,
             onTap: onTap,
           ),
           Divider(color: Colors.grey.withValues(alpha: 0.2)),
