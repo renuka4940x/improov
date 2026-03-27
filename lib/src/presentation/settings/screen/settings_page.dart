@@ -144,10 +144,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text(
+      title: Text(
         "Delete Account?", 
         style: TextStyle(
-          color: Colors.red, 
+          color: Colors.red.shade300, 
           fontWeight: FontWeight.bold)
       ),
       content: const Text(
@@ -161,7 +161,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           child: const Text("Cancel"),
         ),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red.shade300
+          ),
           onPressed: () async {
             try {
               final user = FirebaseAuth.instance.currentUser;
@@ -192,7 +194,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               }
             }
           },
-          child: const Text("Delete Account", style: TextStyle(color: Colors.white)),
+          child: const Text(
+            "Delete Account", 
+            style: TextStyle(color: Colors.white)
+          ),
         ),
       ],
     ),

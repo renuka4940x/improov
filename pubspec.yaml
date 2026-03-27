@@ -123,6 +123,6 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/logo/Improov_logo.png" 
+  image_path: "assets/logo/improov_logo.png" 
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/logo/Improov_logo.png"
+  adaptive_icon_foreground: "assets/logo/improov_logo.png"
