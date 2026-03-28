@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:improov/dataconnect_generated/generated.dart';
 import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/features/notifications/notification_service.dart';
 import 'package:improov/src/features/services/subscription_services.dart';
@@ -21,8 +20,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  ExampleConnector.instance.dataConnect.useDataConnectEmulator('192.168.29.254', 9399);
-
   //notification initialization
   final notificationService = NotificationService();
   await notificationService.initNotification();
@@ -35,12 +32,6 @@ void main() async {
   await SubscriptionService.init(isarService.db);
 
   await SubscriptionService.syncSubscriptionToIsar(isarService.db);
-  
-  try {
-    debugPrint("Connected to Firebase Auth Emulator!");
-  } catch (e) {
-    debugPrint("Failed to connect to Auth Emulator: $e");
-  }
 
   runApp(
     const ProviderScope(
