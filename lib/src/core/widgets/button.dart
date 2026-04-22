@@ -4,12 +4,14 @@ class Button extends StatelessWidget {
   final String text;
   final VoidCallback onTap;
   final bool isSave;
+  final bool isLoading;
 
   const Button({
     super.key,
     required this.text,
     required this.onTap,
     this.isSave = true,
+    this.isLoading = false,
   });
 
   @override
@@ -24,23 +26,36 @@ class Button extends StatelessWidget {
       : Colors.white;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: isLoading 
+        ? null 
+        : onTap,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: buttonColor,
+          color:isLoading 
+            ? buttonColor.withOpacity(0.6) 
+            : buttonColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Center(
-          child: Text(
-            text,
-            style: TextStyle(
-              color: textColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+          child: isLoading
+            ? SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: textColor,
+                ),
+              )
+            : Text(
+              text,
+              style: TextStyle(
+                color: textColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
-          ),
         ),
       ),
     );

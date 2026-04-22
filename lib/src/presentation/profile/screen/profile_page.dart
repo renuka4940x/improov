@@ -75,7 +75,10 @@ class ProfilePage extends ConsumerWidget {
                   
                   const Divider(color: Colors.grey),
                   const SizedBox(height: 16),
-                  Text("Achievements:", style: AppStyle.title(context)),
+                  Text(
+                    "Achievements:", 
+                    style: AppStyle.title(context)
+                  ),
 
                   statsAsync.when(
                     data: (stats) => Row(
@@ -196,7 +199,10 @@ class ProfilePage extends ConsumerWidget {
     );
   }
   
-  void _showEditNicknameDialog(BuildContext context, WidgetRef ref) {
+  void _showEditNicknameDialog(
+    BuildContext context, 
+    WidgetRef ref,
+  ) {
     final TextEditingController controller = TextEditingController();
   
     showDialog(
@@ -209,7 +215,9 @@ class ProfilePage extends ConsumerWidget {
         ),
         content: TextField(
           controller: controller,
+          maxLength: 20,
           decoration: const InputDecoration(
+            counterText: "",
             hintText: "your nickname~",
             hintStyle: TextStyle(
               fontStyle: FontStyle.italic,

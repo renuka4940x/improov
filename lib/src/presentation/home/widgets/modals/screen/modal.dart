@@ -40,6 +40,7 @@ class _ModalState extends ConsumerState<Modal> {
   
   bool isHabitMode = false;
   DateTime _selectedDate = DateTime.now();
+  bool _isLoading = false;
 
   final TextEditingController _taskTitleController = TextEditingController();
   final TextEditingController _taskDescController = TextEditingController();
@@ -194,6 +195,8 @@ class _ModalState extends ConsumerState<Modal> {
                   text: (widget.taskToEdit != null || widget.habitToEdit != null)
                     ? "Save"
                     : "Create", 
+                  
+                  isLoading: _isLoading,
                   onTap: () async {
                     //grab info from controller
                     String taskTitle = _taskTitleController.text;
@@ -204,32 +207,44 @@ class _ModalState extends ConsumerState<Modal> {
                     //make sure it's not empty
                     if (isHabitMode && habitName.isEmpty) return;
                     if (!isHabitMode && taskTitle.isEmpty) return;
-            
-                    // save info to db based on toggle mode
-                    if (isHabitMode) {
-                      await ref.read(habitNotifierProvider.notifier).handleSaveHabit(
-                        existingHabit: widget.habitToEdit,
-                        name: habitName, 
-                        description: habitDesc, 
-                        priority: _selectedHabitPriority, 
-                        goal: _selectedGoal, 
-                        startDate: _selectedDate,
-                        reminderTime: _habitReminder,
-                      );
-                    } else {
-                      await ref.read(taskNotifierProvider.notifier).handleSaveTask(
-                        existingTask: widget.taskToEdit,
-                        title: taskTitle, 
-                        description: taskDesc, 
-                        priority: _selectedTaskPriority, 
-                        dueDate: _selectedDate,
-                        reminder: _taskReminder,
-                      );
+
+                    //triggering loading state
+                    setState(() {
+                      _isLoading = true;
+                    });
+
+                    try {
+                      // save info to db based on toggle mode
+                      if (isHabitMode) {
+                        await ref.read(habitNotifierProvider.notifier).handleSaveHabit(
+                          existingHabit: widget.habitToEdit,
+                          name: habitName, 
+                          description: habitDesc, 
+                          priority: _selectedHabitPriority, 
+                          goal: _selectedGoal, 
+                          startDate: _selectedDate,
+                          reminderTime: _habitReminder,
+                        );
+                      } else {
+                        await ref.read(taskNotifierProvider.notifier).handleSaveTask(
+                          existingTask: widget.taskToEdit,
+                          title: taskTitle, 
+                          description: taskDesc, 
+                          priority: _selectedTaskPriority, 
+                          dueDate: _selectedDate,
+                          reminder: _taskReminder,
+                        );
+                      }
+              
+                      //close modal
+                      if (!context.mounted) return;
+                      Navigator.pop(context);
+
+                    } catch(e) {
+                      setState(() {
+                        _isLoading = false;
+                      });
                     }
-            
-                    //close modal
-                    if (!context.mounted) return;
-                    Navigator.pop(context);
                   },
                 ),
             

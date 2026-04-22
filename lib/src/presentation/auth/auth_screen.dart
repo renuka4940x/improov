@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:improov/src/core/routing/router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/src/presentation/settings/provider/app_settings_notifier.dart';
 
 class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
@@ -39,6 +40,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           _passwordController.text.trim(),
           _nicknameController.text.trim(),
         );
+
+        await ref.read(appSettingsNotifierProvider.notifier).updateNickname(_nicknameController.text);
       }
     } catch (e) {
       if (mounted) _showError(e.toString().replaceAll("Exception: ", ""));
@@ -98,6 +101,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   label: "What should we call you?",
                   hint: "nickname",
                   controller: _nicknameController,
+                  maxLength: 20,
                 ),
                 const SizedBox(height: 20),
               ],
@@ -254,6 +258,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     required String hint,
     required TextEditingController controller,
     bool isPassword = false,
+    int? maxLength,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,8 +275,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         TextField(
           controller: controller,
           obscureText: isPassword,
+          maxLength: maxLength,
 
           decoration: InputDecoration(
+            counterText: "",
             hintText: hint,
             hintStyle: const TextStyle(color: Colors.grey),
             filled: true,

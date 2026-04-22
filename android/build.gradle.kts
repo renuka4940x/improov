@@ -15,10 +15,14 @@ tasks.register<Delete>("clean") {
 
 subprojects {
     afterEvaluate {
-        plugins.withType<com.android.build.gradle.BasePlugin> {
-            extensions.findByType<com.android.build.gradle.BaseExtension>()?.apply {
-                if (namespace == null && project.name.contains("isar")) {
-                    namespace = "dev.isar.isar_flutter_libs"
+        if (project.hasProperty("android")) {
+            val androidExtension = project.extensions.findByName("android")
+            if (androidExtension is com.android.build.gradle.BaseExtension) {
+                
+                androidExtension.compileSdkVersion(36)
+                
+                if (androidExtension.namespace == null) {
+                    androidExtension.namespace = project.group.toString()
                 }
             }
         }

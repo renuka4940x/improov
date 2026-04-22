@@ -38,7 +38,10 @@ android {
         applicationId = "app.improov.mobile"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
+        compileSdk = 36
         minSdk = 24
+
+        targetSdk = 36
         multiDexEnabled = true
 
         minSdk = flutter.minSdkVersion

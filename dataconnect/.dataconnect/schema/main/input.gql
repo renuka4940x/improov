@@ -27,7 +27,7 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Habit`.`id` of type `String!`)
   """
-  id_expr: String_Expr
+  id_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`bestStreak` of type `Int`
   """
@@ -35,11 +35,11 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `bestStreak` (✨ Generated from Field `Habit`.`bestStreak` of type `Int`)
   """
-  bestStreak_expr: Int_Expr
+  bestStreak_expr: Int_Expr @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `bestStreak` (✨ Generated from Field `Habit`.`bestStreak` of type `Int`)
   """
-  bestStreak_update: [Int_Update!]
+  bestStreak_update: [Int_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`colorHex` of type `Float!`
   """
@@ -47,11 +47,11 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `colorHex` (✨ Generated from Field `Habit`.`colorHex` of type `Float!`)
   """
-  colorHex_expr: Float_Expr
+  colorHex_expr: Float_Expr @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `colorHex` (✨ Generated from Field `Habit`.`colorHex` of type `Float!`)
   """
-  colorHex_update: [Float_Update!]
+  colorHex_update: [Float_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`completedDays` of type `[String!]`
   """
@@ -59,7 +59,7 @@ input Habit_Data {
   """
   ✨ `_update` server value variant of `completedDays` (✨ Generated from Field `Habit`.`completedDays` of type `[String!]`)
   """
-  completedDays_update: [String_ListUpdate!]
+  completedDays_update: [String_ListUpdate!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`currentStreak` of type `Int`
   """
@@ -67,11 +67,11 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `currentStreak` (✨ Generated from Field `Habit`.`currentStreak` of type `Int`)
   """
-  currentStreak_expr: Int_Expr
+  currentStreak_expr: Int_Expr @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `currentStreak` (✨ Generated from Field `Habit`.`currentStreak` of type `Int`)
   """
-  currentStreak_update: [Int_Update!]
+  currentStreak_update: [Int_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`description` of type `String!`
   """
@@ -79,7 +79,7 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `description` (✨ Generated from Field `Habit`.`description` of type `String!`)
   """
-  description_expr: String_Expr
+  description_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`goalDaysPerWeek` of type `Int!`
   """
@@ -87,11 +87,11 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `goalDaysPerWeek` (✨ Generated from Field `Habit`.`goalDaysPerWeek` of type `Int!`)
   """
-  goalDaysPerWeek_expr: Int_Expr
+  goalDaysPerWeek_expr: Int_Expr @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `goalDaysPerWeek` (✨ Generated from Field `Habit`.`goalDaysPerWeek` of type `Int!`)
   """
-  goalDaysPerWeek_update: [Int_Update!]
+  goalDaysPerWeek_update: [Int_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`isArchived` of type `Boolean!`
   """
@@ -99,7 +99,7 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `isArchived` (✨ Generated from Field `Habit`.`isArchived` of type `Boolean!`)
   """
-  isArchived_expr: Boolean_Expr
+  isArchived_expr: Boolean_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`isHabitMode` of type `Boolean!`
   """
@@ -107,7 +107,7 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `isHabitMode` (✨ Generated from Field `Habit`.`isHabitMode` of type `Boolean!`)
   """
-  isHabitMode_expr: Boolean_Expr
+  isHabitMode_expr: Boolean_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`name` of type `String!`
   """
@@ -115,7 +115,7 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `name` (✨ Generated from Field `Habit`.`name` of type `String!`)
   """
-  name_expr: String_Expr
+  name_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`priority` of type `String!`
   """
@@ -123,7 +123,7 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `priority` (✨ Generated from Field `Habit`.`priority` of type `String!`)
   """
-  priority_expr: String_Expr
+  priority_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`reminderTime` of type `Timestamp`
   """
@@ -131,15 +131,15 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `reminderTime` (✨ Generated from Field `Habit`.`reminderTime` of type `Timestamp`)
   """
-  reminderTime_expr: Timestamp_Expr
+  reminderTime_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `reminderTime` (✨ Generated from Field `Habit`.`reminderTime` of type `Timestamp`)
   """
-  reminderTime_time: Timestamp_Relative
+  reminderTime_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `reminderTime` (✨ Generated from Field `Habit`.`reminderTime` of type `Timestamp`)
   """
-  reminderTime_update: [Timestamp_Update!]
+  reminderTime_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`startDate` of type `Timestamp!`
   """
@@ -147,15 +147,15 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `startDate` (✨ Generated from Field `Habit`.`startDate` of type `Timestamp!`)
   """
-  startDate_expr: Timestamp_Expr
+  startDate_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `startDate` (✨ Generated from Field `Habit`.`startDate` of type `Timestamp!`)
   """
-  startDate_time: Timestamp_Relative
+  startDate_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `startDate` (✨ Generated from Field `Habit`.`startDate` of type `Timestamp!`)
   """
-  startDate_update: [Timestamp_Update!]
+  startDate_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Habit`.`userId` of type `String!`
   """
@@ -163,7 +163,7 @@ input Habit_Data {
   """
   ✨ `_expr` server value variant of `userId` (✨ Generated from Field `Habit`.`userId` of type `String!`)
   """
-  userId_expr: String_Expr
+  userId_expr: String_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated filter input type for table 'Habit'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -419,7 +419,7 @@ input Habit_Key {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Habit`.`id` of type `String!`)
   """
-  id_expr: String_Expr
+  id_expr: String_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated list filter input type for table 'Habit'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -638,7 +638,7 @@ input Task_Data {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Task`.`id` of type `String!`)
   """
-  id_expr: String_Expr
+  id_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Task`.`createdAt` of type `Timestamp!`
   """
@@ -646,15 +646,15 @@ input Task_Data {
   """
   ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Task`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_expr: Timestamp_Expr
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Task`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_time: Timestamp_Relative
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Task`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_update: [Timestamp_Update!]
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Task`.`description` of type `String`
   """
@@ -662,7 +662,7 @@ input Task_Data {
   """
   ✨ `_expr` server value variant of `description` (✨ Generated from Field `Task`.`description` of type `String`)
   """
-  description_expr: String_Expr
+  description_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Task`.`dueDate` of type `Timestamp!`
   """
@@ -670,15 +670,15 @@ input Task_Data {
   """
   ✨ `_expr` server value variant of `dueDate` (✨ Generated from Field `Task`.`dueDate` of type `Timestamp!`)
   """
-  dueDate_expr: Timestamp_Expr
+  dueDate_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `dueDate` (✨ Generated from Field `Task`.`dueDate` of type `Timestamp!`)
   """
-  dueDate_time: Timestamp_Relative
+  dueDate_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `dueDate` (✨ Generated from Field `Task`.`dueDate` of type `Timestamp!`)
   """
-  dueDate_update: [Timestamp_Update!]
+  dueDate_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Task`.`isCompleted` of type `Boolean!`
   """
@@ -686,7 +686,7 @@ input Task_Data {
   """
   ✨ `_expr` server value variant of `isCompleted` (✨ Generated from Field `Task`.`isCompleted` of type `Boolean!`)
   """
-  isCompleted_expr: Boolean_Expr
+  isCompleted_expr: Boolean_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Task`.`name` of type `String!`
   """
@@ -694,7 +694,7 @@ input Task_Data {
   """
   ✨ `_expr` server value variant of `name` (✨ Generated from Field `Task`.`name` of type `String!`)
   """
-  name_expr: String_Expr
+  name_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Task`.`priority` of type `String`
   """
@@ -702,7 +702,7 @@ input Task_Data {
   """
   ✨ `_expr` server value variant of `priority` (✨ Generated from Field `Task`.`priority` of type `String`)
   """
-  priority_expr: String_Expr
+  priority_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Task`.`userId` of type `String!`
   """
@@ -710,7 +710,7 @@ input Task_Data {
   """
   ✨ `_expr` server value variant of `userId` (✨ Generated from Field `Task`.`userId` of type `String!`)
   """
-  userId_expr: String_Expr
+  userId_expr: String_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated filter input type for table 'Task'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -858,7 +858,7 @@ input Task_Key {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Task`.`id` of type `String!`)
   """
-  id_expr: String_Expr
+  id_expr: String_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated list filter input type for table 'Task'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -973,7 +973,7 @@ input User_Data {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `String!`)
   """
-  id_expr: String_Expr
+  id_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
   """
@@ -981,15 +981,15 @@ input User_Data {
   """
   ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_expr: Timestamp_Expr
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_time: Timestamp_Relative
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_update: [Timestamp_Update!]
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `User`.`email` of type `String!`
   """
@@ -997,7 +997,7 @@ input User_Data {
   """
   ✨ `_expr` server value variant of `email` (✨ Generated from Field `User`.`email` of type `String!`)
   """
-  email_expr: String_Expr
+  email_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `User`.`passwordHash` of type `String!`
   """
@@ -1005,7 +1005,7 @@ input User_Data {
   """
   ✨ `_expr` server value variant of `passwordHash` (✨ Generated from Field `User`.`passwordHash` of type `String!`)
   """
-  passwordHash_expr: String_Expr
+  passwordHash_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `User`.`username` of type `String!`
   """
@@ -1013,7 +1013,7 @@ input User_Data {
   """
   ✨ `_expr` server value variant of `username` (✨ Generated from Field `User`.`username` of type `String!`)
   """
-  username_expr: String_Expr
+  username_expr: String_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated filter input type for table 'User'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -1129,7 +1129,7 @@ input User_Key {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `String!`)
   """
-  id_expr: String_Expr
+  id_expr: String_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated list filter input type for table 'User'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.

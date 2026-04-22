@@ -247,7 +247,7 @@ extend type Habit {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "Habit.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "Habit.id", purpose: ENTITY_ID)
 }
 extend type Task {
   """
@@ -349,7 +349,7 @@ extend type Task {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "Task.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "Task.id", purpose: ENTITY_ID)
 }
 extend type User {
   """
@@ -416,5 +416,5 @@ extend type User {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "User.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "User.id", purpose: ENTITY_ID)
 }
