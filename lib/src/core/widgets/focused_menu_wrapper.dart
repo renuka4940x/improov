@@ -97,11 +97,35 @@ class _MenuOverlay extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 6),
-            _item(context, "Edit", Icons.edit_outlined, onEdit),
-            const Divider(color: Colors.grey, height: 1),
-            _item(context, "Details", Icons.info_outline, onDetails),
-            const Divider(color: Colors.grey, height: 1),
-            _item(context, "Delete", Icons.delete_outline, onDelete, isRed: true),
+            
+            //edit
+            _item(
+              context, 
+              "Edit", 
+              Icons.edit_outlined, 
+              onEdit
+            ),
+
+            //details
+            Divider(color: Colors.grey.withValues(alpha: 0.1), height: 1),
+
+            _item(
+              context, 
+              "Details", 
+              Icons.info_outline, 
+              onDetails
+            ),
+
+            //delete
+            Divider(color: Colors.grey.withValues(alpha: 0.1), height: 1),
+
+            _item(
+              context, 
+              "Delete", 
+              Icons.delete_outline, 
+              onDelete, 
+              isRed: true
+            ),
             const SizedBox(height: 6),
           ],
         ),

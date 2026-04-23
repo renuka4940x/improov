@@ -182,7 +182,9 @@ class NotificationService {
           } else {
             // FREE
             final now = DateTime.now();
-            timeToRing = DateTime(now.year, now.month, now.day, 9, 0);
+            final defaultHour = settings?.defaultReminderHour ?? 9;
+
+            timeToRing = DateTime(now.year, now.month, now.day, defaultHour, 0);
             debugPrint("Daily reminder for ${habit.name} is here~");
           }
 
@@ -290,11 +292,13 @@ class NotificationService {
       if (isPremium && task.reminderTime != null) {
         timeToRing = task.reminderTime!;
       } else if (task.dueDate != null) {
+        final defaultHour = settings?.defaultReminderHour ?? 9;
+
         timeToRing = DateTime(
           task.dueDate!.year, 
           task.dueDate!.month, 
           task.dueDate!.day, 
-          9, 0
+          defaultHour, 0
         );
       }
 

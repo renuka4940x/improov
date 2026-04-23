@@ -31,6 +31,9 @@ class AppSettings {
   //get subscription type
   bool get isPro => subscriptionType != SubscriptionType.none;
 
+  //notification time
+  int defaultReminderHour = 9;
+
   AppSettings({
     this.isDarkMode = false,
     this.hapticsEnabled = true,

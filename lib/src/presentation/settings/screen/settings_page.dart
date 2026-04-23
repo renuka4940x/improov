@@ -256,6 +256,73 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ref.read(appSettingsNotifierProvider.notifier).toggleNotifications();
                     },
                   ),
+
+                  //default reminder time selector
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Default Reminder Time",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          "When should we remind you for habits?",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        
+                        // The Segmented Button
+                        SizedBox(
+                          width: double.infinity,
+                          child: SegmentedButton<int>(
+                            segments: const [
+                              ButtonSegment<int>(
+                                value: 9,
+                                label: Text('Morning'),
+                                icon: Icon(Icons.wb_sunny_outlined, size: 18),
+                              ),
+                              ButtonSegment<int>(
+                                value: 15,
+                                label: Text('Afternoon'),
+                                icon: Icon(Icons.cloud_outlined, size: 18),
+                              ),
+                              ButtonSegment<int>(
+                                value: 21,
+                                label: Text('Night'),
+                                icon: Icon(Icons.nights_stay_outlined, size: 18),
+                              ),
+                            ],
+
+                            //read from isar
+                            selected: {settings.defaultReminderHour},
+                            onSelectionChanged: (Set<int> newSelection) {
+                              // Saves to Isar
+                              ref.read(appSettingsNotifierProvider.notifier)
+                                 .updateDefaultReminderHour(newSelection.first);
+                            },
+
+                            style: SegmentedButton.styleFrom(
+                              backgroundColor: Theme.of(context).colorScheme.surface,
+                              selectedBackgroundColor: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.2),
+                              selectedForegroundColor: Theme.of(context).colorScheme.inversePrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  Divider(color: Colors.grey.withValues(alpha: 0.2)),
                 ],
               ),
               loading: () => const Center(child: CupertinoActivityIndicator()),
@@ -346,7 +413,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             const SizedBox(height: 40),
             Center(
               child: Text(
-                "Improov v1.0.0",
+                "Improov v0.1.1.beta",
                 style: TextStyle(
                   color: Colors.grey.shade500, 
                   fontSize: 12

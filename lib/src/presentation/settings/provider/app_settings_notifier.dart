@@ -96,6 +96,19 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     ref.invalidateSelf();
   }
 
+  // U P D A T E - Default Reminder Time
+  Future<void> updateDefaultReminderHour(int hour) async {
+    final service = await ref.read(isarDatabaseProvider.future);
+
+    await service.db.writeTxn(() async {
+      final settings = await service.db.appSettings.get(0) ?? (AppSettings()..id = 0);
+      settings.defaultReminderHour = hour;
+      await service.db.appSettings.put(settings);
+    });
+    
+    ref.invalidateSelf();
+  }
+
   // Syncs RevenueCat status and updates the UI state
   Future<void> syncSubscriptionStatus() async {
     // database instance
