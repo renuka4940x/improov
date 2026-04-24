@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:improov/src/data/database/isar_service.dart';
 import 'package:improov/src/features/notifications/notification_service.dart';
 import 'package:improov/src/features/services/subscription_services.dart';
 import 'package:improov/src/presentation/settings/provider/app_settings_notifier.dart';
 import 'package:improov/src/core/routing/router.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -18,6 +20,17 @@ void main() async {
   //firebase init
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.playIntegrity,
+  );
+
+  //google calendar init
+  const String googleClientId = String.fromEnvironment('GOOGLE_CLIENT_ID');
+
+  await GoogleSignIn.instance.initialize(
+    serverClientId: googleClientId,
   );
 
   //notification initialization

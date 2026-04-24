@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:improov/src/data/services/auth_service.dart';
@@ -13,22 +14,22 @@ final authServiceProvider = ChangeNotifierProvider<AuthService>((ref) {
   return AuthService(ref); 
 });
 
-// 🚀 1. Wrap the entire router in a Provider so it has access to 'ref'
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final routerProvider = Provider<GoRouter>((ref) {
   
   return GoRouter(
-    // 🚀 2. Use ref.watch so GoRouter reacts when AuthService notifies listeners
+    navigatorKey: _rootNavigatorKey,
+
     refreshListenable: ref.watch(authServiceProvider),
     initialLocation: '/',
 
     redirect: (context, state) {
-      // 🚀 3. Grab the actual SERVICE instance, not the provider itself
       final authService = ref.read(authServiceProvider);
       
       final bool loggedIn = authService.isAuthenticated;
       final bool loggingIn = state.matchedLocation == '/auth';
 
-      // 🚀 4. GATEKEEPER LOGIC
       // If NOT logged in, send them to /auth
       if (!loggedIn) {
         return '/auth';
@@ -90,17 +91,13 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/profile',
                 builder: (context, state) => const ProfilePage(),
-              ),
-            ],
-          ),
-
-          // settings
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/settings',
-                name: 'settings',
-                builder: (context, state) => const SettingsPage(),
+                routes: [
+                  GoRoute(
+                    path: 'settings',
+                    name: 'settings',
+                    builder: (context, state) => const SettingsPage(),
+                  ),
+                ],
               ),
             ],
           ),

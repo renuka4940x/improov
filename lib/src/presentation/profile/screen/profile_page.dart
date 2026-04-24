@@ -150,7 +150,9 @@ class ProfilePage extends ConsumerWidget {
                     padding: const EdgeInsets.all(8),
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onTap: () => context.pushNamed('settings'),
+                      onTap: () { 
+                        context.pushNamed('settings');
+                      },
                       child: const BuildRow(
                         label: "Settings", 
                         trailing: Icon(Icons.arrow_forward_ios_rounded, size: 16),

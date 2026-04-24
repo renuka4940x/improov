@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:improov/src/features/calendar/calendar_service.dart';
 import 'package:improov/src/features/tasks/provider/task_notifier.dart';
 import 'package:improov/src/features/habits/provider/habit_notifier.dart';
 import 'package:improov/src/presentation/home/widgets/modals/forms/build_habit_form.dart';
@@ -30,6 +31,8 @@ class Modal extends ConsumerStatefulWidget {
 }
 
 class _ModalState extends ConsumerState<Modal> {
+  bool _syncToCalendar = false;
+
   Priority _selectedHabitPriority = Priority.low;
   Priority _selectedTaskPriority = Priority.low;
 
@@ -177,6 +180,8 @@ class _ModalState extends ConsumerState<Modal> {
                     currentStartDate: _selectedDate,
                     currentPriority: _selectedTaskPriority,
                     currentReminder: _taskReminder,
+                    isCalendarSyncEnabled: _syncToCalendar,
+
                     onDateChanged: (newDate) {
                       setState(() => _selectedDate = newDate);
                     },
@@ -186,6 +191,9 @@ class _ModalState extends ConsumerState<Modal> {
                     onDateTimeSelected: (newTaskTime) {
                       setState(() => _taskReminder = newTaskTime);
                     },
+                    onCalendarSyncChanged: (val) {
+                      setState(() => _syncToCalendar = val);
+                    }
                   ),
             
                 const SizedBox(height: 20),
@@ -234,8 +242,40 @@ class _ModalState extends ConsumerState<Modal> {
                           dueDate: _selectedDate,
                           reminder: _taskReminder,
                         );
+
+                        // check the toggle state and sync to Google Calendar
+                        if (_syncToCalendar) {
+                          final calendarTime = _taskReminder ?? 
+                            DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 9, 0);
+
+                          //Capture the boolean result
+                          final isSynced = await CalendarService().addTaskToCalendar(
+                            title: taskTitle,
+                            description: taskDesc,
+                            dueDate: calendarTime,
+                          );
+
+                          //Show a quick SnackBar so the user knows what happened
+                          if (context.mounted) {
+                            if (isSynced) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Synced to Google Calendar! GGs"),
+                                  backgroundColor: Colors.green.shade300,
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text("Task saved, but couldn't sync to Calendar."),
+                                  backgroundColor: Colors.red.shade300,
+                                ),
+                              );
+                            }
+                          }
+                        }
                       }
-              
+
                       //close modal
                       if (!context.mounted) return;
                       Navigator.pop(context);

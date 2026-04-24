@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:improov/src/core/widgets/build_row.dart';
 import 'package:improov/src/presentation/home/widgets/modals/components/pickers/date_picker.dart';
@@ -20,6 +21,10 @@ class BuildTaskForm extends StatelessWidget {
   final Function(Priority) onPriorityChanged;
   final Function(DateTime?) onDateTimeSelected;
 
+  //calendar sync variable and callback
+  final bool isCalendarSyncEnabled;
+  final Function(bool) onCalendarSyncChanged;
+
   const BuildTaskForm({
     super.key,
     required this.isPremium,
@@ -30,6 +35,8 @@ class BuildTaskForm extends StatelessWidget {
     required this.onDateChanged,
     required this.onPriorityChanged,
     required this.onDateTimeSelected,
+    required this.isCalendarSyncEnabled,
+    required this.onCalendarSyncChanged,
   });
 
   @override
@@ -74,6 +81,19 @@ class BuildTaskForm extends StatelessWidget {
                   onDateTimeSelected: onDateTimeSelected,
                 ),
               ),
+            ),
+          ),
+        ),
+
+        //sync to google calendar
+        BuildRow(
+          label: "Sync to Calendar",
+          trailing: Transform.scale(
+            scale: 0.6, 
+            child: CupertinoSwitch(
+              value: isCalendarSyncEnabled,
+              activeColor: Theme.of(context).colorScheme.tertiary,
+              onChanged: onCalendarSyncChanged,
             ),
           ),
         ),

@@ -413,7 +413,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             const SizedBox(height: 40),
             Center(
               child: Text(
-                "Improov v0.1.1.beta",
+                "Improov v0.2.0.beta",
                 style: TextStyle(
                   color: Colors.grey.shade500, 
                   fontSize: 12

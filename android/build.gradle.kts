@@ -24,7 +24,20 @@ subprojects {
                 if (androidExtension.namespace == null) {
                     androidExtension.namespace = project.group.toString()
                 }
+
+                androidExtension.compileOptions {
+                    sourceCompatibility = JavaVersion.VERSION_17
+                    targetCompatibility = JavaVersion.VERSION_17
+                }
             }
+        }
+    }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = "17"
+
+            freeCompilerArgs += listOf("-Xskip-prerelease-check")
         }
     }
 }
