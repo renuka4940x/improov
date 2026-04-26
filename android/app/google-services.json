@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "788643923827-3bvqbh6dfies14d7fq1f0rssjmens73s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.improov.mobile",
+            "certificate_hash": "a7e0d92e5eaa40a997148d263328bfbde6255275"
+          }
+        },
+        {
           "client_id": "788643923827-g738834bjet52s9oa77mruarij1glrli.apps.googleusercontent.com",
           "client_type": 3
         }

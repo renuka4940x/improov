@@ -13,6 +13,7 @@ import 'package:improov/src/data/models/habit/habit.dart';
 import 'package:improov/src/data/models/task/task.dart';
 import 'package:improov/src/core/widgets/button.dart';
 import 'package:improov/src/data/provider/subscription_provider.dart';
+import 'package:improov/src/core/widgets/ui_helper.dart';
 
 class Modal extends ConsumerStatefulWidget {
   final Task? taskToEdit;
@@ -248,28 +249,26 @@ class _ModalState extends ConsumerState<Modal> {
                           final calendarTime = _taskReminder ?? 
                             DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 9, 0);
 
-                          //Capture the boolean result
-                          final isSynced = await CalendarService().addTaskToCalendar(
-                            title: taskTitle,
-                            description: taskDesc,
-                            dueDate: calendarTime,
-                          );
+                          try {
+                            final isSynced = await CalendarService().addTaskToCalendar(
+                              title: taskTitle,
+                              description: taskDesc,
+                              dueDate: calendarTime,
+                            );
 
-                          //Show a quick SnackBar so the user knows what happened
-                          if (context.mounted) {
-                            if (isSynced) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text("Synced to Google Calendar! GGs"),
-                                  backgroundColor: Colors.green.shade300,
-                                ),
+                            if (context.mounted) {
+                              showImproovToast(
+                                context, 
+                                isSynced ? "GGs! The task is synced :)" : "Sadly, couldn't sync to Calendar :(",
+                                isSuccess: isSynced,
                               );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text("Task saved, but couldn't sync to Calendar."),
-                                  backgroundColor: Colors.red.shade300,
-                                ),
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              showImproovToast(
+                                context, 
+                                "CRASH: ${e.toString()}", 
+                                isSuccess: false,
                               );
                             }
                           }
