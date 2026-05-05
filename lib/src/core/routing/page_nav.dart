@@ -35,7 +35,6 @@ class PageNav extends ConsumerWidget {
       floatingActionButton: Padding(
         padding: EdgeInsets.only(top: 20),
         child: FloatingActionButton(
-          shape: const CircleBorder(),
           onPressed: () {
             FocusScope.of(context).unfocus(); 
 
@@ -51,9 +50,10 @@ class PageNav extends ConsumerWidget {
               backgroundColor: Colors.transparent,
             );
           },
-          backgroundColor: Theme.of(context).colorScheme.tertiary,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           child: Icon(
             Icons.add, 
+            size: 20,
             color: Theme.of(context).colorScheme.inversePrimary,
           ),
         ),

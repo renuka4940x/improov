@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:improov/src/core/widgets/custom_checkbox.dart';
 import 'package:improov/src/core/widgets/focused_menu_wrapper.dart';
 import 'package:improov/src/presentation/home/widgets/modals/screen/modal.dart';
@@ -105,7 +106,9 @@ class HabitTile extends ConsumerWidget {
                 color: Colors.transparent,
                 border: Border(
                   left: BorderSide(
-                    color: isUrgent ? Colors.red.shade300 : Colors.transparent,
+                    color: isUrgent 
+                      ? Colors.red.shade300 
+                      : Colors.transparent,
                     width: 3,
                   ),
                 ),
@@ -163,13 +166,18 @@ class HabitTile extends ConsumerWidget {
                   //streak
                   Row(
                     children: [
-                      Icon(
-                        Icons.local_fire_department_outlined,
-                        size: 20,
-                        color: isCompletedToday 
-                          ? Theme.of(context).colorScheme.tertiary
-                          : (isUrgent ? Colors.red.shade300 : Colors.grey),
+                      SvgPicture.asset(
+                        'assets/icons/dark_icons/streak.svg',
+                        width: 14,
+                        height: 14,
+                        colorFilter: ColorFilter.mode(
+                          isCompletedToday 
+                            ? Theme.of(context).colorScheme.tertiary
+                            : (isUrgent ? Colors.red.shade300 : Colors.grey),
+                          BlendMode.srcIn,
+                        ),
                       ),
+                      const SizedBox(width: 5),
                       Text(
                         habit.displayedStreak.toString(),
                         style: TextStyle(

@@ -91,18 +91,17 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/profile',
                 builder: (context, state) => const ProfilePage(),
-                routes: [
-                  GoRoute(
-                    path: 'settings',
-                    name: 'settings',
-                    builder: (context, state) => const SettingsPage(),
-                  ),
-                ],
               ),
             ],
           ),
         ],
       ),
+
+      //settings
+      GoRoute(
+        path: '/settings',
+        builder:(context, state) => const SettingsPage(),
+      )
     ],
   );
 });

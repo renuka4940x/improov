@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/widgets/build_row.dart';
@@ -34,7 +35,7 @@ class ProfilePage extends ConsumerWidget {
                 ),
               ),
               child: ListView(
-                padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
                 children: [
                   settingsAsync.when(
                     data: (settings) => Row(
@@ -73,11 +74,15 @@ class ProfilePage extends ConsumerWidget {
                     error: (err, stack) => const Text("Yoo, mate!"),
                   ),
                   
-                  const Divider(color: Colors.grey),
+                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
                   const SizedBox(height: 16),
-                  Text(
-                    "Achievements:", 
-                    style: AppStyle.title(context)
+                  BuildRow(
+                    label: 'Achievements:', 
+                    trailing: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: Theme.of(context).colorScheme.surface,
+                    ),
+                    isBold: true,
                   ),
 
                   statsAsync.when(
@@ -86,13 +91,13 @@ class ProfilePage extends ConsumerWidget {
                       children: [
                         _buildStatCard(
                           context,
-                          iconData: Icons.local_fire_department_outlined,
+                          iconPath: 'assets/icons/dark_icons/streak.svg',
                           label: "Best Streak",
                           value: "${stats['bestStreak']}",
                         ),
                         _buildStatCard(
                           context,
-                          iconData: Icons.calendar_today_outlined,
+                          iconPath: 'assets/icons/dark_icons/calendar.svg',
                           label: "Tasks Done",
                           value: "${stats['totalTasksCompleted']}",
                         ),
@@ -102,11 +107,9 @@ class ProfilePage extends ConsumerWidget {
                     error: (err, _) => Text("Error: $err"),
                   ),
 
-                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
-
                   // Dynamic Premium / Manage Row
                   Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical:4),
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       // If free: show Paywall. If Premium: open native settings to cancel/manage.
@@ -144,14 +147,12 @@ class ProfilePage extends ConsumerWidget {
                     ),
                   ),
 
-                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
-
                   Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical:4),
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: () { 
-                        context.pushNamed('settings');
+                        context.push('/settings');
                       },
                       child: const BuildRow(
                         label: "Settings", 
@@ -160,8 +161,6 @@ class ProfilePage extends ConsumerWidget {
                       ),
                     ),
                   ),
-
-                  Divider(color: Colors.grey.withValues(alpha: 0.5)),
                 ],
               ),
             ),
@@ -174,7 +173,7 @@ class ProfilePage extends ConsumerWidget {
   //stats card
   Widget _buildStatCard(
     BuildContext context, {
-      required IconData iconData, 
+      required String iconPath, 
       required String label, 
       required String value
     }
@@ -188,13 +187,21 @@ class ProfilePage extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(iconData),
+                SvgPicture.asset(
+                  iconPath,
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.inversePrimary, 
+                    BlendMode.srcIn
+                  ),
+                ),
                 const SizedBox(width: 8),
                 Text(value, style: AppStyle.title(context)),
               ],
             ),
             const SizedBox(height: 4),
-            Text(label, style: const TextStyle(fontSize: 16)),
+            Text(label, style: const TextStyle(fontSize: 14)),
           ],
         ),
       ),

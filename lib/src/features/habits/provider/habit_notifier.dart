@@ -11,6 +11,7 @@ import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:improov/dataconnect_generated/generated.dart';
+import 'package:improov/src/features/notifications/notification_service.dart';
 
 part 'habit_notifier.g.dart';
 
@@ -160,7 +161,17 @@ class HabitNotifier extends _$HabitNotifier {
       });
       
       ref.invalidateSelf();
-      
+
+      //notification intercept
+      try {
+        if (isCompleted) {
+          await NotificationService().cancelNotification(id);
+        }
+      } catch (e) {
+        debugPrint("Notification Update Error: $e");
+      }  
+
+      //cloud sync
       try {
         await ExampleConnector.instance.updateHabitCompletion(
           id: habit.uuid,

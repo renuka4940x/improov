@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:improov/src/core/constants/app_style.dart';
@@ -237,7 +238,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   _buildToggleTile(
                     title: "Dark Mode",
                     subtitle: "Easier on the eyes at night",
-                    icon: Icons.dark_mode_outlined,
+                    iconPath: 'assets/icons/dark_icons/moon.svg',
                     value: settings.isDarkMode,
                     onChanged: (_) => ref.read(appSettingsNotifierProvider.notifier).toggleTheme(),
                   ),
@@ -246,7 +247,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   _buildToggleTile(
                     title: "Notifications",
                     subtitle: "Get a nudge to stay on track",
-                    icon: Icons.notifications_none_outlined,
+                    iconPath: 'assets/icons/dark_icons/notifications.svg',
                     value: settings.notifyHabitReminders, 
                     onChanged: (val) async {
                       if (val) {
@@ -263,23 +264,42 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Default Reminder Time",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/icons/dark_icons/time.svg',
+                              width: 20,
+                              height: 20,
+                              colorFilter: ColorFilter.mode(
+                                Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9),
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Text(
+                              "Reminder Time",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          "When should we remind you for habits?",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            const SizedBox(width: 40),
+                            const Text(
+                              "When should we remind you for Goals?",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 14),
                         
                         // The Segmented Button
                         SizedBox(
@@ -315,14 +335,16 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               backgroundColor: Theme.of(context).colorScheme.surface,
                               selectedBackgroundColor: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.2),
                               selectedForegroundColor: Theme.of(context).colorScheme.inversePrimary,
+
+                              side: BorderSide(
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  
-                  Divider(color: Colors.grey.withValues(alpha: 0.2)),
                 ],
               ),
               loading: () => const Center(child: CupertinoActivityIndicator()),
@@ -335,7 +357,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             _buildActionTile(
               title: "Export Data",
               subtitle: "Download your habit history as CSV file",
-              icon: Icons.download_outlined,
+              iconPath: 'assets/icons/dark_icons/export.svg',
               isProFeature: !isPremium, 
               onTap: isPremium 
                   ? exportDataAsCSV 
@@ -345,7 +367,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             _buildActionTile(
               title: "Delete Progress",
               subtitle: "Permanently wipe all data",
-              icon: Icons.delete_outlined,
+              iconPath: 'assets/icons/dark_icons/trash.svg',
               isDestructive: true,
               onTap: showDeleteConfirmation,
             ),
@@ -353,7 +375,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             _buildActionTile(
               title: "Delete Account",
               subtitle: "Permanently remove your account and cloud data",
-              icon: Icons.person_off_outlined,
+              iconPath: 'assets/icons/dark_icons/delete_profile.svg',
               isDestructive: true,
               onTap: showAccountDeletionDialog,
             ),
@@ -363,7 +385,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             _buildActionTile(
               title: "About Improov",
               subtitle: "Learn more about the app and team",
-              icon: Icons.info_outline_rounded,
+              iconPath: 'assets/icons/dark_icons/about.svg',
               onTap: () {
                 showDialog(
                   context: context,
@@ -384,14 +406,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         applicationIcon: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
-                            'assets/images/logo.png',
+                            'assets/logo/improov_logo.png',
                             width: 50,
                             height: 50,
                             errorBuilder: (context, error, stackTrace) => 
                                 const Icon(Icons.auto_awesome, size: 50),
                           ),
                         ),
-                        applicationLegalese: "© 2026 Ren's Lab",
+                        applicationLegalese: "© 2026 Serene Creates",
                         children: [
                           const SizedBox(height: 20),
                           Text(
@@ -413,7 +435,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             const SizedBox(height: 40),
             Center(
               child: Text(
-                "Improov v0.2.0.beta",
+                "Improov v1.0.0",
                 style: TextStyle(
                   color: Colors.grey.shade500, 
                   fontSize: 12
@@ -445,7 +467,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget _buildToggleTile({
     required String title,
     required String subtitle,
-    required IconData icon,
+    required String iconPath,
     required bool value,
     required Function(bool) onChanged,
   }) {
@@ -454,9 +476,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       child: Column(
         children: [
           ListTile(
-            leading: Icon(
-              icon, 
-              color: Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9)
+            leading: SvgPicture.asset(
+              iconPath,
+              width: 20,
+              height: 20,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9),
+                BlendMode.srcIn,
+              ),
             ),
             title: Text(
               title,
@@ -481,7 +508,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ),
             ),
           ),
-          Divider(color: Colors.grey.withValues(alpha: 0.2)),
         ],
       ),
     );
@@ -490,20 +516,27 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget _buildActionTile({
     required String title,
     required String subtitle,
-    required IconData icon,
+    required String iconPath,
     required VoidCallback onTap,
     bool isDestructive = false,
     bool isProFeature = false,
   }) {
+
     final color = isDestructive 
       ? Colors.red.shade300 
       : Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9);
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       child: Column(
         children: [
           ListTile(
-            leading: Icon(icon, color: color),
+            leading: SvgPicture.asset(
+              iconPath,
+              width: 20,
+              height: 20,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+            ),
             title: Text(
               title, 
               style: TextStyle(
@@ -537,7 +570,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               : null,
             onTap: onTap,
           ),
-          Divider(color: Colors.grey.withValues(alpha: 0.2)),
         ],
       ),
     );

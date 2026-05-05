@@ -88,15 +88,30 @@ class BuildTaskForm extends StatelessWidget {
         //sync to google calendar
         BuildRow(
           label: "Sync to Calendar",
-          trailing: Transform.scale(
-            scale: 0.6, 
-            child: CupertinoSwitch(
-              value: isCalendarSyncEnabled,
-              activeColor: Theme.of(context).colorScheme.tertiary,
-              onChanged: onCalendarSyncChanged,
+          isPro: !isPremium,
+          trailing: GestureDetector(
+            onTap: isPremium 
+              ? null 
+              : onPremiumLockedTap,
+            child: AbsorbPointer(
+              absorbing: !isPremium,
+              child: Opacity(
+                opacity: isPremium 
+                  ? 1.0 
+                  : 0.5,
+                child: Transform.scale(
+                  scale: 0.6, 
+                  child: CupertinoSwitch(
+                    value: isCalendarSyncEnabled,
+                    activeColor: Theme.of(context).colorScheme.tertiary,
+                    onChanged: onCalendarSyncChanged,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
+        
       ],
     );
   }

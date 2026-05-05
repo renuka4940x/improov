@@ -110,7 +110,7 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Divider(color: Colors.grey.withValues(alpha: 0.5)),
+                Divider(color: Colors.grey.withValues(alpha: 0.2)),
                 ExpansionTile(
                   key: PageStorageKey(date),
                   initiallyExpanded: isToday || isOverdue,

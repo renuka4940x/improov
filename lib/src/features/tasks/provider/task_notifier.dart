@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_data_connect/firebase_data_connect.dart';
 import 'package:flutter/foundation.dart';
+import 'package:improov/src/presentation/profile/provider/stats_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:improov/src/data/models/task/task.dart';
 import 'package:improov/src/data/models/app_settings/global_stats.dart';
@@ -121,6 +122,7 @@ class TaskNotifier extends _$TaskNotifier {
     });
 
     ref.invalidateSelf();
+    ref.invalidate(globalStatsProvider);
 
     // Firebase Sync - Update Task Completion
     if (targetTask != null) {

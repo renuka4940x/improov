@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.2.0+15
+version: 1.0.0+20
 
 environment:
   sdk: ^3.10.7
@@ -39,7 +39,7 @@ dependencies:
   isar_flutter_libs: ^3.1.0+1
   path_provider: ^2.1.5
   intl: ^0.20.2
-  flutter_svg: ^2.2.3
+  flutter_svg: ^2.2.4
   go_router: ^17.1.0
   flutter_slidable: ^4.0.3
   google_fonts: ^8.0.2
@@ -89,16 +89,12 @@ flutter:
   uses-material-design: true
     
   assets:
-    - assets/images/light_mode/doodle_laying.svg
-    - assets/images/light_mode/doodle_plant.svg
-    - assets/images/light_mode/doodle_swinging.svg
-    - assets/images/light_mode/doodle_unboxing.svg
-    - assets/images/dark_mode/doodle_laying_dark.svg
-    - assets/images/dark_mode/doodle_plant_dark.svg
-    - assets/images/dark_mode/doodle_swinging_dark.svg
-    - assets/images/dark_mode/doodle_unboxing_dark.svg
+    - assets/images/light_mode/
+    - assets/images/dark_mode/
     - .env
-
+    - assets/icons/dark_icons/
+    - assets/icons/filled_icons/
+    - assets/logo/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
@@ -131,5 +127,5 @@ flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/logo/improov_logo.png" 
-  adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/logo/improov_logo.png"
+  adaptive_icon_background: "assets/logo/improov_logo_background.png"
+  adaptive_icon_foreground: "assets/logo/improov_logo_foreground.png"

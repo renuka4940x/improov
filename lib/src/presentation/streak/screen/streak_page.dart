@@ -170,7 +170,7 @@ class _StreakPageState extends ConsumerState<StreakPage> {
                   child: Column(
                     children: [
                       Divider(
-                        color: Colors.grey.withOpacity(0.5)
+                        color: Colors.grey.withOpacity(0.2)
                       ),
                       Theme(
                         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
@@ -193,13 +193,28 @@ class _StreakPageState extends ConsumerState<StreakPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                const Icon(Icons.local_fire_department_outlined, color: Colors.grey, size: 18),
+                                SvgPicture.asset(
+                                'assets/icons/dark_icons/streak.svg',
+                                  width: 14,
+                                  height: 14,
+                                  colorFilter: const ColorFilter.mode(
+                                    Colors.grey, 
+                                    BlendMode.srcIn
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
                                 Text(
                                   "${habit.calculateStreak}",
-                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold, 
+                                    color: Colors.grey
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
-                                const Icon(Icons.expand_more, size: 20, color: Colors.grey,),
+                                const Icon(
+                                  Icons.expand_more, size: 20, 
+                                  color: Colors.grey,
+                                ),
                               ],
                             ),
                           ),

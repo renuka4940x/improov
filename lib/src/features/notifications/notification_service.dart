@@ -9,6 +9,7 @@ import 'package:improov/src/data/models/task/task.dart';
 import 'package:isar/isar.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+import 'dart:math';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin 
@@ -34,13 +35,48 @@ class NotificationService {
     playSound: true,
   );
 
+  final _random = Random();
+
+  String _getRandomTaskBody() {
+    const messages = [
+      "Don't forget to crush this today! 🚀",
+      "Your future self will thank you for doing this.",
+      "Time to knock this off the list!",
+      "Small steps, big results. Let's get it.",
+      "You have a mission for today. Ready?",
+      "Clear your mind, execute the task. 🥷"
+    ];
+    return messages[_random.nextInt(messages.length)];
+  }
+
+  String _getRandomHabitBody(int current, int goal) {
+    final messages = [
+      "You're at $current/$goal this week. Let's get it done!",
+      "Keep the streak alive! Time to level up.",
+      "Consistency is everything. Don't break the chain today!!!",
+      "Another day, another step forward.",
+      "Progress requires showing up. We need you today!"
+    ];
+    return messages[_random.nextInt(messages.length)];
+  }
+
+  bool _isCompletedToday(List<DateTime> completedDays) {
+    if (completedDays.isEmpty) return false;
+    final now = DateTime.now();
+    return completedDays.any((date) => 
+      date.year == now.year && 
+      date.month == now.month && 
+      date.day == now.day
+    );
+  }
+
   Future<void> initNotification() async {
     // initializing timezone
     tz.initializeTimeZones();
 
     // Android initialization
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/launcher_icon');
+        AndroidInitializationSettings('ic_notification');
 
     // iOS initialization
     const DarwinInitializationSettings initializationSettingsIOS =
@@ -95,7 +131,7 @@ class NotificationService {
           channelDescription: habitChannel.description,
           importance: Importance.max,
           priority: Priority.high,
-          icon: '@mipmap/ic_launcher',
+          icon: 'ic_notification',
         ),
         iOS: const DarwinNotificationDetails(),
       ),
@@ -108,23 +144,11 @@ class NotificationService {
     required String body,
     required DateTime scheduledTime,
   }) async {
-    // TimeZone-aware DateTime
-    final now = DateTime.now();
-    var scheduledDateTime = DateTime(
-      now.year, now.month, now.day, 
-      scheduledTime.hour, scheduledTime.minute
-    );
-
-    // If the time already passed today, schedule for tomorrow
-    if (scheduledDateTime.isBefore(now)) {
-      scheduledDateTime = scheduledDateTime.add(const Duration(days: 1));
-    }
-
     await _notificationsPlugin.zonedSchedule(
       id: id, 
       title: title,
       body: body,
-      scheduledDate: tz.TZDateTime.from(scheduledDateTime, tz.local),
+      scheduledDate: tz.TZDateTime.from(scheduledTime, tz.local),
       notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           habitChannel.id,
@@ -132,6 +156,7 @@ class NotificationService {
           channelDescription: habitChannel.description,
           importance: Importance.max,
           priority: Priority.high,
+          icon: 'ic_notification',
         ),
         iOS: const DarwinNotificationDetails(),
       ),
@@ -147,22 +172,17 @@ class NotificationService {
       
       await _notificationsPlugin.cancel(id: notificationId); 
     }
-    
-    debugPrint("🛑 Canceled all recurring notifications for Habit ID: $habitId");
   }
 
   // Removes a specific notification
   Future<void> cancelNotification(int id) async {
     await _notificationsPlugin.cancel(id: id);
-    debugPrint("🛑 Canceled single notification ID: $id");
   }
 
   //HABIT WATCHER
   void listenToHabitChanges(Isar isar) {
-    debugPrint(" Habit Notification Watcher Started...");
 
     isar.habits.watchLazy().listen((_) async {
-      debugPrint("Watcher triggered! Database changed. Scanning habits...");
       final habits = await isar.habits.where().findAll();
 
       final settings = await isar.appSettings.get(0);
@@ -174,35 +194,41 @@ class NotificationService {
         final completionsThisWeek = _getCompletionsForCurrentWeek(habit.completedDays);
         final goalMet = completionsThisWeek >= habit.goalDaysPerWeek;
 
-        debugPrint("[${habit.name}] -> GlobalOn: $globalNotificationsOn | Time: ${habit.reminderTime} | GoalMet: $goalMet (${habit.goalDaysPerWeek} days)");
-
         if (globalNotificationsOn && !goalMet) {
           
-          DateTime timeToRing;
+          final now = DateTime.now();
+          final isCompletedToday = _isCompletedToday(habit.completedDays);
+          DateTime baseTime;
           
-          // THE ROUTER
           if (isPremium && habit.reminderTime != null) {
-            timeToRing = habit.reminderTime!;
-            debugPrint("Yoo! Here's your reminder for ${habit.name} at exact time: $timeToRing, get it done mate!!");
+            baseTime = habit.reminderTime!;
           } else {
-            // FREE
-            final now = DateTime.now();
             final defaultHour = settings?.defaultReminderHour ?? 9;
+            baseTime = DateTime(now.year, now.month, now.day, defaultHour, 0);
+          }
 
-            timeToRing = DateTime(now.year, now.month, now.day, defaultHour, 0);
-            debugPrint("Daily reminder for ${habit.name} is here~");
+          // Create the precise time for today
+          DateTime timeToRing = DateTime(
+            now.year, 
+            now.month, 
+            now.day, 
+            baseTime.hour, 
+            baseTime.minute
+          );
+
+          if (isCompletedToday || timeToRing.isBefore(now)) {
+            timeToRing = timeToRing.add(const Duration(days: 1));
           }
 
           await scheduleHabitReminder(
             id: habit.id, 
             title: "Time for ${habit.name}!",
-            body: "You're at $completionsThisWeek/${habit.goalDaysPerWeek} this week. Let's get it done!",
+            body: _getRandomHabitBody(completionsThisWeek, habit.goalDaysPerWeek),
             scheduledTime: timeToRing,
           );
           
         } else {
           // Goal met or global notifications off
-          debugPrint("Canceling alarm for ${habit.name}");
           await cancelNotification(habit.id);
         }
       }
@@ -235,21 +261,13 @@ class NotificationService {
     required String body,
     required DateTime scheduledTime,
   }) async {
-    final now = DateTime.now();
-    var scheduledDateTime = DateTime(
-      now.year, now.month, now.day, 
-      scheduledTime.hour, scheduledTime.minute
-    );
-
-    if (scheduledDateTime.isBefore(now)) {
-      scheduledDateTime = scheduledDateTime.add(const Duration(days: 1));
-    }
+    if (scheduledTime.isBefore(DateTime.now())) return;
 
     await _notificationsPlugin.zonedSchedule(
       id: id, 
       title: title,
       body: body,
-      scheduledDate: tz.TZDateTime.from(scheduledDateTime, tz.local),
+      scheduledDate: tz.TZDateTime.from(scheduledTime, tz.local),
       notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           taskChannel.id, 
@@ -257,11 +275,11 @@ class NotificationService {
           channelDescription: taskChannel.description,
           importance: Importance.max,
           priority: Priority.high,
+          icon: 'ic_notification',
         ),
         iOS: const DarwinNotificationDetails(),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 
@@ -314,7 +332,7 @@ class NotificationService {
         await scheduleTaskReminder( 
           id: notificationId,
           title: "Task Due: ${task.title}",
-          body: "Don't forget to crush this today!",
+          body: _getRandomTaskBody(),
           scheduledTime: timeToRing,
         );
 
