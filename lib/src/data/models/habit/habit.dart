@@ -1,6 +1,6 @@
 import 'package:improov/src/core/constants/app_colors.dart';
 import 'package:improov/src/data/enums/priority.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 part 'habit.g.dart';
 
@@ -61,11 +61,12 @@ class Habit {
   int get calculateStreak {
     if (completedDays.isEmpty) return 0;
 
-    final dates = completedDays
-        .map((d) => DateTime(d.year, d.month, d.day))
-        .toSet()
-        .toList()
-      ..sort((a, b) => b.compareTo(a));
+    final dates =
+        completedDays
+            .map((d) => DateTime(d.year, d.month, d.day))
+            .toSet()
+            .toList()
+          ..sort((a, b) => b.compareTo(a));
 
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -86,10 +87,11 @@ class Habit {
   bool get isCompleted {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    return completedDays.any((date) => 
-      date.year == today.year &&
-      date.month == today.month &&
-      date.day == today.day
+    return completedDays.any(
+      (date) =>
+          date.year == today.year &&
+          date.month == today.month &&
+          date.day == today.day,
     );
   }
 
@@ -103,7 +105,8 @@ class Habit {
     return completedDays.where((date) {
       final checkDate = DateTime(date.year, date.month, date.day);
 
-      return checkDate.isAtSameMomentAs(startOfWeek) || checkDate.isAfter(startOfWeek);
+      return checkDate.isAtSameMomentAs(startOfWeek) ||
+          checkDate.isAfter(startOfWeek);
     }).length;
   }
 
@@ -116,7 +119,7 @@ class Habit {
     double goal = goalDaysPerWeek.toDouble();
 
     if (goal == 0) return 0.0;
-    return count/goal;
+    return count / goal;
   }
 
   int get realStreak => calculateStreak;
@@ -125,17 +128,17 @@ class Habit {
     return realStreak;
   }
 
-  // H E A T M A P 
+  // H E A T M A P
   @ignore
   Map<DateTime, int> get completionMap {
     Map<DateTime, int> dataset = {};
-    
+
     for (var date in completedDays) {
       // Standardize to midnight for the heatmap key
       final cleanDate = DateTime(date.year, date.month, date.day);
       dataset[cleanDate] = 1; // 1 = "Completed" color level
     }
-    
+
     return dataset;
   }
 }

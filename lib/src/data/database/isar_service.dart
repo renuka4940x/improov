@@ -2,7 +2,7 @@ import 'package:improov/src/data/models/app_settings/app_settings.dart';
 import 'package:improov/src/data/models/app_settings/global_stats.dart';
 import 'package:improov/src/data/models/habit/habit.dart';
 import 'package:improov/src/data/models/task/task.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 class IsarService {
@@ -17,21 +17,20 @@ class IsarService {
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
-    
-    final isar = Isar.getInstance('improov_db') ?? await Isar.open(
-      [TaskSchema, HabitSchema, AppSettingsSchema, GlobalStatsSchema],
-      directory: dir.path,
-      name: 'improov_db',
-      inspector: false,
-    );
-    
+
+    final isar =
+        Isar.getInstance('improov_db') ??
+        await Isar.open(
+          [TaskSchema, HabitSchema, AppSettingsSchema, GlobalStatsSchema],
+          directory: dir.path,
+          name: 'improov_db',
+          inspector: false,
+        );
+
     return IsarService._(isar);
   }
 
   Future<List<Task>> queryTasksByDateRange(DateTime start, DateTime end) async {
-    return await db.tasks
-      .filter()
-      .dueDateBetween(start, end)
-      .findAll();
+    return await db.tasks.filter().dueDateBetween(start, end).findAll();
   }
 }

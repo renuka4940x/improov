@@ -7,7 +7,7 @@ import 'package:improov/src/data/models/app_settings/app_settings.dart';
 import 'package:improov/src/data/enums/priority.dart';
 import 'package:improov/src/core/constants/app_colors.dart';
 import 'package:improov/src/data/provider/providers.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:improov/dataconnect_generated/generated.dart';
@@ -22,7 +22,7 @@ class HabitNotifier extends _$HabitNotifier {
   @override
   FutureOr<List<Habit>> build() async {
     final service = await ref.watch(isarDatabaseProvider.future);
-    
+
     await _saveFirstLaunchDate(service.db);
     await _checkWeeklyReset(service.db);
 
@@ -34,21 +34,32 @@ class HabitNotifier extends _$HabitNotifier {
   Future<void> _saveFirstLaunchDate(Isar isar) async {
     final existingSettings = await isar.appSettings.where().findFirst();
     if (existingSettings == null) {
-      await isar.writeTxn(() => isar.appSettings.put(AppSettings()..firstLaunchDate = DateTime.now()));
+      await isar.writeTxn(
+        () => isar.appSettings.put(
+          AppSettings()..firstLaunchDate = DateTime.now(),
+        ),
+      );
     }
   }
 
   Future<void> _checkWeeklyReset(Isar isar) async {
     final habits = await isar.habits.where().findAll();
     final now = DateTime.now();
-    final startOfCurrentWeek = DateTime(now.year, now.month, now.day - (now.weekday - 1));
+    final startOfCurrentWeek = DateTime(
+      now.year,
+      now.month,
+      now.day - (now.weekday - 1),
+    );
 
     await isar.writeTxn(() async {
       for (var habit in habits) {
-        if (habit.lastResetDate == null || habit.lastResetDate!.isBefore(startOfCurrentWeek)) {
+        if (habit.lastResetDate == null ||
+            habit.lastResetDate!.isBefore(startOfCurrentWeek)) {
           if (habit.weeklyCount >= habit.goalDaysPerWeek) {
             habit.currentStreak++;
-            if (habit.currentStreak > habit.bestStreak) habit.bestStreak = habit.currentStreak;
+            if (habit.currentStreak > habit.bestStreak) {
+              habit.bestStreak = habit.currentStreak;
+            }
           } else {
             habit.currentStreak = 0;
           }
@@ -75,18 +86,26 @@ class HabitNotifier extends _$HabitNotifier {
 
       double pA = getPressure(a);
       double pB = getPressure(b);
-      
+
       if (pA != pB) return pB.compareTo(pA);
 
-      final priorityMap = {Priority.high: 0, Priority.medium: 1, Priority.low: 2};
-      return (priorityMap[a.priority] ?? 3).compareTo(priorityMap[b.priority] ?? 3);
+      final priorityMap = {
+        Priority.high: 0,
+        Priority.medium: 1,
+        Priority.low: 2,
+      };
+      return (priorityMap[a.priority] ?? 3).compareTo(
+        priorityMap[b.priority] ?? 3,
+      );
     });
   }
 
   // --- C R U D ---
 
   // C R E A T E
-  Future<void> addHabit(String name, bool isHabitMode, {
+  Future<void> addHabit(
+    String name,
+    bool isHabitMode, {
     String? description = "",
     DateTime? startDate,
     Priority priority = Priority.low,
@@ -95,7 +114,7 @@ class HabitNotifier extends _$HabitNotifier {
     int? colorHex,
   }) async {
     final service = await ref.read(isarDatabaseProvider.future);
-    
+
     final newHabit = Habit()
       ..uuid = _uuid.v4()
       ..name = name
@@ -110,7 +129,7 @@ class HabitNotifier extends _$HabitNotifier {
 
     // Save to ISAR
     await service.db.writeTxn(() => service.db.habits.put(newHabit));
-    
+
     // Refresh UI
     ref.invalidateSelf();
 
@@ -118,22 +137,26 @@ class HabitNotifier extends _$HabitNotifier {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         //send to data connect
-        await ExampleConnector.instance.createHabit(
-          id: newHabit.uuid,
-          name: newHabit.name,
-          description: newHabit.description ?? "",
-          isHabitMode: newHabit.isHabitMode,
-          startDate:Timestamp.fromJson(newHabit.startDate.toUtc().toIso8601String()),
-          goalDaysPerWeek: newHabit.goalDaysPerWeek,
-          priority: newHabit.priority.name, 
-          colorHex: newHabit.colorHex.toDouble(), 
-          isArchived: newHabit.isArchived,
-        ).execute();
-        
+        await ExampleConnector.instance
+            .createHabit(
+              id: newHabit.uuid,
+              name: newHabit.name,
+              description: newHabit.description ?? "",
+              isHabitMode: newHabit.isHabitMode,
+              startDate: Timestamp.fromJson(
+                newHabit.startDate.toUtc().toIso8601String(),
+              ),
+              goalDaysPerWeek: newHabit.goalDaysPerWeek,
+              priority: newHabit.priority.name,
+              colorHex: newHabit.colorHex.toDouble(),
+              isArchived: newHabit.isArchived,
+            )
+            .execute();
+
         debugPrint("Successfully created habit in the cloud!");
       }
     } catch (e) {
-      debugPrint("Sync Error (Add): $e"); 
+      debugPrint("Sync Error (Add): $e");
     }
   }
 
@@ -155,11 +178,13 @@ class HabitNotifier extends _$HabitNotifier {
         }
 
         habit.currentStreak = habit.calculateStreak;
-        if (habit.currentStreak > habit.bestStreak) habit.bestStreak = habit.currentStreak;
-        
+        if (habit.currentStreak > habit.bestStreak) {
+          habit.bestStreak = habit.currentStreak;
+        }
+
         await service.db.habits.put(habit);
       });
-      
+
       ref.invalidateSelf();
 
       //notification intercept
@@ -169,18 +194,21 @@ class HabitNotifier extends _$HabitNotifier {
         }
       } catch (e) {
         debugPrint("Notification Update Error: $e");
-      }  
+      }
 
       //cloud sync
       try {
-        await ExampleConnector.instance.updateHabitCompletion(
-          id: habit.uuid,
-          currentStreak: habit.currentStreak,
-          bestStreak: habit.bestStreak,
-          completedDays: habit.completedDays
-            .map((d) => d.toIso8601String()).toList(),
-        ).execute();
-        
+        await ExampleConnector.instance
+            .updateHabitCompletion(
+              id: habit.uuid,
+              currentStreak: habit.currentStreak,
+              bestStreak: habit.bestStreak,
+              completedDays: habit.completedDays
+                  .map((d) => d.toIso8601String())
+                  .toList(),
+            )
+            .execute();
+
         debugPrint("Successfully synced completion to cloud!");
       } catch (e) {
         debugPrint("Update Habit Completion Error (Completion): $e");
@@ -214,31 +242,33 @@ class HabitNotifier extends _$HabitNotifier {
       });
 
       ref.invalidateSelf();
-      
+
       try {
-        await ExampleConnector.instance.updateHabit(
-          id: existingHabit.uuid,
-          name: name,
-          description: description,
-          goalDaysPerWeek: goal,
-          priority: priority.name,
-          colorHex: finalColor.toDouble(),
-        ).execute();
-        
+        await ExampleConnector.instance
+            .updateHabit(
+              id: existingHabit.uuid,
+              name: name,
+              description: description,
+              goalDaysPerWeek: goal,
+              priority: priority.name,
+              colorHex: finalColor.toDouble(),
+            )
+            .execute();
+
         debugPrint("Successfully updated habit in the cloud!");
       } catch (e) {
         debugPrint("Update Habit Sync Error (Update): $e");
       }
     } else {
       await addHabit(
-        name, 
-        true, 
-        description: description, 
-        priority: priority, 
-        goalDays: goal, 
-        startDate: startDate, 
-        reminderTime: reminderTime, 
-        colorHex: finalColor
+        name,
+        true,
+        description: description,
+        priority: priority,
+        goalDays: goal,
+        startDate: startDate,
+        reminderTime: reminderTime,
+        colorHex: finalColor,
       );
     }
   }
@@ -246,22 +276,20 @@ class HabitNotifier extends _$HabitNotifier {
   // D E L E T E
   Future<void> deleteHabit(int id) async {
     final service = await ref.read(isarDatabaseProvider.future);
-    
+
     final habit = await service.db.habits.get(id);
     final String? remoteId = habit?.uuid;
 
     await service.db.writeTxn(() => service.db.habits.delete(id));
     ref.invalidateSelf();
-    
+
     if (remoteId != null) {
       try {
-         await ExampleConnector.instance.deleteHabit(
-           id: remoteId
-         ).execute();
-         debugPrint("Successfully deleted habit in the cloud!");
-       } catch (e) {
-         debugPrint("Delete Habit Sync Error (Delete): $e");
-       }
+        await ExampleConnector.instance.deleteHabit(id: remoteId).execute();
+        debugPrint("Successfully deleted habit in the cloud!");
+      } catch (e) {
+        debugPrint("Delete Habit Sync Error (Delete): $e");
+      }
     }
   }
 }

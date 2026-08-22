@@ -7,7 +7,7 @@ import 'package:improov/src/data/models/task/task.dart';
 import 'package:improov/src/data/models/app_settings/global_stats.dart';
 import 'package:improov/src/data/enums/priority.dart';
 import 'package:improov/src/data/provider/providers.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 import 'package:improov/dataconnect_generated/generated.dart';
 
@@ -18,10 +18,10 @@ class TaskNotifier extends _$TaskNotifier {
   @override
   FutureOr<List<Task>> build() async {
     final service = await ref.watch(isarDatabaseProvider.future);
-    
+
     // Initialize stats if they don't exist
     await _initializeStats(service.db);
-    
+
     return _fetchAndSortTasks(service.db);
   }
 
@@ -42,28 +42,36 @@ class TaskNotifier extends _$TaskNotifier {
       if (a.isCompleted != b.isCompleted) return a.isCompleted ? 1 : -1;
 
       // Priority
-      final priorityMap = {Priority.high: 0, Priority.medium: 1, Priority.low: 2};
+      final priorityMap = {
+        Priority.high: 0,
+        Priority.medium: 1,
+        Priority.low: 2,
+      };
       int valA = priorityMap[a.priority] ?? 3;
       int valB = priorityMap[b.priority] ?? 3;
       if (valA != valB) return valA.compareTo(valB);
 
       // Due Date
-      return (a.dueDate ?? DateTime(2100)).compareTo(b.dueDate ?? DateTime(2100));
+      return (a.dueDate ?? DateTime(2100)).compareTo(
+        b.dueDate ?? DateTime(2100),
+      );
     });
   }
 
   // --- C R U D  O P E R A T I O N S ---
 
   //C R E A T E
-  Future<void> addTask(String name, {
+  Future<void> addTask(
+    String name, {
     String? description = "",
     Priority priority = Priority.low,
     DateTime? dueDate,
     DateTime? reminderTime,
   }) async {
     final service = await ref.read(isarDatabaseProvider.future);
-    final finalDate = dueDate ?? DateTime.now()
-      .copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
+    final finalDate =
+        dueDate ??
+        DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
 
     final newTask = Task()
       ..title = name
@@ -75,21 +83,25 @@ class TaskNotifier extends _$TaskNotifier {
       ..reminderTime = reminderTime;
 
     await service.db.writeTxn(() => service.db.tasks.put(newTask));
-    
+
     //refreshes the state
-    ref.invalidateSelf(); 
+    ref.invalidateSelf();
 
     //firebase sync
     try {
-      await ExampleConnector.instance.createTask(
-        id: newTask.uuid,
-        name: name,
-        description: description ?? "",
-        dueDate: Timestamp.fromJson(finalDate.toUtc().toIso8601String()),
-        isCompleted: false,
-        createdAt: Timestamp.fromJson(newTask.createdAt.toUtc().toIso8601String()),
-        priority: priority.name,
-      ).execute();
+      await ExampleConnector.instance
+          .createTask(
+            id: newTask.uuid,
+            name: name,
+            description: description ?? "",
+            dueDate: Timestamp.fromJson(finalDate.toUtc().toIso8601String()),
+            isCompleted: false,
+            createdAt: Timestamp.fromJson(
+              newTask.createdAt.toUtc().toIso8601String(),
+            ),
+            priority: priority.name,
+          )
+          .execute();
       debugPrint("☁️ Successfully created task in the cloud!");
     } catch (e) {
       debugPrint("☁️ Create Task Sync Error (Create Task): $e");
@@ -108,9 +120,7 @@ class TaskNotifier extends _$TaskNotifier {
       if (task != null) {
         if (isCompleted && !task.isCompleted) {
           stats.totalTasksCompleted += 1;
-        }
-
-        else if (!isCompleted && task.isCompleted) {
+        } else if (!isCompleted && task.isCompleted) {
           stats.totalTasksCompleted -= 1;
         }
 
@@ -127,14 +137,18 @@ class TaskNotifier extends _$TaskNotifier {
     // Firebase Sync - Update Task Completion
     if (targetTask != null) {
       try {
-        await ExampleConnector.instance.updateTask(
-          id: targetTask!.uuid,
-          name: targetTask!.title,
-          description: targetTask!.description ?? "",
-          dueDate: Timestamp.fromJson(targetTask!.dueDate!.toUtc().toIso8601String()),
-          isCompleted: isCompleted,
-          priority: targetTask!.priority.name,
-        ).execute();
+        await ExampleConnector.instance
+            .updateTask(
+              id: targetTask!.uuid,
+              name: targetTask!.title,
+              description: targetTask!.description ?? "",
+              dueDate: Timestamp.fromJson(
+                targetTask!.dueDate!.toUtc().toIso8601String(),
+              ),
+              isCompleted: isCompleted,
+              priority: targetTask!.priority.name,
+            )
+            .execute();
         debugPrint("☁️ Successfully updated task completion in cloud!");
       } catch (e) {
         debugPrint("☁️ Sync Error (Task Completion): $e");
@@ -147,15 +161,15 @@ class TaskNotifier extends _$TaskNotifier {
     final service = await ref.read(isarDatabaseProvider.future);
 
     final taskToDelete = await service.db.tasks.get(id);
-    
+
     if (taskToDelete != null) {
       await service.db.writeTxn(() => service.db.tasks.delete(id));
       ref.invalidateSelf();
 
       try {
-        await ExampleConnector.instance.deleteTask(
-          id: taskToDelete.uuid,
-        ).execute();
+        await ExampleConnector.instance
+            .deleteTask(id: taskToDelete.uuid)
+            .execute();
         debugPrint("☁️ Successfully deleted task in the cloud!");
       } catch (e) {
         debugPrint("☁️ Sync Error (Delete Task): $e");
@@ -186,27 +200,27 @@ class TaskNotifier extends _$TaskNotifier {
 
       // Firebase Sync - Update Task Details
       try {
-        await ExampleConnector.instance.updateTask(
-          id: existingTask.uuid,
-          name: title,
-          description: description,
-          dueDate: Timestamp.fromJson(dueDate.toUtc().toIso8601String()),
-          isCompleted: existingTask.isCompleted,
-          priority: priority.name,
-        ).execute();
+        await ExampleConnector.instance
+            .updateTask(
+              id: existingTask.uuid,
+              name: title,
+              description: description,
+              dueDate: Timestamp.fromJson(dueDate.toUtc().toIso8601String()),
+              isCompleted: existingTask.isCompleted,
+              priority: priority.name,
+            )
+            .execute();
         debugPrint("☁️ Successfully updated task details in cloud!");
       } catch (e) {
         debugPrint("☁️ Sync Error (Update Task): $e");
       }
-    } 
-    
-    else {
+    } else {
       await addTask(
-        title, 
-        description: description, 
-        priority: priority, 
-        dueDate: dueDate, 
-        reminderTime: reminder
+        title,
+        description: description,
+        priority: priority,
+        dueDate: dueDate,
+        reminderTime: reminder,
       );
     }
   }

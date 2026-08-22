@@ -18,7 +18,7 @@ class BuildTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int limit = isDescription ? 250 : 50;
+    final int limit = isDescription ? 250 : 65;
 
     return Column(
       children: [

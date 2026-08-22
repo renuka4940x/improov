@@ -12,13 +12,12 @@ import 'package:improov/src/features/services/subscription_services.dart';
 import 'package:improov/src/features/tasks/provider/task_notifier.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 import 'package:improov/src/features/notifications/notification_service.dart';
 import 'package:improov/src/presentation/settings/provider/app_settings_notifier.dart';
-import 'package:improov/src/features/habits/provider/habit_notifier.dart'; 
+import 'package:improov/src/features/habits/provider/habit_notifier.dart';
 import 'package:improov/src/presentation/profile/provider/stats_provider.dart';
-
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -28,30 +27,34 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-
   // CSV EXPORT LOGIC
   Future<void> exportDataAsCSV() async {
     try {
       // Grab current habits from Riverpod
       final habitsAsync = ref.read(habitNotifierProvider);
-      
+
       // Safety check: wait for data if it's currently loading
       final habits = habitsAsync.value ?? [];
-      
+
       if (habits.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("No data to export yet!")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("No data to export yet!")));
         return;
       }
 
       // Build the CSV String
       StringBuffer csvData = StringBuffer();
-      csvData.writeln("Habit Name,Goal Days/Week,Start Date,Total Completed Days");
+      csvData.writeln(
+        "Habit Name,Goal Days/Week,Start Date,Total Completed Days",
+      );
 
       for (var habit in habits) {
-        final startDateStr = "${habit.startDate.year}-${habit.startDate.month}-${habit.startDate.day}";
-        csvData.writeln("${habit.name},${habit.goalDaysPerWeek},$startDateStr,${habit.completedDays.length}");
+        final startDateStr =
+            "${habit.startDate.year}-${habit.startDate.month}-${habit.startDate.day}";
+        csvData.writeln(
+          "${habit.name},${habit.goalDaysPerWeek},$startDateStr,${habit.completedDays.length}",
+        );
       }
 
       // Save to a temporary file
@@ -62,13 +65,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
       // Open the native Share Sheet
       await Share.shareXFiles([XFile(path)], text: 'My Improov Habit Data');
-      
     } catch (e) {
       debugPrint("Export Error: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Export failed: $e"), 
+            content: Text("Export failed: $e"),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -83,11 +85,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       builder: (context) => AlertDialog(
         backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(
-          "Wipe All Data?", 
+          "Wipe All Data?",
           style: TextStyle(
-            color: Colors.red.shade300, 
-            fontWeight: FontWeight.bold
-          )
+            color: Colors.red.shade300,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         content: const Text(
           "This will permanently delete all your habits, tasks, and streak history. This action cannot be undone.\n\nAre you absolutely sure?",
@@ -96,18 +98,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              "Cancel", 
-              style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary)
+              "Cancel",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.inversePrimary,
+              ),
             ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade300, 
+              backgroundColor: Colors.red.shade300,
             ),
             onPressed: () async {
               // Close Dialog
               Navigator.pop(context);
-              
+
               // Nuke the Isar Database
               final isar = Isar.getInstance('improov_db');
               if (isar != null) {
@@ -120,19 +124,19 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ref.invalidate(habitNotifierProvider);
               ref.invalidate(taskNotifierProvider);
               ref.invalidate(globalStatsProvider);
-              
-              if (!context.mounted) return; 
-              
+
+              if (!context.mounted) return;
+
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("All data has been wiped.")),
               );
             },
             child: const Text(
-              "Delete", 
+              "Delete",
               style: TextStyle(
-                color: Colors.white, 
-                fontWeight: FontWeight.bold
-              )
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -142,82 +146,80 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   //DELETE THE ACCOUNT
   void showAccountDeletionDialog() {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(
-        "Delete Account?", 
-        style: TextStyle(
-          color: Colors.red.shade300, 
-          fontWeight: FontWeight.bold)
-      ),
-      content: const Text(
-        "This will permanently delete your Improov account and all synced data. "
-        "Your premium subscription (if any) must be cancelled manually via the Play Store/App Store.\n\n"
-        "This cannot be undone. Proceed?",
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text("Cancel"),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red.shade300
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          "Delete Account?",
+          style: TextStyle(
+            color: Colors.red.shade300,
+            fontWeight: FontWeight.bold,
           ),
-          onPressed: () async {
-            try {
-              final user = FirebaseAuth.instance.currentUser;
-              if (user != null) {
-                // Delete the Auth User
-                await user.delete();
-                
-                // Clear local Isar data
-                final isar = Isar.getInstance('improov_db');
-                if (isar != null) {
-                  await isar.writeTxn(() => isar.clear());
+        ),
+        content: const Text(
+          "This will permanently delete your Improov account and all synced data. "
+          "Your premium subscription (if any) must be cancelled manually via the Play Store/App Store.\n\n"
+          "This cannot be undone. Proceed?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade300,
+            ),
+            onPressed: () async {
+              try {
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  // Delete the Auth User
+                  await user.delete();
+
+                  // Clear local Isar data
+                  final isar = Isar.getInstance('improov_db');
+                  if (isar != null) {
+                    await isar.writeTxn(() => isar.clear());
+                  }
+
+                  if (!context.mounted) return;
+
+                  Navigator.pop(context);
+                  context.go('/login');
                 }
-
-                if (!context.mounted) return; 
-
-                Navigator.pop(context);
-                context.go('/login');
+              } on FirebaseAuthException catch (e) {
+                if (e.code == 'requires-recent-login') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Please log out and log back in to verify it's you, then try deleting again.",
+                      ),
+                    ),
+                  );
+                }
               }
-            } on FirebaseAuthException catch (e) {
-              if (e.code == 'requires-recent-login') {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      "Please log out and log back in to verify it's you, then try deleting again."
-                    )
-                  ),
-                );
-              }
-            }
-          },
-          child: const Text(
-            "Delete Account", 
-            style: TextStyle(color: Colors.white)
+            },
+            child: const Text(
+              "Delete Account",
+              style: TextStyle(color: Colors.white),
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final settingsAsync = ref.watch(appSettingsNotifierProvider);
-    
+
     final isPremium = ref.watch(premiumProvider);
-    
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        title: Text(
-          "Settings", 
-          style: AppStyle.title(context)
-        ),
+        title: Text("Settings", style: AppStyle.title(context)),
         centerTitle: false,
         elevation: 0,
       ),
@@ -228,19 +230,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           children: [
             //preference section
             _buildSectionHeader("Preferences"),
-        
+
             //theme toggle
             settingsAsync.when(
               data: (settings) => Column(
                 children: [
-
                   //theme Toggle
                   _buildToggleTile(
                     title: "Dark Mode",
                     subtitle: "Easier on the eyes at night",
                     iconPath: 'assets/icons/dark_icons/moon.svg',
                     value: settings.isDarkMode,
-                    onChanged: (_) => ref.read(appSettingsNotifierProvider.notifier).toggleTheme(),
+                    onChanged: (_) => ref
+                        .read(appSettingsNotifierProvider.notifier)
+                        .toggleTheme(),
                   ),
 
                   //notifications Toggle
@@ -248,19 +251,24 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     title: "Notifications",
                     subtitle: "Get a nudge to stay on track",
                     iconPath: 'assets/icons/dark_icons/notifications.svg',
-                    value: settings.notifyHabitReminders, 
+                    value: settings.notifyHabitReminders,
                     onChanged: (val) async {
                       if (val) {
                         // Trigger the system permission dialog if turning ON
                         await NotificationService().requestPermissions();
                       }
-                      ref.read(appSettingsNotifierProvider.notifier).toggleNotifications();
+                      ref
+                          .read(appSettingsNotifierProvider.notifier)
+                          .toggleNotifications();
                     },
                   ),
 
                   //default reminder time selector
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -271,7 +279,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               width: 20,
                               height: 20,
                               colorFilter: ColorFilter.mode(
-                                Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9),
+                                Theme.of(context).colorScheme.inversePrimary
+                                    .withValues(alpha: 0.9),
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -279,7 +288,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             Text(
                               "Reminder Time",
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary
+                                    .withValues(alpha: 0.9),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
@@ -300,7 +312,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           ],
                         ),
                         const SizedBox(height: 14),
-                        
+
                         // The Segmented Button
                         SizedBox(
                           width: double.infinity,
@@ -319,7 +331,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               ButtonSegment<int>(
                                 value: 21,
                                 label: Text('Night'),
-                                icon: Icon(Icons.nights_stay_outlined, size: 18),
+                                icon: Icon(
+                                  Icons.nights_stay_outlined,
+                                  size: 18,
+                                ),
                               ),
                             ],
 
@@ -327,14 +342,23 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             selected: {settings.defaultReminderHour},
                             onSelectionChanged: (Set<int> newSelection) {
                               // Saves to Isar
-                              ref.read(appSettingsNotifierProvider.notifier)
-                                 .updateDefaultReminderHour(newSelection.first);
+                              ref
+                                  .read(appSettingsNotifierProvider.notifier)
+                                  .updateDefaultReminderHour(
+                                    newSelection.first,
+                                  );
                             },
 
                             style: SegmentedButton.styleFrom(
-                              backgroundColor: Theme.of(context).colorScheme.surface,
-                              selectedBackgroundColor: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.2),
-                              selectedForegroundColor: Theme.of(context).colorScheme.inversePrimary,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.surface,
+                              selectedBackgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.tertiary.withValues(alpha: 0.2),
+                              selectedForegroundColor: Theme.of(
+                                context,
+                              ).colorScheme.inversePrimary,
 
                               side: BorderSide(
                                 color: Theme.of(context).colorScheme.secondary,
@@ -350,20 +374,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               loading: () => const Center(child: CupertinoActivityIndicator()),
               error: (err, stack) => const Text("Error loading settings"),
             ),
-            
+
             //data section
             _buildSectionHeader("Data Management"),
-        
+
             _buildActionTile(
               title: "Export Data",
               subtitle: "Download your habit history as CSV file",
               iconPath: 'assets/icons/dark_icons/export.svg',
-              isProFeature: !isPremium, 
-              onTap: isPremium 
-                  ? exportDataAsCSV 
+              isProFeature: !isPremium,
+              onTap: isPremium
+                  ? exportDataAsCSV
                   : () => SubscriptionService.showPaywall(ref),
             ),
-        
+
             _buildActionTile(
               title: "Delete Progress",
               subtitle: "Permanently wipe all data",
@@ -394,9 +418,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       data: Theme.of(context).copyWith(
                         textButtonTheme: TextButtonThemeData(
                           style: TextButton.styleFrom(
-                            foregroundColor: Theme.of(context).colorScheme.inversePrimary
-                              .withValues(alpha: 0.9),
-                            textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                            foregroundColor: Theme.of(
+                              context,
+                            ).colorScheme.inversePrimary.withValues(alpha: 0.9),
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -409,7 +436,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             'assets/logo/improov_logo.png',
                             width: 50,
                             height: 50,
-                            errorBuilder: (context, error, stackTrace) => 
+                            errorBuilder: (context, error, stackTrace) =>
                                 const Icon(Icons.auto_awesome, size: 50),
                           ),
                         ),
@@ -420,7 +447,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             "Improov is designed to help you build lasting habits through visual feedback and consistency. Keep pushing your streaks!",
                             style: TextStyle(
                               fontSize: 14,
-                              color: Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.8),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .inversePrimary
+                                  .withValues(alpha: 0.8),
                             ),
                           ),
                         ],
@@ -430,16 +460,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 );
               },
             ),
-            
+
             //version section
             const SizedBox(height: 40),
             Center(
               child: Text(
                 "Improov v1.0.0",
-                style: TextStyle(
-                  color: Colors.grey.shade500, 
-                  fontSize: 12
-                ),
+                style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
               ),
             ),
             const SizedBox(height: 20),
@@ -457,7 +484,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         style: GoogleFonts.jost(
           fontSize: 14,
           fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.6),
+          color: Theme.of(
+            context,
+          ).colorScheme.inversePrimary.withValues(alpha: 0.6),
           letterSpacing: 1.2,
         ),
       ),
@@ -481,23 +510,24 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               width: 20,
               height: 20,
               colorFilter: ColorFilter.mode(
-                Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9),
+                Theme.of(
+                  context,
+                ).colorScheme.inversePrimary.withValues(alpha: 0.9),
                 BlendMode.srcIn,
               ),
             ),
             title: Text(
               title,
               style: TextStyle(
-                color: Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9),
-                fontWeight: FontWeight.bold
+                color: Theme.of(
+                  context,
+                ).colorScheme.inversePrimary.withValues(alpha: 0.9),
+                fontWeight: FontWeight.bold,
               ),
             ),
             subtitle: Text(
-              subtitle, 
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              )
+              subtitle,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
             trailing: Transform.scale(
               scale: 0.7,
@@ -521,10 +551,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     bool isDestructive = false,
     bool isProFeature = false,
   }) {
-
-    final color = isDestructive 
-      ? Colors.red.shade300 
-      : Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9);
+    final color = isDestructive
+        ? Colors.red.shade300
+        : Theme.of(context).colorScheme.inversePrimary.withValues(alpha: 0.9);
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -538,36 +567,35 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
             title: Text(
-              title, 
-              style: TextStyle(
-                color: color,
-                fontWeight: FontWeight.bold,
-              )
+              title,
+              style: TextStyle(color: color, fontWeight: FontWeight.bold),
             ),
             subtitle: Text(
-              subtitle, 
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey
-              )
+              subtitle,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
-            trailing: isProFeature 
-              ? Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.8),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    "PRO", 
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary, 
-                      fontSize: 10, 
-                      fontWeight: FontWeight.bold
-                    )
-                  ),
-                )
-              : null,
+            trailing: isProFeature
+                ? Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.tertiary.withValues(alpha: 0.8),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      "PRO",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                : null,
             onTap: onTap,
           ),
         ],

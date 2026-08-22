@@ -1,5 +1,5 @@
 import 'package:improov/src/data/enums/priority.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:uuid/uuid.dart';
 
 part 'task.g.dart';
