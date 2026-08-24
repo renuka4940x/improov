@@ -7,7 +7,7 @@ import 'package:improov/src/core/widgets/build_row.dart';
 import 'package:improov/src/features/services/subscription_services.dart';
 import 'package:improov/src/presentation/settings/provider/app_settings_notifier.dart';
 import 'package:improov/src/presentation/profile/provider/stats_provider.dart';
-import 'package:improov/src/data/provider/subscription_provider.dart'; 
+import 'package:improov/src/data/provider/subscription_provider.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -15,8 +15,8 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final statsAsync = ref.watch(globalStatsProvider);
-    final settingsAsync = ref.watch(appSettingsNotifierProvider);
-    
+    final settingsAsync = ref.watch(appSettingsProvider);
+
     final isPremium = ref.watch(premiumProvider);
 
     return Scaffold(
@@ -35,7 +35,10 @@ class ProfilePage extends ConsumerWidget {
                 ),
               ),
               child: ListView(
-                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 24,
+                  horizontal: 24,
+                ),
                 children: [
                   settingsAsync.when(
                     data: (settings) => Row(
@@ -52,7 +55,9 @@ class ProfilePage extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           onSelected: (value) {
-                            if (value == 'edit') _showEditNicknameDialog(context, ref);
+                            if (value == 'edit') {
+                              _showEditNicknameDialog(context, ref);
+                            }
                           },
                           itemBuilder: (context) => [
                             const PopupMenuItem<String>(
@@ -60,8 +65,8 @@ class ProfilePage extends ConsumerWidget {
                               height: 36,
                               child: Row(
                                 children: [
-                                  Text("Edit"), 
-                                  Spacer(), 
+                                  Text("Edit"),
+                                  Spacer(),
                                   Icon(Icons.edit, size: 18),
                                 ],
                               ),
@@ -73,11 +78,11 @@ class ProfilePage extends ConsumerWidget {
                     loading: () => const Text("Loading..."),
                     error: (err, stack) => const Text("Yoo, mate!"),
                   ),
-                  
+
                   Divider(color: Colors.grey.withValues(alpha: 0.5)),
                   const SizedBox(height: 16),
                   BuildRow(
-                    label: 'Achievements:', 
+                    label: 'Achievements:',
                     trailing: Icon(
                       Icons.arrow_forward_ios_rounded,
                       color: Theme.of(context).colorScheme.surface,
@@ -103,43 +108,57 @@ class ProfilePage extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    loading: () => const Center(child: CircularProgressIndicator()),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
                     error: (err, _) => Text("Error: $err"),
                   ),
 
                   // Dynamic Premium / Manage Row
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical:4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       // If free: show Paywall. If Premium: open native settings to cancel/manage.
-                      onTap: isPremium 
-                        ? () => SubscriptionService.openSubscriptionManager() 
-                        : () => SubscriptionService.showPaywall(ref),
+                      onTap: isPremium
+                          ? () => SubscriptionService.openSubscriptionManager()
+                          : () => SubscriptionService.showPaywall(ref),
                       child: BuildRow(
-                        label: isPremium 
-                          ? "Manage Subscription" 
-                          : "Improov Premium", 
+                        label: isPremium
+                            ? "Manage Subscription"
+                            : "Improov Premium",
                         trailing: Row(
                           children: [
-                            if (!isPremium) 
+                            if (!isPremium)
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
                                 margin: const EdgeInsets.only(right: 8),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.tertiary.withAlpha(170),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.tertiary.withAlpha(170),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(
-                                  "PRO", 
+                                  "PRO",
                                   style: TextStyle(
-                                    color: Theme.of(context).colorScheme.inversePrimary, 
-                                    fontSize: 10, 
-                                    fontWeight: FontWeight.bold
-                                  )
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.inversePrimary,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                            const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 16,
+                            ),
                           ],
                         ),
                         isBold: true,
@@ -148,15 +167,21 @@ class ProfilePage extends ConsumerWidget {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical:4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onTap: () { 
+                      onTap: () {
                         context.push('/settings');
                       },
                       child: const BuildRow(
-                        label: "Settings", 
-                        trailing: Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                        label: "Settings",
+                        trailing: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 16,
+                        ),
                         isBold: true,
                       ),
                     ),
@@ -173,11 +198,10 @@ class ProfilePage extends ConsumerWidget {
   //stats card
   Widget _buildStatCard(
     BuildContext context, {
-      required String iconPath, 
-      required String label, 
-      required String value
-    }
-  ) {
+    required String iconPath,
+    required String label,
+    required String value,
+  }) {
     return Card(
       elevation: 0,
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -192,8 +216,8 @@ class ProfilePage extends ConsumerWidget {
                   width: 24,
                   height: 24,
                   colorFilter: ColorFilter.mode(
-                    Theme.of(context).colorScheme.inversePrimary, 
-                    BlendMode.srcIn
+                    Theme.of(context).colorScheme.inversePrimary,
+                    BlendMode.srcIn,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -207,45 +231,38 @@ class ProfilePage extends ConsumerWidget {
       ),
     );
   }
-  
-  void _showEditNicknameDialog(
-    BuildContext context, 
-    WidgetRef ref,
-  ) {
+
+  void _showEditNicknameDialog(BuildContext context, WidgetRef ref) {
     final TextEditingController controller = TextEditingController();
-  
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        title: Text(
-          "What should we call you?", 
-          style: AppStyle.title(context),
-        ),
+        title: Text("What should we call you?", style: AppStyle.title(context)),
         content: TextField(
           controller: controller,
           maxLength: 20,
           decoration: const InputDecoration(
             counterText: "",
             hintText: "your nickname~",
-            hintStyle: TextStyle(
-              fontStyle: FontStyle.italic,
-            )
+            hintStyle: TextStyle(fontStyle: FontStyle.italic),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () {
-              ref.read(appSettingsNotifierProvider.notifier)
-                .updateNickname(controller.text);
-              
+              ref
+                  .read(appSettingsProvider.notifier)
+                  .updateNickname(controller.text);
+
               Navigator.pop(context);
             },
             child: Text(
-              "Save", 
+              "Save",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.inversePrimary
+                color: Theme.of(context).colorScheme.inversePrimary,
               ),
             ),
           ),

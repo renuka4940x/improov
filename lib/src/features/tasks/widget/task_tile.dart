@@ -27,16 +27,13 @@ class TaskTile extends ConsumerWidget {
       context: Navigator.of(context, rootNavigator: true).context,
       useSafeArea: true,
       isScrollControlled: true,
-      builder: (context) => Modal(
-        taskToEdit: task,
-        isUpdating: true,
-      )
+      builder: (context) => Modal(taskToEdit: task, isUpdating: true),
     );
   }
 
   //delete function
   void onDeletePressed(WidgetRef ref) {
-    ref.read(taskNotifierProvider.notifier).deleteTask(task.id);
+    ref.read(taskProvider.notifier).deleteTask(task.id);
   }
 
   @override
@@ -54,7 +51,6 @@ class TaskTile extends ConsumerWidget {
             pageBuilder: (context, animation, secondaryAnimation) {
               return Stack(
                 children: [
-                  
                   //B L U R
                   FadeTransition(
                     opacity: animation,
@@ -74,10 +70,12 @@ class TaskTile extends ConsumerWidget {
       },
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
-                          
+
         //tap for check/uncheck
         onTap: () {
-          ref.read(taskNotifierProvider.notifier).updateTaskCompletion(task.id, !task.isCompleted);
+          ref
+              .read(taskProvider.notifier)
+              .updateTaskCompletion(task.id, !task.isCompleted);
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
@@ -89,13 +87,13 @@ class TaskTile extends ConsumerWidget {
                 Transform.scale(
                   scale: 1.2,
                   child: CustomCheckbox(
-                    value: isCompleted, 
+                    value: isCompleted,
                     onChanged: onChanged,
                   ),
                 ),
-            
+
                 const SizedBox(width: 12),
-            
+
                 //task name
                 Expanded(
                   child: Text(
@@ -103,18 +101,14 @@ class TaskTile extends ConsumerWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: isCompleted 
-                        ? Colors.grey 
-                        : null,
-                      decoration: isCompleted 
-                        ? TextDecoration.lineThrough 
-                        : null,
+                      color: isCompleted ? Colors.grey : null,
+                      decoration: isCompleted
+                          ? TextDecoration.lineThrough
+                          : null,
                       decorationColor: isCompleted
-                        ? Colors.grey
-                        : Colors.transparent,
-                      fontStyle: isCompleted 
-                        ? FontStyle.italic 
-                        : null,
+                          ? Colors.grey
+                          : Colors.transparent,
+                      fontStyle: isCompleted ? FontStyle.italic : null,
                     ),
                   ),
                 ),

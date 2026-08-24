@@ -16,7 +16,7 @@ part 'task_notifier.g.dart';
 @riverpod
 class TaskNotifier extends _$TaskNotifier {
   @override
-  FutureOr<List<Task>> build() async {
+  Future<List<Task>> build() async {
     final service = await ref.watch(isarDatabaseProvider.future);
 
     // Initialize stats if they don't exist

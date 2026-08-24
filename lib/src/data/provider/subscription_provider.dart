@@ -4,9 +4,14 @@ import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:flutter/foundation.dart';
 
 //true if Premium, false if Free
-class PremiumNotifier extends StateNotifier<bool> {
-  PremiumNotifier() : super(false) {
+class PremiumNotifier extends Notifier<bool> {
+  
+  @override
+  bool build() {
+    // Fire off the background check when this provider first loads
     checkSubscriptionStatus();
+    // This return statement acts exactly like your old super(false)
+    return false; 
   }
 
   Future<void> checkSubscriptionStatus() async {
@@ -14,7 +19,7 @@ class PremiumNotifier extends StateNotifier<bool> {
       final customerInfo = await Purchases.getCustomerInfo();
       // ⚠️ Fixed the ID to match RevenueCat exactly
       state = customerInfo.entitlements.all["Improov Premium"]?.isActive ?? false;
-      debugPrint("👑 Premium Status Initialized: $state");
+      debugPrint("Premium Status Initialized: $state");
     } catch (e) {
       debugPrint("RevenueCat Init Error: $e");
       state = false;
@@ -29,7 +34,7 @@ class PremiumNotifier extends StateNotifier<bool> {
 
       if (result == PaywallResult.purchased || result == PaywallResult.restored) {
         state = true; // UNLOCK THE APP GLOBALLY
-        debugPrint("💸 TRANSACTION SUCCESS! Welcome to Premium.");
+        debugPrint("TRANSACTION SUCCESS! Welcome to Premium.");
         return true;
       }
       
@@ -42,6 +47,7 @@ class PremiumNotifier extends StateNotifier<bool> {
   }
 }
 
-final premiumProvider = StateNotifierProvider<PremiumNotifier, bool>((ref) {
+// ⚠️ Changed from StateNotifierProvider to NotifierProvider
+final premiumProvider = NotifierProvider<PremiumNotifier, bool>(() {
   return PremiumNotifier();
 });

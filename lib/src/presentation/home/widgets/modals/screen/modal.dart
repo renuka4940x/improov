@@ -20,12 +20,7 @@ class Modal extends ConsumerStatefulWidget {
   final Habit? habitToEdit;
   final bool? isUpdating;
 
-  const Modal({
-    super.key,
-    this.taskToEdit,
-    this.habitToEdit,
-    this.isUpdating,
-  });
+  const Modal({super.key, this.taskToEdit, this.habitToEdit, this.isUpdating});
 
   @override
   ConsumerState<Modal> createState() => _ModalState();
@@ -41,7 +36,7 @@ class _ModalState extends ConsumerState<Modal> {
   DateTime? _taskReminder;
 
   int _selectedGoal = 3;
-  
+
   bool isHabitMode = false;
   DateTime _selectedDate = DateTime.now();
   bool _isLoading = false;
@@ -74,7 +69,6 @@ class _ModalState extends ConsumerState<Modal> {
       _selectedDate = widget.taskToEdit!.dueDate ?? DateTime.now();
       _taskReminder = widget.taskToEdit!.reminderTime;
     }
-
     //or if editing a habit
     else if (widget.habitToEdit != null) {
       isHabitMode = true;
@@ -84,9 +78,7 @@ class _ModalState extends ConsumerState<Modal> {
       _selectedGoal = widget.habitToEdit!.goalDaysPerWeek;
       _selectedDate = widget.habitToEdit!.startDate;
       _habitReminder = widget.habitToEdit!.reminderTime;
-    } 
-
-    else {
+    } else {
       isHabitMode = false;
     }
   }
@@ -104,7 +96,9 @@ class _ModalState extends ConsumerState<Modal> {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -114,50 +108,50 @@ class _ModalState extends ConsumerState<Modal> {
                   child: Opacity(
                     opacity: (widget.isUpdating ?? false) ? 0.5 : 1.0,
                     child: BuildToggle(
-                      isHabitMode: isHabitMode, 
+                      isHabitMode: isHabitMode,
                       onToggle: (val) {
                         setState(() {
                           isHabitMode = val;
                         });
-                      }
+                      },
                     ),
                   ),
                 ),
-            
+
                 const SizedBox(height: 40),
-            
+
                 //name text fields
                 BuildTextField(
                   controller: isHabitMode
-                    ? _habitNameController
-                    : _taskTitleController, 
+                      ? _habitNameController
+                      : _taskTitleController,
                   placeholder: isHabitMode
-                    ? "e.g. Reading"
-                    : "e.g. Complete Maths Assignment",
+                      ? "e.g. Reading"
+                      : "e.g. Complete Maths Assignment",
                 ),
-            
+
                 const SizedBox(height: 20),
-            
+
                 //description text field
                 BuildTextField(
                   controller: isHabitMode
-                    ? _habitDescController
-                    : _taskDescController, 
-                  placeholder: isHabitMode 
-                    ? "e.g. read for 15 mins"
-                    : "description",
+                      ? _habitDescController
+                      : _taskDescController,
+                  placeholder: isHabitMode
+                      ? "e.g. read for 15 mins"
+                      : "description",
                   isItalic: true,
                   isDescription: true,
                 ),
-            
+
                 const SizedBox(height: 30),
-            
+
                 //rest of the field based on the toggle
-                if (isHabitMode) 
+                if (isHabitMode)
                   BuildHabitForm(
-                    isPremium: isPremium, 
+                    isPremium: isPremium,
                     onPremiumLockedTap: () async {
-                       await ref.read(premiumProvider.notifier).showPaywall();
+                      await ref.read(premiumProvider.notifier).showPaywall();
                     },
                     currentPriority: _selectedHabitPriority,
                     currentGoal: _selectedGoal,
@@ -174,9 +168,9 @@ class _ModalState extends ConsumerState<Modal> {
                   )
                 else
                   BuildTaskForm(
-                    isPremium: isPremium, 
+                    isPremium: isPremium,
                     onPremiumLockedTap: () async {
-                       await ref.read(premiumProvider.notifier).showPaywall();
+                      await ref.read(premiumProvider.notifier).showPaywall();
                     },
                     currentStartDate: _selectedDate,
                     currentPriority: _selectedTaskPriority,
@@ -194,17 +188,18 @@ class _ModalState extends ConsumerState<Modal> {
                     },
                     onCalendarSyncChanged: (val) {
                       setState(() => _syncToCalendar = val);
-                    }
+                    },
                   ),
-            
+
                 const SizedBox(height: 20),
-            
+
                 //save button
                 Button(
-                  text: (widget.taskToEdit != null || widget.habitToEdit != null)
-                    ? "Save"
-                    : "Create", 
-                  
+                  text:
+                      (widget.taskToEdit != null || widget.habitToEdit != null)
+                      ? "Save"
+                      : "Create",
+
                   isLoading: _isLoading,
                   onTap: () async {
                     //grab info from controller
@@ -212,7 +207,7 @@ class _ModalState extends ConsumerState<Modal> {
                     String taskDesc = _taskDescController.text;
                     String habitName = _habitNameController.text;
                     String habitDesc = _habitDescController.text;
-            
+
                     //make sure it's not empty
                     if (isHabitMode && habitName.isEmpty) return;
                     if (!isHabitMode && taskTitle.isEmpty) return;
@@ -225,49 +220,63 @@ class _ModalState extends ConsumerState<Modal> {
                     try {
                       // save info to db based on toggle mode
                       if (isHabitMode) {
-                        await ref.read(habitNotifierProvider.notifier).handleSaveHabit(
-                          existingHabit: widget.habitToEdit,
-                          name: habitName, 
-                          description: habitDesc, 
-                          priority: _selectedHabitPriority, 
-                          goal: _selectedGoal, 
-                          startDate: _selectedDate,
-                          reminderTime: _habitReminder,
-                        );
+                        await ref
+                            .read(habitProvider.notifier)
+                            .handleSaveHabit(
+                              existingHabit: widget.habitToEdit,
+                              name: habitName,
+                              description: habitDesc,
+                              priority: _selectedHabitPriority,
+                              goal: _selectedGoal,
+                              startDate: _selectedDate,
+                              reminderTime: _habitReminder,
+                            );
                       } else {
-                        await ref.read(taskNotifierProvider.notifier).handleSaveTask(
-                          existingTask: widget.taskToEdit,
-                          title: taskTitle, 
-                          description: taskDesc, 
-                          priority: _selectedTaskPriority, 
-                          dueDate: _selectedDate,
-                          reminder: _taskReminder,
-                        );
+                        await ref
+                            .read(taskProvider.notifier)
+                            .handleSaveTask(
+                              existingTask: widget.taskToEdit,
+                              title: taskTitle,
+                              description: taskDesc,
+                              priority: _selectedTaskPriority,
+                              dueDate: _selectedDate,
+                              reminder: _taskReminder,
+                            );
 
                         // check the toggle state and sync to Google Calendar
                         if (_syncToCalendar) {
-                          final calendarTime = _taskReminder ?? 
-                            DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 9, 0);
+                          final calendarTime =
+                              _taskReminder ??
+                              DateTime(
+                                _selectedDate.year,
+                                _selectedDate.month,
+                                _selectedDate.day,
+                                9,
+                                0,
+                              );
 
                           try {
-                            final isSynced = await CalendarService().addTaskToCalendar(
-                              title: taskTitle,
-                              description: taskDesc,
-                              dueDate: calendarTime,
-                            );
+                            final isSynced = await CalendarService()
+                                .addTaskToCalendar(
+                                  title: taskTitle,
+                                  description: taskDesc,
+                                  dueDate: calendarTime,
+                                );
 
                             if (context.mounted) {
                               showImproovToast(
-                                context, 
-                                isSynced ? "GGs! The task is synced :)" : "Sadly, couldn't sync to Calendar :(",
+                                context,
+                                isSynced
+                                    ? "GGs! The task is synced :)"
+                                    : "Sadly, couldn't sync to Calendar :(",
                                 isSuccess: isSynced,
                               );
                             }
                           } catch (e) {
                             if (context.mounted) {
                               showImproovToast(
-                                context, 
-                                "CRASH: ${e.toString()}", 
+                                context,
+                                "CRASH: ${e.toString()}",
                                 isSuccess: false,
                               );
                             }
@@ -278,20 +287,19 @@ class _ModalState extends ConsumerState<Modal> {
                       //close modal
                       if (!context.mounted) return;
                       Navigator.pop(context);
-
-                    } catch(e) {
+                    } catch (e) {
                       setState(() {
                         _isLoading = false;
                       });
                     }
                   },
                 ),
-            
+
                 const SizedBox(height: 30),
-            
+
                 //cross
                 BuildCross(),
-                
+
                 const SizedBox(height: 30),
               ],
             ),

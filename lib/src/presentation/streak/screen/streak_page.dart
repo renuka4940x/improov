@@ -26,7 +26,7 @@ class _StreakPageState extends ConsumerState<StreakPage> {
   @override
   Widget build(BuildContext context) {
     //habit notifier
-    final habitsAsync = ref.watch(habitNotifierProvider);
+    final habitsAsync = ref.watch(habitProvider);
     final selectedMonth = ref.watch(calendarMonthProvider);
 
     return habitsAsync.when(

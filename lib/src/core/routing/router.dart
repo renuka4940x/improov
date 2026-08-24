@@ -10,7 +10,7 @@ import 'package:improov/src/presentation/streak/screen/streak_page.dart';
 import 'package:improov/src/core/routing/page_nav.dart';
 import 'package:improov/src/presentation/profile/screen/profile_page.dart';
 
-final authServiceProvider = ChangeNotifierProvider<AuthService>((ref) {
+final authServiceProvider = Provider<AuthService>((ref) {
   return AuthService(ref); 
 });
 
@@ -21,7 +21,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
 
-    refreshListenable: ref.watch(authServiceProvider),
+    //refreshListenable: ref.watch(authServiceProvider),
     initialLocation: '/',
 
     redirect: (context, state) {

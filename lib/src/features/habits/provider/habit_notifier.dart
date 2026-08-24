@@ -20,7 +20,7 @@ class HabitNotifier extends _$HabitNotifier {
   final _uuid = const Uuid();
 
   @override
-  FutureOr<List<Habit>> build() async {
+  Future<List<Habit>> build() async {
     final service = await ref.watch(isarDatabaseProvider.future);
 
     await _saveFirstLaunchDate(service.db);

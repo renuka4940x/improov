@@ -32,4 +32,18 @@ class Task {
   bool isCompleted = false;
 
   late DateTime createdAt;
+
+  //subtask
+  List<Subtask>? subtasks;
+}
+
+//embedded Subtask model
+@embedded
+class Subtask {
+  // easily identify which subtask the user tapped
+  String uuid = '';
+  
+  String? title;
+  
+  bool isCompleted = false;
 }

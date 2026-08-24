@@ -8,10 +8,7 @@ import 'package:shimmer/shimmer.dart';
 class YearlySnakeGrid extends ConsumerStatefulWidget {
   final int habitId;
 
-  const YearlySnakeGrid({
-    super.key,
-    required this.habitId,
-  });
+  const YearlySnakeGrid({super.key, required this.habitId});
 
   @override
   ConsumerState<YearlySnakeGrid> createState() => _YearlySnakeGridState();
@@ -23,7 +20,7 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final habitsAsync = ref.watch(habitNotifierProvider);
+    final habitsAsync = ref.watch(habitProvider);
 
     return habitsAsync.when(
       data: (habits) {
@@ -35,7 +32,6 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
             ..startDate = DateTime.now()
             ..colorHex = 0
             ..completedDays = [],
-          
         );
 
         // ERROR HANDLING
@@ -43,10 +39,10 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
           return _buildErrorState("Habit not found");
         }
 
-        final int rowCount = _isLinearView 
-          ? (habit.goalDaysPerWeek > 0 ? habit.goalDaysPerWeek : 1) 
-          : 7;
-        
+        final int rowCount = _isLinearView
+            ? (habit.goalDaysPerWeek > 0 ? habit.goalDaysPerWeek : 1)
+            : 7;
+
         //PERFORMANCE OPTIMIZATION
         final completedDateSet = habit.completedDays
             .map((d) => "${d.year}-${d.month}-${d.day}")
@@ -55,13 +51,19 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
         final DateTime now = DateTime.now();
         final DateTime today = DateTime(now.year, now.month, now.day);
         final String todayKey = "${today.year}-${today.month}-${today.day}";
-        final DateTime habitStart = DateTime(habit.startDate.year, habit.startDate.month, habit.startDate.day);
-        final DateTime headerAnchor = habitStart.subtract(Duration(days: habitStart.weekday - 1));
+        final DateTime habitStart = DateTime(
+          habit.startDate.year,
+          habit.startDate.month,
+          habit.startDate.day,
+        );
+        final DateTime headerAnchor = habitStart.subtract(
+          Duration(days: habitStart.weekday - 1),
+        );
 
         final DateTime activeStart = DateTime(
-          habit.startDate.year, 
-          habit.startDate.month, 
-          habit.startDate.day
+          habit.startDate.year,
+          habit.startDate.month,
+          habit.startDate.day,
         );
 
         return _buildMainContainer(
@@ -76,21 +78,33 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
                   rowCount: rowCount,
                   headerAnchor: headerAnchor,
                   content: (col, row) {
-                    Color squareColor = Theme.of(context).colorScheme.tertiary.withOpacity(0.05);
+                    Color squareColor = Theme.of(
+                      context,
+                    ).colorScheme.tertiary.withOpacity(0.05);
 
-                    final DateTime squareDate = headerAnchor.add(Duration(days: (col * 7) + row));
-                    final String dateKey = "${squareDate.year}-${squareDate.month}-${squareDate.day}";
+                    final DateTime squareDate = headerAnchor.add(
+                      Duration(days: (col * 7) + row),
+                    );
+                    final String dateKey =
+                        "${squareDate.year}-${squareDate.month}-${squareDate.day}";
 
                     if (_isLinearView) {
                       // G O A L
-                      final DateTime weekStart = headerAnchor.add(Duration(days: col * 7));
-                      final DateTime weekEnd = weekStart.add(const Duration(days: 6));
+                      final DateTime weekStart = headerAnchor.add(
+                        Duration(days: col * 7),
+                      );
+                      final DateTime weekEnd = weekStart.add(
+                        const Duration(days: 6),
+                      );
 
                       // Count how many completions happened ONLY in this specific week
-                      final int completionsThisWeek = habit.completedDays.where((d) {
-                        final normalized = DateTime(d.year, d.month, d.day);
-                        return !normalized.isBefore(weekStart) && !normalized.isAfter(weekEnd);
-                      }).length;
+                      final int completionsThisWeek = habit.completedDays.where(
+                        (d) {
+                          final normalized = DateTime(d.year, d.month, d.day);
+                          return !normalized.isBefore(weekStart) &&
+                              !normalized.isAfter(weekEnd);
+                        },
+                      ).length;
 
                       // Fill the square ONLY if the row index is less than the completions in THIS week
                       if (row < completionsThisWeek) {
@@ -98,30 +112,48 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
                       }
                     } else {
                       // C A L E N D A R
-                      final bool isWithinActiveRange = !squareDate.isBefore(activeStart) && !squareDate.isAfter(today);
+                      final bool isWithinActiveRange =
+                          !squareDate.isBefore(activeStart) &&
+                          !squareDate.isAfter(today);
 
                       if (isWithinActiveRange) {
                         if (completedDateSet.contains(dateKey)) {
-                          final DateTime weekStart = squareDate.subtract(Duration(days: squareDate.weekday - 1));
-                          final DateTime weekEnd = weekStart.add(const Duration(days: 6));
-                          
-                          final weekCompletions = habit.completedDays.where((d) {
+                          final DateTime weekStart = squareDate.subtract(
+                            Duration(days: squareDate.weekday - 1),
+                          );
+                          final DateTime weekEnd = weekStart.add(
+                            const Duration(days: 6),
+                          );
+
+                          final weekCompletions = habit.completedDays.where((
+                            d,
+                          ) {
                             final normalized = DateTime(d.year, d.month, d.day);
-                            return !normalized.isBefore(weekStart) && !normalized.isAfter(weekEnd);
+                            return !normalized.isBefore(weekStart) &&
+                                !normalized.isAfter(weekEnd);
                           }).toList();
-                          
+
                           weekCompletions.sort((a, b) => a.compareTo(b));
 
-                          final int completionIndex = weekCompletions.indexWhere((d) => 
-                              d.year == squareDate.year && d.month == squareDate.month && d.day == squareDate.day);
+                          final int completionIndex = weekCompletions
+                              .indexWhere(
+                                (d) =>
+                                    d.year == squareDate.year &&
+                                    d.month == squareDate.month &&
+                                    d.day == squareDate.day,
+                              );
 
                           if (completionIndex >= habit.goalDaysPerWeek) {
                             squareColor = const Color(0xFFFFD700);
                           } else {
-                            squareColor = Theme.of(context).colorScheme.tertiary;
+                            squareColor = Theme.of(
+                              context,
+                            ).colorScheme.tertiary;
                           }
                         } else if (dateKey == todayKey) {
-                          squareColor = Theme.of(context).colorScheme.secondary.withOpacity(0.5);
+                          squareColor = Theme.of(
+                            context,
+                          ).colorScheme.secondary.withOpacity(0.5);
                         }
                       }
                     }
@@ -138,7 +170,7 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
           ),
         );
       },
-      
+
       loading: () => _buildShimmerLoading(),
       error: (err, stack) {
         debugPrint("YearlySnakeGrid Error: $err");
@@ -156,13 +188,17 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.cloud_off, color: Theme.of(context).colorScheme.error, size: 48),
+            Icon(
+              Icons.cloud_off,
+              color: Theme.of(context).colorScheme.error,
+              size: 48,
+            ),
             const SizedBox(height: 16),
             Text(message, style: const TextStyle(fontWeight: FontWeight.w600)),
             TextButton(
-              onPressed: () => ref.invalidate(habitNotifierProvider),
+              onPressed: () => ref.invalidate(habitProvider),
               child: const Text("Retry"),
-            )
+            ),
           ],
         ),
       ),
@@ -195,9 +231,9 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
   }
 
   Widget _buildGridScroll({
-    required int rowCount, 
+    required int rowCount,
     required DateTime headerAnchor,
-    required Widget Function(int col, int row) content
+    required Widget Function(int col, int row) content,
   }) {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
@@ -213,7 +249,10 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 1.5),
                 child: Row(
-                  children: List.generate(columnCount, (colIndex) => content(colIndex, rowIndex)),
+                  children: List.generate(
+                    columnCount,
+                    (colIndex) => content(colIndex, rowIndex),
+                  ),
                 ),
               );
             }),
@@ -253,64 +292,92 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
   }
 
   Widget _buildMonthHeader(DateTime anchor) {
-  final monthLabels = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  int lastMonthShown = -1;
-  int lastLabelColumn = -1;
+    final monthLabels = [
+      "",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    int lastMonthShown = -1;
+    int lastLabelColumn = -1;
 
-  return Row(
-    children: List.generate(columnCount, (i) {
-      final date = anchor.add(Duration(days: i * 7));
-      final currentMonth = date.month;
-      
-      bool isNewMonth = currentMonth != lastMonthShown;
-      bool hasEnoughSpace = lastLabelColumn == -1 || (i - lastLabelColumn) >= 3;
-      
-      bool show = isNewMonth && hasEnoughSpace;
+    return Row(
+      children: List.generate(columnCount, (i) {
+        final date = anchor.add(Duration(days: i * 7));
+        final currentMonth = date.month;
 
-      if (show) {
-        lastMonthShown = currentMonth;
-        lastLabelColumn = i; 
-      }
+        bool isNewMonth = currentMonth != lastMonthShown;
+        bool hasEnoughSpace =
+            lastLabelColumn == -1 || (i - lastLabelColumn) >= 3;
 
-      return SizedBox(
-        width: 13, 
-        height: 14,
-        child: show ? Stack(
-          clipBehavior: Clip.none,
-          children: [
-            const SizedBox(width: 13, height: 14),
-            Positioned(
-              left: 0,
-              top: 0,
-              child: Text(
-                monthLabels[currentMonth],
-                maxLines: 1,
-                overflow: TextOverflow.visible,
-                softWrap: false,
-                style: TextStyle(
-                  fontSize: 9,
-                  letterSpacing: -0.2,
-                  fontWeight: FontWeight.w900,
-                  color: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.7),
-                ),
-              ),
-            ),
-          ],
-        ) : const SizedBox.shrink(),
-      );
-    }),
-  );
-}
+        bool show = isNewMonth && hasEnoughSpace;
+
+        if (show) {
+          lastMonthShown = currentMonth;
+          lastLabelColumn = i;
+        }
+
+        return SizedBox(
+          width: 13,
+          height: 14,
+          child: show
+              ? Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const SizedBox(width: 13, height: 14),
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: Text(
+                        monthLabels[currentMonth],
+                        maxLines: 1,
+                        overflow: TextOverflow.visible,
+                        softWrap: false,
+                        style: TextStyle(
+                          fontSize: 9,
+                          letterSpacing: -0.2,
+                          fontWeight: FontWeight.w900,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.inversePrimary.withOpacity(0.7),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink(),
+        );
+      }),
+    );
+  }
 
   Widget _toggleItem(String label, bool isActive) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: isActive ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+        color: isActive
+            ? Theme.of(context).colorScheme.tertiary
+            : Theme.of(context).colorScheme.secondary.withOpacity(0.3),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: isActive ? Colors.black : Colors.grey)),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: isActive ? Colors.black : Colors.grey,
+        ),
+      ),
     );
   }
 
@@ -322,7 +389,14 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(width: 150, height: 35, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20))),
+            Container(
+              width: 150,
+              height: 35,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
             const SizedBox(height: 20),
             _buildGridScroll(
               rowCount: 5,
@@ -330,7 +404,14 @@ class _YearlySnakeGridState extends ConsumerState<YearlySnakeGrid> {
               content: (col, row) => _buildSquare(Colors.white),
             ),
             const SizedBox(height: 32),
-            Container(width: double.infinity, height: 150, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12))),
+            Container(
+              width: double.infinity,
+              height: 150,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ],
         ),
       ),

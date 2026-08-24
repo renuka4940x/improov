@@ -36,7 +36,7 @@ class HabitTile extends ConsumerWidget {
 
   //delete function
   void onDeletePressed(WidgetRef ref, int id) {
-    ref.read(habitNotifierProvider.notifier).deleteHabit(id);
+    ref.read(habitProvider.notifier).deleteHabit(id);
   }
 
   @override
@@ -92,7 +92,7 @@ class HabitTile extends ConsumerWidget {
                     
         //tap for check/uncheck
         onTap: () {
-          ref.read(habitNotifierProvider.notifier).updateHabitCompletion(
+          ref.read(habitProvider.notifier).updateHabitCompletion(
             habit.id, 
             !isCompletedToday,
           );

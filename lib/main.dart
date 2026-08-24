@@ -58,7 +58,7 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settingsAsync = ref.watch(appSettingsNotifierProvider);
+    final settingsAsync = ref.watch(appSettingsProvider);
     final router = ref.watch(routerProvider);
 
     //handles the state

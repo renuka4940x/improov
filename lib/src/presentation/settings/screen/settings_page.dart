@@ -31,7 +31,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Future<void> exportDataAsCSV() async {
     try {
       // Grab current habits from Riverpod
-      final habitsAsync = ref.read(habitNotifierProvider);
+      final habitsAsync = ref.read(habitProvider);
 
       // Safety check: wait for data if it's currently loading
       final habits = habitsAsync.value ?? [];
@@ -121,8 +121,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               }
 
               // Force Riverpod to reload the empty UI
-              ref.invalidate(habitNotifierProvider);
-              ref.invalidate(taskNotifierProvider);
+              ref.invalidate(habitProvider);
+              ref.invalidate(taskProvider);
               ref.invalidate(globalStatsProvider);
 
               if (!context.mounted) return;
@@ -212,7 +212,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final settingsAsync = ref.watch(appSettingsNotifierProvider);
+    final settingsAsync = ref.watch(appSettingsProvider);
 
     final isPremium = ref.watch(premiumProvider);
 
@@ -242,7 +242,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     iconPath: 'assets/icons/dark_icons/moon.svg',
                     value: settings.isDarkMode,
                     onChanged: (_) => ref
-                        .read(appSettingsNotifierProvider.notifier)
+                        .read(appSettingsProvider.notifier)
                         .toggleTheme(),
                   ),
 
@@ -258,7 +258,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         await NotificationService().requestPermissions();
                       }
                       ref
-                          .read(appSettingsNotifierProvider.notifier)
+                          .read(appSettingsProvider.notifier)
                           .toggleNotifications();
                     },
                   ),
@@ -343,7 +343,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             onSelectionChanged: (Set<int> newSelection) {
                               // Saves to Isar
                               ref
-                                  .read(appSettingsNotifierProvider.notifier)
+                                  .read(appSettingsProvider.notifier)
                                   .updateDefaultReminderHour(
                                     newSelection.first,
                                   );

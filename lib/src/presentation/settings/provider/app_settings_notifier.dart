@@ -12,7 +12,7 @@ part 'app_settings_notifier.g.dart';
 @riverpod
 class AppSettingsNotifier extends _$AppSettingsNotifier {
   @override
-  FutureOr<AppSettings> build() async {
+  Future<AppSettings> build() async {
     final service = await ref.watch(isarDatabaseProvider.future);
     
     //get existing settings

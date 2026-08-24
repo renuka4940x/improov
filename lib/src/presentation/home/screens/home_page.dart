@@ -13,8 +13,8 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //watch notifiers
-    final habitsAsync = ref.watch(habitNotifierProvider);
-    final tasksAsync = ref.watch(taskNotifierProvider);
+    final habitsAsync = ref.watch(habitProvider);
+    final tasksAsync = ref.watch(taskProvider);
 
     final hasHabits = habitsAsync.value?.isNotEmpty ?? false;
     final hasTasks = tasksAsync.value?.isNotEmpty ?? false;
@@ -26,82 +26,66 @@ class HomePage extends ConsumerWidget {
         child: CustomScrollView(
           slivers: [
             //show the Habit Header
-            const SliverToBoxAdapter(
-              child: BuildTitle(
-                title: "Habits",
-              ),
-            ),
-        
+            const SliverToBoxAdapter(child: BuildTitle(title: "Habits")),
+
             //habit section
             habitsAsync.when(
               data: (habits) => habits.isEmpty
-                ? const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 25, bottom: 20),
-                    child: Text(
-                      "none, for now~",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontStyle: FontStyle.italic,
+                  ? const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 25, bottom: 20),
+                        child: Text(
+                          "none, for now~",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
                       ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final habit = habits[index];
+                        return HabitTile(
+                          habit: habit,
+                          onChanged: (val) => ref
+                              .read(habitProvider.notifier)
+                              .updateHabitCompletion(habit.id, val ?? false),
+                        );
+                      }, childCount: habits.length),
                     ),
-                  ),
-                )
-                : SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final habit = habits[index];
-                      return HabitTile(
-                        habit: habit,
-                        onChanged: (val) => ref
-                          .read(habitNotifierProvider.notifier)
-                          .updateHabitCompletion(habit.id, val ?? false),
-                      );
-                    }, 
-                    childCount: habits.length
-                  ),
-                ),
               loading: () => const SliverToBoxAdapter(
-                child: Center(child: CircularProgressIndicator())
+                child: Center(child: CircularProgressIndicator()),
               ),
-              error: (err, _) => SliverToBoxAdapter(
-                child: Text("Error: $err"),
-              ),
+              error: (err, _) => SliverToBoxAdapter(child: Text("Error: $err")),
             ),
-        
-            const SliverToBoxAdapter(
-              child: BuildTitle(
-                title: "Tasks"
-              ),
-            ),
-        
+
+            const SliverToBoxAdapter(child: BuildTitle(title: "Tasks")),
+
             //task section
             tasksAsync.when(
               data: (tasks) => tasks.isEmpty
-                ? const SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 25, bottom: 20),
+                  ? const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 25, bottom: 20),
+                      ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final task = tasks[index];
+                        return TaskTile(
+                          task: task,
+                          onChanged: (val) => ref
+                              .read(taskProvider.notifier)
+                              .updateTaskCompletion(task.id, val ?? false),
+                          isCompleted: task.isCompleted,
+                        );
+                      }, childCount: tasks.length),
                     ),
-                  )
-                : SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                      final task = tasks[index];
-                      return TaskTile(
-                        task: task,
-                        onChanged: (val) => ref
-                          .read(taskNotifierProvider.notifier)
-                          .updateTaskCompletion(task.id, val ?? false),
-                        isCompleted: task.isCompleted,
-                      );
-                    }, 
-                    childCount: tasks.length,
-                  ),
-                ),
               loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
-              error: (err, _) => SliverToBoxAdapter(child: Text("Error: $err")),  
+              error: (err, _) => SliverToBoxAdapter(child: Text("Error: $err")),
             ),
-        
+
             //svg section
             if (habitsAsync.hasValue &&
                 tasksAsync.hasValue &&
@@ -133,13 +117,10 @@ class HomePage extends ConsumerWidget {
                   ),
                 ),
               ),
-        
-            //padding to not let fab cover last item
 
-            if (hasHabits || hasTasks) 
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 80),
-              ),
+            //padding to not let fab cover last item
+            if (hasHabits || hasTasks)
+              const SliverToBoxAdapter(child: SizedBox(height: 80)),
           ],
         ),
       ),

@@ -15,7 +15,6 @@ class CalendarPage extends ConsumerStatefulWidget {
 }
 
 class _CalendarPageState extends ConsumerState<CalendarPage> {
-
   DateTime _selectedDay = DateTime.now();
 
   DateTime stripTime(DateTime d) => DateTime(d.year, d.month, d.day);
@@ -23,7 +22,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     final selectedMonth = ref.watch(calendarMonthProvider);
-    final tasksAsync = ref.watch(taskNotifierProvider);
+    final tasksAsync = ref.watch(taskProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -36,11 +35,15 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: () => ref.read(calendarMonthProvider.notifier).changeMonth(-1),
-                  icon: const Icon(Icons.chevron_left)
+                  onPressed: () =>
+                      ref.read(calendarMonthProvider.notifier).changeMonth(-1),
+                  icon: const Icon(Icons.chevron_left),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondary,
                     borderRadius: BorderRadius.circular(20),
@@ -51,8 +54,9 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => ref.read(calendarMonthProvider.notifier).changeMonth(1),
-                  icon: const Icon(Icons.chevron_right)
+                  onPressed: () =>
+                      ref.read(calendarMonthProvider.notifier).changeMonth(1),
+                  icon: const Icon(Icons.chevron_right),
                 ),
               ],
             ),
@@ -68,28 +72,28 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
             //check if dueDate exists
             if (task.dueDate != null) {
               DateTime dateKey = DateTime(
-                task.dueDate!.year, 
-                task.dueDate!.month, 
-                task.dueDate!.day
+                task.dueDate!.year,
+                task.dueDate!.month,
+                task.dueDate!.day,
               );
-              
+
               //update the map
-              completionMap[dateKey] = (completionMap[dateKey] ?? false) || !task.isCompleted;
+              completionMap[dateKey] =
+                  (completionMap[dateKey] ?? false) || !task.isCompleted;
             }
           }
 
           //filter for the Task Feed
-          final incompleteTasks = allTasks.where((t) => !t.isCompleted).toList();
+          final incompleteTasks = allTasks
+              .where((t) => !t.isCompleted)
+              .toList();
 
           return ListView(
             padding: const EdgeInsets.all(12),
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(
-                  "Calendar",
-                  style: AppStyle.title(context),
-                ),
+                child: Text("Calendar", style: AppStyle.title(context)),
               ),
 
               CalendarView(
@@ -97,10 +101,14 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                 daysWithTask: completionMap,
                 selectedDay: _selectedDay,
                 //get tasks for a specific tapped date
-                getTasksForDate: (date) async { 
-                  return allTasks.where((t) => 
-                    t.dueDate != null && stripTime(t.dueDate!) == stripTime(date)
-                  ).toList();
+                getTasksForDate: (date) async {
+                  return allTasks
+                      .where(
+                        (t) =>
+                            t.dueDate != null &&
+                            stripTime(t.dueDate!) == stripTime(date),
+                      )
+                      .toList();
                 },
                 onDayTap: (date, tasks) async {
                   setState(() => _selectedDay = date);
@@ -111,8 +119,9 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
               TaskFeed(
                 tasks: incompleteTasks,
                 onToggle: (task) {
-                  ref.read(taskNotifierProvider.notifier)
-                    .updateTaskCompletion(task.id, !task.isCompleted);
+                  ref
+                      .read(taskProvider.notifier)
+                      .updateTaskCompletion(task.id, !task.isCompleted);
                 },
               ),
             ],

@@ -6,13 +6,16 @@ import 'package:improov/src/data/provider/providers.dart';
 part 'stats_provider.g.dart';
 
 @riverpod
-Future<Map<String, int>> globalStats(GlobalStatsRef ref) async {
-  final habitsAsync = ref.watch(habitNotifierProvider);
+Future<Map<String, int>> globalStats(Ref ref) async {
+  final habitsAsync = ref.watch(habitProvider);
   final habits = habitsAsync.value ?? [];
 
   int bestStreak = 0;
   if (habits.isNotEmpty) {
-    bestStreak = habits.fold<int>(0, (max, h) => h.bestStreak > max ? h.bestStreak : max);
+    bestStreak = habits.fold<int>(
+      0,
+      (max, h) => h.bestStreak > max ? h.bestStreak : max,
+    );
   }
 
   final service = await ref.read(isarDatabaseProvider.future);
@@ -20,8 +23,5 @@ Future<Map<String, int>> globalStats(GlobalStatsRef ref) async {
   final stats = await service.db.globalStats.get(0);
   final totalTasksDone = stats?.totalTasksCompleted ?? 0;
 
-  return {
-    'bestStreak': bestStreak,
-    'totalTasksCompleted': totalTasksDone,
-  };
+  return {'bestStreak': bestStreak, 'totalTasksCompleted': totalTasksDone};
 }

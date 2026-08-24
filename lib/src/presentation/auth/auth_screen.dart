@@ -12,7 +12,6 @@ class AuthScreen extends ConsumerStatefulWidget {
 }
 
 class _AuthScreenState extends ConsumerState<AuthScreen> {
-
   bool _isLogin = true;
   bool _isLoading = false;
 
@@ -41,7 +40,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           _nicknameController.text.trim(),
         );
 
-        await ref.read(appSettingsNotifierProvider.notifier).updateNickname(_nicknameController.text);
+        await ref
+            .read(appSettingsProvider.notifier)
+            .updateNickname(_nicknameController.text);
       }
     } catch (e) {
       if (mounted) _showError(e.toString().replaceAll("Exception: ", ""));
@@ -138,7 +139,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.inversePrimary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -147,23 +150,21 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   ),
                   onPressed: _isLoading ? null : _submitForm,
                   child: _isLoading
-                    ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Text(
+                          _isLogin ? "Sign In" : "Sign Up",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
-                      )
-                    : Text(
-                      _isLogin 
-                        ? "Sign In" 
-                        : "Sign Up",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
                 ),
               ),
 
@@ -194,10 +195,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
               SizedBox(height: _isLogin ? 200 : 30),
               const Center(
-                child: Text(
-                  "or", 
-                  style: TextStyle(color: Colors.grey)
-                ),
+                child: Text("or", style: TextStyle(color: Colors.grey)),
               ),
               const SizedBox(height: 16),
 
@@ -218,9 +216,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   ),
                   onPressed: _isLoading ? null : _handleGoogleSignIn,
                   child: Text(
-                    _isLogin 
-                      ? "Log in with Google" 
-                      : "Sign up with Google",
+                    _isLogin ? "Log in with Google" : "Sign up with Google",
                     style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).colorScheme.inversePrimary,

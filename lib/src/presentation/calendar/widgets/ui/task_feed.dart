@@ -17,11 +17,7 @@ class TaskFeed extends ConsumerStatefulWidget {
   final List<Task> tasks;
   final Function(Task) onToggle;
 
-  const TaskFeed({
-    super.key,
-    required this.tasks,
-    required this.onToggle,
-  });
+  const TaskFeed({super.key, required this.tasks, required this.onToggle});
 
   @override
   ConsumerState<TaskFeed> createState() => _TaskFeedState();
@@ -49,9 +45,9 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
     _groupedTasks = {};
     for (var task in widget.tasks) {
       final date = DateTime(
-        (task.dueDate ?? DateTime.now()).year, 
-        (task.dueDate ?? DateTime.now()).month, 
-        (task.dueDate ?? DateTime.now()).day
+        (task.dueDate ?? DateTime.now()).year,
+        (task.dueDate ?? DateTime.now()).month,
+        (task.dueDate ?? DateTime.now()).day,
       );
 
       _groupedTasks.putIfAbsent(date, () => []).add(task);
@@ -61,7 +57,7 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
 
   //Edit
   void _onDeleteTask(WidgetRef ref, int id) {
-    ref.read(taskNotifierProvider.notifier).deleteTask(id);
+    ref.read(taskProvider.notifier).deleteTask(id);
   }
 
   // EDIT
@@ -71,22 +67,18 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
       context: Navigator.of(context, rootNavigator: true).context,
       useSafeArea: true,
       isScrollControlled: true,
-      builder: (context) => Modal(
-        taskToEdit: task,
-        isUpdating: true,
-      ),
+      builder: (context) => Modal(taskToEdit: task, isUpdating: true),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-
     if (_sortedDates.isEmpty) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.only(top: 140),
           child: Text("All caught up! No tasks here ;)"),
-        )
+        ),
       );
     }
 
@@ -102,7 +94,7 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
         final today = DateTime(now.year, now.month, now.day);
         final bool isToday = date.isAtSameMomentAs(today);
         final bool isOverdue = date.isBefore(today);
-        
+
         return Padding(
           padding: const EdgeInsets.only(right: 12, bottom: 10, left: 12),
           child: Theme(
@@ -115,27 +107,26 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
                   key: PageStorageKey(date),
                   initiallyExpanded: isToday || isOverdue,
                   tilePadding: const EdgeInsets.symmetric(horizontal: 16),
-                  
+
                   //H E A D E R
                   title: Text(
-                    isToday ? "Today" : "${MonthName.getMonthName(date.month)}, ${date.day}",
+                    isToday
+                        ? "Today"
+                        : "${MonthName.getMonthName(date.month)}, ${date.day}",
                     style: AppStyle.title(context).copyWith(
-                      color: isOverdue 
-                        ? Colors.red.shade300 
-                        : (isToday 
-                          ? Theme.of(context).colorScheme.inversePrimary 
-                          : null
-                        ),
+                      color: isOverdue
+                          ? Colors.red.shade300
+                          : (isToday
+                                ? Theme.of(context).colorScheme.inversePrimary
+                                : null),
                     ),
                   ),
                   trailing: Text(
-                    "${dateTasks.length}", 
+                    "${dateTasks.length}",
                     style: GoogleFonts.jost(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: isOverdue
-                        ? Colors.red.shade300
-                        : null
+                      color: isOverdue ? Colors.red.shade300 : null,
                     ),
                   ),
 
@@ -144,7 +135,9 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: Column(
-                        children: dateTasks.map((t) => _buildTaskTile(context, t, ref)).toList(),
+                        children: dateTasks
+                            .map((t) => _buildTaskTile(context, t, ref))
+                            .toList(),
                       ),
                     ),
                   ],
@@ -162,7 +155,7 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
 
     return FocusedMenuWrapper(
       onEdit: () => _onEditTask(context, task),
-      onDelete: () => _onDeleteTask(ref, task.id), 
+      onDelete: () => _onDeleteTask(ref, task.id),
       onDetails: () {
         HapticFeedback.mediumImpact();
         Navigator.of(context, rootNavigator: true).push(
@@ -173,7 +166,6 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
             pageBuilder: (context, animation, secondaryAnimation) {
               return Stack(
                 children: [
-                  
                   //B L U R
                   FadeTransition(
                     opacity: animation,
@@ -205,10 +197,7 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
                 task.title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
             ),
           ],

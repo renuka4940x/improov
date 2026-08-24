@@ -6,7 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:improov/src/features/tasks/provider/task_notifier.dart';
 
 class TaskAuditSheet {
-  static Future<void> show(BuildContext context, DateTime date, List<Task> tasks) async {
+  static Future<void> show(
+    BuildContext context,
+    DateTime date,
+    List<Task> tasks,
+  ) async {
     return await showModalBottomSheet(
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -24,10 +28,7 @@ class _TaskAuditContent extends ConsumerStatefulWidget {
   final DateTime date;
   final List<Task> tasks;
 
-  const _TaskAuditContent({
-    required this.date, 
-    required this.tasks
-  });
+  const _TaskAuditContent({required this.date, required this.tasks});
 
   @override
   ConsumerState<_TaskAuditContent> createState() => _TaskAuditContentState();
@@ -48,13 +49,20 @@ class _TaskAuditContentState extends ConsumerState<_TaskAuditContent> {
     });
 
     // 2. Sync with DB
-    ref.read(taskNotifierProvider.notifier).updateTaskCompletion(task.id, task.isCompleted);
+    ref
+        .read(taskProvider.notifier)
+        .updateTaskCompletion(task.id, task.isCompleted);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(24, 12, 24, MediaQuery.of(context).padding.bottom + 24),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        12,
+        24,
+        MediaQuery.of(context).padding.bottom + 24,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,16 +71,16 @@ class _TaskAuditContentState extends ConsumerState<_TaskAuditContent> {
 
           //date
           Text(
-            "${MonthName.getMonthName(widget.date.month)} ${widget.date.day}, ${widget.date.year}", 
-            style: AppStyle.title(context)
+            "${MonthName.getMonthName(widget.date.month)} ${widget.date.day}, ${widget.date.year}",
+            style: AppStyle.title(context),
           ),
           const SizedBox(height: 24),
-          
+
           if (_tasks.isEmpty)
             _buildEmptyState()
           else
             ..._tasks.map((t) => _buildTaskTile(context, t)),
-          
+
           const SizedBox(height: 24),
         ],
       ),
@@ -86,24 +94,24 @@ class _TaskAuditContentState extends ConsumerState<_TaskAuditContent> {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: task.isCompleted 
-            ? Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.2) 
-            : null,
+          color: task.isCompleted
+              ? Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.2)
+              : null,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
           children: [
-            Icon(task.isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
-              color: task.isCompleted 
-                ? Theme.of(context).colorScheme.tertiary
-                : Colors.grey
-              ),
+            Icon(
+              task.isCompleted
+                  ? Icons.check_circle
+                  : Icons.radio_button_unchecked,
+              color: task.isCompleted
+                  ? Theme.of(context).colorScheme.tertiary
+                  : Colors.grey,
+            ),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(
-                task.title, 
-                style: const TextStyle(fontSize: 16)
-              ),
+              child: Text(task.title, style: const TextStyle(fontSize: 16)),
             ),
           ],
         ),
@@ -118,10 +126,10 @@ class _TaskAuditContentState extends ConsumerState<_TaskAuditContent> {
       child: Column(
         children: [
           Text(
-            "it's a rest day, enjoy~", 
+            "it's a rest day, enjoy~",
             style: TextStyle(
               fontStyle: FontStyle.italic,
-              color: Colors.grey[600]
+              color: Colors.grey[600],
             ),
           ),
         ],
