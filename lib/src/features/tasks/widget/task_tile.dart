@@ -9,8 +9,10 @@ import 'package:improov/src/presentation/home/widgets/modals/screen/modal.dart';
 import 'package:improov/src/data/models/task/task.dart';
 import 'package:improov/src/features/tasks/widget/task_popup.dart';
 import 'package:improov/src/features/tasks/provider/task_notifier.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class TaskTile extends ConsumerWidget {
+// Change 1: Now a ConsumerStatefulWidget
+class TaskTile extends ConsumerStatefulWidget {
   final Task task;
   final bool isCompleted;
   final Function(bool?)? onChanged;
@@ -22,25 +24,36 @@ class TaskTile extends ConsumerWidget {
     required this.onChanged,
   });
 
+  @override
+  ConsumerState<TaskTile> createState() => _TaskTileState();
+}
+
+class _TaskTileState extends ConsumerState<TaskTile> {
+  // We will use this later to toggle the accordion!
+  bool _isExpanded = true;
+
   void onEditPressed(BuildContext context) {
     showModalBottomSheet(
       context: Navigator.of(context, rootNavigator: true).context,
       useSafeArea: true,
       isScrollControlled: true,
-      builder: (context) => Modal(taskToEdit: task, isUpdating: true),
+      builder: (context) => Modal(taskToEdit: widget.task, isUpdating: true),
     );
   }
 
   //delete function
-  void onDeletePressed(WidgetRef ref) {
-    ref.read(taskProvider.notifier).deleteTask(task.id);
+  void onDeletePressed() {
+    ref.read(taskProvider.notifier).deleteTask(widget.task.id);
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    //check if subtasks exists
+    final hasSubtasks = widget.task.subtasks.isNotEmpty;
+
     return FocusedMenuWrapper(
       onEdit: () => onEditPressed(context),
-      onDelete: () => onDeletePressed(ref),
+      onDelete: onDeletePressed, 
       onDetails: () {
         HapticFeedback.mediumImpact();
         Navigator.of(context, rootNavigator: true).push(
@@ -61,61 +74,170 @@ class TaskTile extends ConsumerWidget {
                   ),
 
                   //P O P U P
-                  TaskPopup(task: task),
+                  TaskPopup(task: widget.task),
                 ],
               );
             },
           ),
         );
       },
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
+      
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // --- MAIN TASK ROW ---
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            //tap for check/uncheck
+            onTap: () {
+              ref
+                  .read(taskProvider.notifier)
+                  .updateTaskCompletion(widget.task.id, !widget.task.isCompleted);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              child: Material(
+                type: MaterialType.transparency,
+                child: Row(
+                  children: [
+                    //checkbox
+                    Transform.scale(
+                      scale: 1.2,
+                      child: CustomCheckbox(
+                        value: widget.isCompleted,
+                        onChanged: widget.onChanged, 
+                      ),
+                    ),
 
-        //tap for check/uncheck
-        onTap: () {
-          ref
-              .read(taskProvider.notifier)
-              .updateTaskCompletion(task.id, !task.isCompleted);
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-          child: Material(
-            type: MaterialType.transparency,
-            child: Row(
-              children: [
-                //checkbox
-                Transform.scale(
-                  scale: 1.2,
-                  child: CustomCheckbox(
-                    value: isCompleted,
-                    onChanged: onChanged,
-                  ),
+                    const SizedBox(width: 12),
+
+                    //task name
+                    Expanded(
+                      child: Text(
+                        widget.task.title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: widget.isCompleted ? Colors.grey : null,
+                          decoration: widget.isCompleted
+                              ? TextDecoration.lineThrough
+                              : null,
+                          decorationColor: widget.isCompleted
+                              ? Colors.grey
+                              : Colors.transparent,
+                          fontStyle: widget.isCompleted ? FontStyle.italic : null,
+                        ),
+                      ),
+                    ),
+                    
+                    //accordion icon based on subtask's existence
+                    if (hasSubtasks)
+                      // IconButton gives it that "decent space" and prevents accidental task checks
+                      IconButton(
+                        onPressed: () {
+                          setState(() => _isExpanded = !_isExpanded);
+                        },
+                        icon: Icon(
+                          _isExpanded
+                              ? PhosphorIconsRegular.caretUp
+                              : PhosphorIconsRegular.caretDown,
+                          color: Colors.grey.shade600,
+                          size: 20,
+                        ),
+                        padding: const EdgeInsets.all(8.0),
+                        splashRadius: 20,
+                      ),
+                    
+                  ],
                 ),
-
-                const SizedBox(width: 12),
-
-                //task name
-                Expanded(
-                  child: Text(
-                    task.title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: isCompleted ? Colors.grey : null,
-                      decoration: isCompleted
-                          ? TextDecoration.lineThrough
-                          : null,
-                      decorationColor: isCompleted
-                          ? Colors.grey
-                          : Colors.transparent,
-                      fontStyle: isCompleted ? FontStyle.italic : null,
+              ),
+            ),
+          ),
+          
+          // WE WILL ADD THE SUBTASKS LIST HERE NEXT
+          // --- 3. THE SUBTASKS BLOCK ---
+          if (hasSubtasks)
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: SizedBox(
+                width: double.infinity,
+                // If it's not expanded, squish the height to 0 to hide it
+                height: _isExpanded ? null : 0.0,
+                child: Padding(
+                  // left: 31.0 aligns the line perfectly with the 1.2x scaled checkbox above
+                  padding: const EdgeInsets.only(
+                      left: 31.0, top: 4.0, bottom: 8.0, right: 20.0),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        left: BorderSide(
+                          color: Colors.grey, // The connecting vertical line
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
+                    // Space between the vertical line and the subtasks
+                    padding: const EdgeInsets.only(left: 16.0), 
+                    child: Column(
+                      children: widget.task.subtasks.map((subtask) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6.0),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              // Tapping the row toggles the subtask
+                              ref.read(taskProvider.notifier).toggleSubtaskCompletion(
+                                    widget.task.id,
+                                    subtask.uuid,
+                                    !subtask.isCompleted,
+                                  );
+                            },
+                            child: Row(
+                              children: [
+                                // Subtask Checkbox
+                                CustomCheckbox(
+                                  value: subtask.isCompleted,
+                                  onChanged: (val) {
+                                    ref.read(taskProvider.notifier).toggleSubtaskCompletion(
+                                          widget.task.id,
+                                          subtask.uuid,
+                                          val ?? false,
+                                        );
+                                  },
+                                ),
+                                
+                                const SizedBox(width: 12),
+                                
+                                // Subtask Title
+                                Expanded(
+                                  child: Text(
+                                    subtask.title ?? '', // Null-safe fallback!
+                                    style: TextStyle(
+                                      fontSize: 15, // Slightly smaller than main task
+                                      fontWeight: FontWeight.w400,
+                                      color: subtask.isCompleted ? Colors.grey : null,
+                                      decoration: subtask.isCompleted
+                                          ? TextDecoration.lineThrough
+                                          : null,
+                                      fontStyle: subtask.isCompleted
+                                          ? FontStyle.italic
+                                          : null,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+        ],
       ),
     );
   }

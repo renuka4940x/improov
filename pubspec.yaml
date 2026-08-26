@@ -61,6 +61,7 @@ dependencies:
   firebase_app_check: ^0.4.3
   flutter_riverpod: ^3.0.0-dev.17
   riverpod_annotation: ^3.0.0-dev.17
+  phosphor_flutter: ^2.1.0
 
 dev_dependencies:
   flutter_test:

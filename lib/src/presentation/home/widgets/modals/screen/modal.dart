@@ -47,12 +47,17 @@ class _ModalState extends ConsumerState<Modal> {
   final TextEditingController _habitNameController = TextEditingController();
   final TextEditingController _habitDescController = TextEditingController();
 
+  final List<TextEditingController> _subtaskControllers = [];
+
   @override
   void dispose() {
     _taskTitleController.dispose();
     _taskDescController.dispose();
     _habitNameController.dispose();
     _habitDescController.dispose();
+    for (var c in _subtaskControllers) {
+      c.dispose();
+    }
     super.dispose();
   }
 
@@ -81,6 +86,8 @@ class _ModalState extends ConsumerState<Modal> {
     } else {
       isHabitMode = false;
     }
+
+    _subtaskControllers.add(TextEditingController());
   }
 
   @override
@@ -176,6 +183,13 @@ class _ModalState extends ConsumerState<Modal> {
                     currentPriority: _selectedTaskPriority,
                     currentReminder: _taskReminder,
                     isCalendarSyncEnabled: _syncToCalendar,
+
+                    subtaskControllers: _subtaskControllers,
+                    onAddSubtaskController: () {
+                      setState(() {
+                        _subtaskControllers.add(TextEditingController());
+                      });
+                    },
 
                     onDateChanged: (newDate) {
                       setState(() => _selectedDate = newDate);

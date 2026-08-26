@@ -30,10 +30,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       final bool loggedIn = authService.isAuthenticated;
       final bool loggingIn = state.matchedLocation == '/auth';
 
+      // 🛑 TEMPORARILY COMMENTED OUT FOR TESTING
       // If NOT logged in, send them to /auth
-      if (!loggedIn) {
-        return '/auth';
-      }
+      //if (!loggedIn) {
+      //  return '/auth';
+      //}
 
       // If logged in and trying to go back to /auth, send them home
       if (loggedIn && loggingIn) {

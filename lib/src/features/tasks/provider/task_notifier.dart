@@ -10,6 +10,7 @@ import 'package:improov/src/data/provider/providers.dart';
 import 'package:isar_community/isar.dart';
 
 import 'package:improov/dataconnect_generated/generated.dart';
+import 'package:uuid/uuid.dart';
 
 part 'task_notifier.g.dart';
 
@@ -137,14 +138,18 @@ class TaskNotifier extends _$TaskNotifier {
     // Firebase Sync - Update Task Completion
     if (targetTask != null) {
       try {
+        final safeDueDate = targetTask!.dueDate ?? DateTime.now();
+
         await ExampleConnector.instance
             .updateTask(
               id: targetTask!.uuid,
               name: targetTask!.title,
               description: targetTask!.description ?? "",
+              
               dueDate: Timestamp.fromJson(
-                targetTask!.dueDate!.toUtc().toIso8601String(),
+                safeDueDate.toUtc().toIso8601String(),
               ),
+
               isCompleted: isCompleted,
               priority: targetTask!.priority.name,
             )
@@ -223,5 +228,73 @@ class TaskNotifier extends _$TaskNotifier {
         reminderTime: reminder,
       );
     }
+  }
+
+  // --- S U B T A S K S ---
+
+  //ADD SUBTASK
+  Future<void> addSubtask(int taskId, String title) async {
+    final service = await ref.read(isarDatabaseProvider.future);
+
+    await service.db.writeTxn(() async {
+      final task = await service.db.tasks.get(taskId);
+      if (task != null) {
+        final newSubtask = Subtask()
+          ..uuid = const Uuid().v4()
+          ..title = title
+          ..isCompleted = false;
+
+        // Isar requires us to reassign the list so it detects the change
+        task.subtasks = [...task.subtasks, newSubtask];
+        
+        await service.db.tasks.put(task);
+      }
+    });
+
+    ref.invalidateSelf();
+    
+    // (If you have a cloud sync connector for tasks, you can add it here!)
+  }
+
+  //TOGGLE SUBTASK COMPLETION
+  Future<void> toggleSubtaskCompletion(int taskId, String subtaskUuid, bool isCompleted) async {
+    final service = await ref.read(isarDatabaseProvider.future);
+
+    await service.db.writeTxn(() async {
+      final task = await service.db.tasks.get(taskId);
+      if (task != null) {
+        // Find the index of the specific subtask
+        final index = task.subtasks.indexWhere((s) => s.uuid == subtaskUuid);
+        
+        if (index != -1) {
+          // Update the value
+          task.subtasks[index].isCompleted = isCompleted;
+          
+          // Reassign the list so Isar knows it was modified
+          task.subtasks = List.from(task.subtasks);
+          
+          await service.db.tasks.put(task);
+        }
+      }
+    });
+
+    ref.invalidateSelf();
+  }
+
+  //DELETE SUBTASK
+  Future<void> deleteSubtask(int taskId, String subtaskUuid) async {
+    final service = await ref.read(isarDatabaseProvider.future);
+
+    await service.db.writeTxn(() async {
+      final task = await service.db.tasks.get(taskId);
+      if (task != null) {
+        // Filter out the one we want to delete
+        task.subtasks = task.subtasks.where((s) => s.uuid != subtaskUuid).toList();
+        
+        await service.db.tasks.put(task);
+      }
+    });
+
+    ref.invalidateSelf();
   }
 }

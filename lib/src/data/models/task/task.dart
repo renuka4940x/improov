@@ -34,14 +34,14 @@ class Task {
   late DateTime createdAt;
 
   //subtask
-  List<Subtask>? subtasks;
+  List<Subtask> subtasks = [];
 }
 
 //embedded Subtask model
 @embedded
 class Subtask {
-  // easily identify which subtask the user tapped
-  String uuid = '';
+  //easily identify which subtask the user tapped
+  String uuid = const Uuid().v4();
   
   String? title;
   

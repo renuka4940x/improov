@@ -5,8 +5,9 @@ import 'package:improov/src/presentation/home/widgets/modals/components/pickers/
 import 'package:improov/src/presentation/home/widgets/modals/components/pickers/date_time_picker.dart';
 import 'package:improov/src/presentation/home/widgets/modals/components/pickers/priority_picker.dart';
 import 'package:improov/src/data/enums/priority.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class BuildTaskForm extends StatelessWidget {
+class BuildTaskForm extends StatefulWidget {
   //revenueCat parameters
   final bool isPremium;
   final VoidCallback onPremiumLockedTap;
@@ -25,6 +26,10 @@ class BuildTaskForm extends StatelessWidget {
   final bool isCalendarSyncEnabled;
   final Function(bool) onCalendarSyncChanged;
 
+  //subtask variables
+  final List<TextEditingController> subtaskControllers;
+  final VoidCallback onAddSubtaskController;
+
   const BuildTaskForm({
     super.key,
     required this.isPremium,
@@ -37,18 +42,142 @@ class BuildTaskForm extends StatelessWidget {
     required this.onDateTimeSelected,
     required this.isCalendarSyncEnabled,
     required this.onCalendarSyncChanged,
+    required this.subtaskControllers,
+    required this.onAddSubtaskController,
   });
+
+  @override
+  State<BuildTaskForm> createState() => _BuildTaskFormState();
+}
+
+class _BuildTaskFormState extends State<BuildTaskForm> {
+  //for accordion
+  bool _subtasksExpanded = true;
+
+  static const double _subtaskItemHeight = 52;
+  static const int _visibleSubtaskCount = 2;
+  final ScrollController _subtaskScrollController = ScrollController();
+
+  void _scrollToBottom() {
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (!mounted || !_subtaskScrollController.hasClients) return;
+      _subtaskScrollController.jumpTo(
+        _subtaskScrollController.position.maxScrollExtent,
+      );
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant BuildTaskForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.subtaskControllers.length > oldWidget.subtaskControllers.length) {
+      _scrollToBottom();
+    }
+  }
+
+  @override
+  void dispose() {
+    _subtaskScrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => setState(() => _subtasksExpanded = !_subtasksExpanded),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Subtask",
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Icon(
+                  _subtasksExpanded
+                      ? PhosphorIconsRegular.caretUp
+                      : PhosphorIconsRegular.caretDown,
+                  size: 18,
+                  color: Colors.grey.shade700,
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // --- 2. DYNAMIC SUBTASK LIST ---
+        if (_subtasksExpanded)
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: _subtaskItemHeight * _visibleSubtaskCount,
+            ),
+            child: ListView.builder(
+              controller: _subtaskScrollController,
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: widget.subtaskControllers.length > _visibleSubtaskCount
+                  ? const ClampingScrollPhysics()
+                  : const NeverScrollableScrollPhysics(),
+              itemCount: widget.subtaskControllers.length,
+              itemBuilder: (context, index) {
+                return SizedBox(
+                  height: _subtaskItemHeight,
+                  child: Row(
+                    children: [
+                      Icon(
+                        PhosphorIconsRegular.plus,
+                        size: 18,
+                        color: Colors.grey.shade600,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: widget.subtaskControllers[index],
+                          style: const TextStyle(fontSize: 15),
+                          decoration: InputDecoration(
+                            hintText: "add subtask",
+                            hintStyle: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 15,
+                            ),
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.shade400),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black87, width: 1.5),
+                            ),
+                          ),
+                          onChanged: (val) {
+                            if (index == widget.subtaskControllers.length - 1 && val.isNotEmpty) {
+                              widget.onAddSubtaskController();
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+
+        const SizedBox(height: 20), // Spacing before the rest of the form
         //date
         BuildRow(
           label: "Date",  
           trailing:DatePicker(
-            selectedDate: currentStartDate,
-            onDateSelected: onDateChanged,
+            selectedDate: widget.currentStartDate,
+            onDateSelected: widget.onDateChanged,
           ),
         ),
 
@@ -56,29 +185,29 @@ class BuildTaskForm extends StatelessWidget {
         BuildRow(
           label: "Priority",
           trailing: PriorityPicker(
-            selectedPriority: currentPriority, 
-            onChanged: onPriorityChanged,
+            selectedPriority: widget.currentPriority, 
+            onChanged: widget.onPriorityChanged,
           ),
         ),
 
         //reminders
         BuildRow(
           label: "Reminder",
-          isPro: !isPremium,
+          isPro: !widget.isPremium,
           trailing: GestureDetector(
-            onTap: isPremium 
+            onTap: widget.isPremium 
               ? null 
-              : onPremiumLockedTap,
+              : widget.onPremiumLockedTap,
             child: AbsorbPointer(
-              absorbing: !isPremium,
+              absorbing: !widget.isPremium,
               child: Opacity(
-                opacity: isPremium 
+                opacity: widget.isPremium 
                   ? 1.0 
                   : 0.5,
                 child: DateTimePicker(
-                  selectedDateTime: currentReminder,
+                  selectedDateTime: widget.currentReminder,
                   label: "Off", 
-                  onDateTimeSelected: onDateTimeSelected,
+                  onDateTimeSelected: widget.onDateTimeSelected,
                 ),
               ),
             ),
@@ -88,23 +217,23 @@ class BuildTaskForm extends StatelessWidget {
         //sync to google calendar
         BuildRow(
           label: "Sync to Calendar",
-          isPro: !isPremium,
+          isPro: !widget.isPremium,
           trailing: GestureDetector(
-            onTap: isPremium 
+            onTap: widget.isPremium 
               ? null 
-              : onPremiumLockedTap,
+              : widget.onPremiumLockedTap,
             child: AbsorbPointer(
-              absorbing: !isPremium,
+              absorbing: !widget.isPremium,
               child: Opacity(
-                opacity: isPremium 
+                opacity: widget.isPremium 
                   ? 1.0 
                   : 0.5,
                 child: Transform.scale(
                   scale: 0.6, 
                   child: CupertinoSwitch(
-                    value: isCalendarSyncEnabled,
+                    value: widget.isCalendarSyncEnabled,
                     activeColor: Theme.of(context).colorScheme.tertiary,
-                    onChanged: onCalendarSyncChanged,
+                    onChanged: widget.onCalendarSyncChanged,
                   ),
                 ),
               ),
