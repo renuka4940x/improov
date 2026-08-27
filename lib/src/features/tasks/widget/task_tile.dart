@@ -11,7 +11,6 @@ import 'package:improov/src/features/tasks/widget/task_popup.dart';
 import 'package:improov/src/features/tasks/provider/task_notifier.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-// Change 1: Now a ConsumerStatefulWidget
 class TaskTile extends ConsumerStatefulWidget {
   final Task task;
   final bool isCompleted;
@@ -29,7 +28,6 @@ class TaskTile extends ConsumerStatefulWidget {
 }
 
 class _TaskTileState extends ConsumerState<TaskTile> {
-  // We will use this later to toggle the accordion!
   bool _isExpanded = true;
 
   void onEditPressed(BuildContext context) {
@@ -133,7 +131,7 @@ class _TaskTileState extends ConsumerState<TaskTile> {
                     
                     //accordion icon based on subtask's existence
                     if (hasSubtasks)
-                      // IconButton gives it that "decent space" and prevents accidental task checks
+                      // IconButton
                       IconButton(
                         onPressed: () {
                           setState(() => _isExpanded = !_isExpanded);
@@ -155,20 +153,21 @@ class _TaskTileState extends ConsumerState<TaskTile> {
             ),
           ),
           
-          // WE WILL ADD THE SUBTASKS LIST HERE NEXT
-          // --- 3. THE SUBTASKS BLOCK ---
+          //THE SUBTASKS BLOCK
           if (hasSubtasks)
             AnimatedSize(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               child: SizedBox(
                 width: double.infinity,
-                // If it's not expanded, squish the height to 0 to hide it
                 height: _isExpanded ? null : 0.0,
                 child: Padding(
-                  // left: 31.0 aligns the line perfectly with the 1.2x scaled checkbox above
                   padding: const EdgeInsets.only(
-                      left: 31.0, top: 4.0, bottom: 8.0, right: 20.0),
+                      left: 34, 
+                      top: 2, 
+                      bottom: 2, 
+                      right: 10,
+                    ),
                   child: Container(
                     decoration: const BoxDecoration(
                       border: Border(
@@ -183,53 +182,81 @@ class _TaskTileState extends ConsumerState<TaskTile> {
                     child: Column(
                       children: widget.task.subtasks.map((subtask) {
                         return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 6.0),
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: () {
-                              // Tapping the row toggles the subtask
-                              ref.read(taskProvider.notifier).toggleSubtaskCompletion(
+                          padding: const EdgeInsets.symmetric(vertical: 1),
+
+                          child: FocusedMenuWrapper(
+                            onEdit: () {
+                              // Editing from the menu opens the modal focused on this subtask
+                              showModalBottomSheet(
+                                context: Navigator.of(context, rootNavigator: true).context,
+                                useSafeArea: true,
+                                isScrollControlled: true,
+                                builder: (context) => Modal(
+                                  taskToEdit: widget.task,
+                                  isUpdating: true,
+                                  autoFocusSubtaskUuid: subtask.uuid,
+                                ),
+                              );
+                            },
+                            onDelete: () {
+                              //Deletes specifically THIS subtask!
+                              ref.read(taskProvider.notifier).deleteSubtask(
                                     widget.task.id,
                                     subtask.uuid,
-                                    !subtask.isCompleted,
                                   );
                             },
-                            child: Row(
-                              children: [
-                                // Subtask Checkbox
-                                CustomCheckbox(
-                                  value: subtask.isCompleted,
-                                  onChanged: (val) {
-                                    ref.read(taskProvider.notifier).toggleSubtaskCompletion(
-                                          widget.task.id,
-                                          subtask.uuid,
-                                          val ?? false,
-                                        );
-                                  },
-                                ),
-                                
-                                const SizedBox(width: 12),
-                                
-                                // Subtask Title
-                                Expanded(
-                                  child: Text(
-                                    subtask.title ?? '', // Null-safe fallback!
-                                    style: TextStyle(
-                                      fontSize: 15, // Slightly smaller than main task
-                                      fontWeight: FontWeight.w400,
-                                      color: subtask.isCompleted ? Colors.grey : null,
-                                      decoration: subtask.isCompleted
-                                          ? TextDecoration.lineThrough
-                                          : null,
-                                      fontStyle: subtask.isCompleted
-                                          ? FontStyle.italic
-                                          : null,
+                            onDetails: () {
+                               // You can leave this empty or make it do the same as Edit
+                            },
+
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () {
+                                //tapping anywhere on the row checks/unchecks it
+                                ref.read(taskProvider.notifier).toggleSubtaskCompletion(
+                                      widget.task.id,
+                                      subtask.uuid,
+                                      !subtask.isCompleted,
+                                    );
+                              },
+
+                              child: Row(
+                                children: [
+                                  // Subtask Checkbox
+                                  CustomCheckbox(
+                                    value: subtask.isCompleted,
+                                    onChanged: (val) {
+                                      ref.read(taskProvider.notifier).toggleSubtaskCompletion(
+                                            widget.task.id,
+                                            subtask.uuid,
+                                            val ?? false,
+                                          );
+                                    },
+                                  ),
+                                  
+                                  const SizedBox(width: 12),
+                                  
+                                  // Subtask Title
+                                  Expanded(
+                                    child: Text(
+                                      subtask.title ?? '', // Null-safe fallback!
+                                      style: TextStyle(
+                                        fontSize: 15, // Slightly smaller than main task
+                                        fontWeight: FontWeight.w400,
+                                        color: subtask.isCompleted ? Colors.grey : null,
+                                        decoration: subtask.isCompleted
+                                            ? TextDecoration.lineThrough
+                                            : null,
+                                        fontStyle: subtask.isCompleted
+                                            ? FontStyle.italic
+                                            : null,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
+                          )
                         );
                       }).toList(),
                     ),

@@ -28,6 +28,7 @@ class BuildTaskForm extends StatefulWidget {
 
   //subtask variables
   final List<TextEditingController> subtaskControllers;
+  final List<FocusNode> subtaskFocusNodes;
   final VoidCallback onAddSubtaskController;
 
   const BuildTaskForm({
@@ -43,6 +44,7 @@ class BuildTaskForm extends StatefulWidget {
     required this.isCalendarSyncEnabled,
     required this.onCalendarSyncChanged,
     required this.subtaskControllers,
+    required this.subtaskFocusNodes,
     required this.onAddSubtaskController,
   });
 
@@ -113,7 +115,7 @@ class _BuildTaskFormState extends State<BuildTaskForm> {
           ),
         ),
 
-        // --- 2. DYNAMIC SUBTASK LIST ---
+        //DYNAMIC SUBTASK LIST
         if (_subtasksExpanded)
           ConstrainedBox(
             constraints: BoxConstraints(
@@ -141,6 +143,7 @@ class _BuildTaskFormState extends State<BuildTaskForm> {
                       Expanded(
                         child: TextField(
                           controller: widget.subtaskControllers[index],
+                          focusNode: widget.subtaskFocusNodes[index],
                           style: const TextStyle(fontSize: 15),
                           decoration: InputDecoration(
                             hintText: "add subtask",

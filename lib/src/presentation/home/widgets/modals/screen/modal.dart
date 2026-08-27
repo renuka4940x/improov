@@ -19,8 +19,15 @@ class Modal extends ConsumerStatefulWidget {
   final Task? taskToEdit;
   final Habit? habitToEdit;
   final bool? isUpdating;
+  final String? autoFocusSubtaskUuid;
 
-  const Modal({super.key, this.taskToEdit, this.habitToEdit, this.isUpdating});
+  const Modal({
+    super.key, 
+    this.taskToEdit, 
+    this.habitToEdit, 
+    this.isUpdating,
+    this.autoFocusSubtaskUuid,
+  });
 
   @override
   ConsumerState<Modal> createState() => _ModalState();
@@ -48,6 +55,7 @@ class _ModalState extends ConsumerState<Modal> {
   final TextEditingController _habitDescController = TextEditingController();
 
   final List<TextEditingController> _subtaskControllers = [];
+  final List<FocusNode> _subtaskFocusNodes = [];
 
   @override
   void dispose() {
@@ -55,9 +63,15 @@ class _ModalState extends ConsumerState<Modal> {
     _taskDescController.dispose();
     _habitNameController.dispose();
     _habitDescController.dispose();
+
     for (var c in _subtaskControllers) {
       c.dispose();
     }
+
+    for (var node in _subtaskFocusNodes) {
+      node.dispose();
+    }
+
     super.dispose();
   }
 
@@ -73,6 +87,20 @@ class _ModalState extends ConsumerState<Modal> {
       _selectedTaskPriority = widget.taskToEdit!.priority;
       _selectedDate = widget.taskToEdit!.dueDate ?? DateTime.now();
       _taskReminder = widget.taskToEdit!.reminderTime;
+
+      for (var subtask in widget.taskToEdit!.subtasks) {
+        _subtaskControllers.add(TextEditingController(text: subtask.title));
+        
+        final node = FocusNode();
+        _subtaskFocusNodes.add(node);
+
+        //If this is the one you tapped, tell Flutter to focus on it
+        if (subtask.uuid == widget.autoFocusSubtaskUuid) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            node.requestFocus();
+          });
+        }
+      }
     }
     //or if editing a habit
     else if (widget.habitToEdit != null) {
@@ -88,6 +116,7 @@ class _ModalState extends ConsumerState<Modal> {
     }
 
     _subtaskControllers.add(TextEditingController());
+    _subtaskFocusNodes.add(FocusNode());
   }
 
   @override
@@ -185,9 +214,11 @@ class _ModalState extends ConsumerState<Modal> {
                     isCalendarSyncEnabled: _syncToCalendar,
 
                     subtaskControllers: _subtaskControllers,
+                    subtaskFocusNodes: _subtaskFocusNodes,
                     onAddSubtaskController: () {
                       setState(() {
                         _subtaskControllers.add(TextEditingController());
+                        _subtaskFocusNodes.add(FocusNode());
                       });
                     },
 
@@ -222,6 +253,14 @@ class _ModalState extends ConsumerState<Modal> {
                     String habitName = _habitNameController.text;
                     String habitDesc = _habitDescController.text;
 
+                    List<String> finalSubtasks = _subtaskControllers
+                      .map((controller) => controller.text.trim())
+                      .where((text) => text.isNotEmpty)
+                      .toList();
+
+                    debugPrint("==== DEBUG ====");
+                    debugPrint("EXTRACTED SUBTASKS: $finalSubtasks");
+
                     //make sure it's not empty
                     if (isHabitMode && habitName.isEmpty) return;
                     if (!isHabitMode && taskTitle.isEmpty) return;
@@ -255,6 +294,7 @@ class _ModalState extends ConsumerState<Modal> {
                               priority: _selectedTaskPriority,
                               dueDate: _selectedDate,
                               reminder: _taskReminder,
+                              subtasks: finalSubtasks,
                             );
 
                         // check the toggle state and sync to Google Calendar

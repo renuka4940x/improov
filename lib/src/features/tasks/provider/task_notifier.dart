@@ -68,11 +68,19 @@ class TaskNotifier extends _$TaskNotifier {
     Priority priority = Priority.low,
     DateTime? dueDate,
     DateTime? reminderTime,
+    List<String> subtasks = const [],
   }) async {
     final service = await ref.read(isarDatabaseProvider.future);
     final finalDate =
         dueDate ??
         DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
+
+    final newSubtasks = subtasks.map((title) {
+      return Subtask()
+        ..uuid = const Uuid().v4()
+        ..title = title
+        ..isCompleted = false;
+    }).toList();
 
     final newTask = Task()
       ..title = name
@@ -81,7 +89,8 @@ class TaskNotifier extends _$TaskNotifier {
       ..priority = priority
       ..isCompleted = false
       ..createdAt = DateTime.now()
-      ..reminderTime = reminderTime;
+      ..reminderTime = reminderTime
+      ..subtasks = newSubtasks;
 
     await service.db.writeTxn(() => service.db.tasks.put(newTask));
 
@@ -190,6 +199,7 @@ class TaskNotifier extends _$TaskNotifier {
     required Priority priority,
     required DateTime dueDate,
     DateTime? reminder,
+    List<String> subtasks = const [],
   }) async {
     if (existingTask != null) {
       final service = await ref.read(isarDatabaseProvider.future);
@@ -199,6 +209,27 @@ class TaskNotifier extends _$TaskNotifier {
         existingTask.priority = priority;
         existingTask.dueDate = dueDate;
         existingTask.reminderTime = reminder;
+
+        //SMART MERGE LOGIC
+        List<Subtask> updatedSubtasks = [];
+        for (int i = 0; i < subtasks.length; i++) {
+          if (i < existingTask.subtasks.length) {
+            // If the subtask already existed, keep its UUID and completion status, just update the text
+            final existingSubtask = existingTask.subtasks[i];
+            existingSubtask.title = subtasks[i];
+            updatedSubtasks.add(existingSubtask);
+          } else {
+            // If it's a brand new subtask added during the edit, create it
+            updatedSubtasks.add(Subtask()
+              ..uuid = const Uuid().v4()
+              ..title = subtasks[i]
+              ..isCompleted = false);
+          }
+        }
+        
+        // Reassign the list so Isar registers the change
+        existingTask.subtasks = updatedSubtasks;
+
         await service.db.tasks.put(existingTask);
       });
       ref.invalidateSelf();
@@ -226,35 +257,12 @@ class TaskNotifier extends _$TaskNotifier {
         priority: priority,
         dueDate: dueDate,
         reminderTime: reminder,
+        subtasks: subtasks,
       );
     }
   }
 
   // --- S U B T A S K S ---
-
-  //ADD SUBTASK
-  Future<void> addSubtask(int taskId, String title) async {
-    final service = await ref.read(isarDatabaseProvider.future);
-
-    await service.db.writeTxn(() async {
-      final task = await service.db.tasks.get(taskId);
-      if (task != null) {
-        final newSubtask = Subtask()
-          ..uuid = const Uuid().v4()
-          ..title = title
-          ..isCompleted = false;
-
-        // Isar requires us to reassign the list so it detects the change
-        task.subtasks = [...task.subtasks, newSubtask];
-        
-        await service.db.tasks.put(task);
-      }
-    });
-
-    ref.invalidateSelf();
-    
-    // (If you have a cloud sync connector for tasks, you can add it here!)
-  }
 
   //TOGGLE SUBTASK COMPLETION
   Future<void> toggleSubtaskCompletion(int taskId, String subtaskUuid, bool isCompleted) async {
