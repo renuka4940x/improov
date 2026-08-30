@@ -429,7 +429,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ),
                       child: AboutDialog(
                         applicationName: 'Improov',
-                        applicationVersion: '1.0.0',
+                        applicationVersion: '1.1.0',
                         applicationIcon: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
@@ -437,10 +437,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             width: 50,
                             height: 50,
                             errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.auto_awesome, size: 50),
+                              const Icon(Icons.auto_awesome, size: 50),
                           ),
                         ),
-                        applicationLegalese: "© 2026 Serene Creates",
+                        applicationLegalese: "© 2026 noImNotDev",
                         children: [
                           const SizedBox(height: 20),
                           Text(

@@ -119,11 +119,11 @@ class _TaskTileState extends ConsumerState<TaskTile> {
                           fontWeight: FontWeight.w500,
                           color: widget.isCompleted ? Colors.grey : null,
                           decoration: widget.isCompleted
-                              ? TextDecoration.lineThrough
-                              : null,
+                            ? TextDecoration.lineThrough
+                            : null,
                           decorationColor: widget.isCompleted
-                              ? Colors.grey
-                              : Colors.transparent,
+                            ? Colors.grey
+                            : Colors.transparent,
                           fontStyle: widget.isCompleted ? FontStyle.italic : null,
                         ),
                       ),
@@ -138,8 +138,8 @@ class _TaskTileState extends ConsumerState<TaskTile> {
                         },
                         icon: Icon(
                           _isExpanded
-                              ? PhosphorIconsRegular.caretUp
-                              : PhosphorIconsRegular.caretDown,
+                            ? PhosphorIconsRegular.caretUp
+                            : PhosphorIconsRegular.caretDown,
                           color: Colors.grey.shade600,
                           size: 20,
                         ),
@@ -163,16 +163,16 @@ class _TaskTileState extends ConsumerState<TaskTile> {
                 height: _isExpanded ? null : 0.0,
                 child: Padding(
                   padding: const EdgeInsets.only(
-                      left: 34, 
-                      top: 2, 
-                      bottom: 2, 
-                      right: 10,
-                    ),
+                    left: 34, 
+                    top: 2, 
+                    bottom: 2, 
+                    right: 10,
+                  ),
                   child: Container(
                     decoration: const BoxDecoration(
                       border: Border(
                         left: BorderSide(
-                          color: Colors.grey, // The connecting vertical line
+                          color: Colors.grey,
                           width: 1.5,
                         ),
                       ),
@@ -201,9 +201,9 @@ class _TaskTileState extends ConsumerState<TaskTile> {
                             onDelete: () {
                               //Deletes specifically THIS subtask!
                               ref.read(taskProvider.notifier).deleteSubtask(
-                                    widget.task.id,
-                                    subtask.uuid,
-                                  );
+                                widget.task.id,
+                                subtask.uuid,
+                              );
                             },
                             onDetails: () {
                                // You can leave this empty or make it do the same as Edit
@@ -214,10 +214,10 @@ class _TaskTileState extends ConsumerState<TaskTile> {
                               onTap: () {
                                 //tapping anywhere on the row checks/unchecks it
                                 ref.read(taskProvider.notifier).toggleSubtaskCompletion(
-                                      widget.task.id,
-                                      subtask.uuid,
-                                      !subtask.isCompleted,
-                                    );
+                                  widget.task.id,
+                                  subtask.uuid,
+                                  !subtask.isCompleted,
+                                );
                               },
 
                               child: Row(
@@ -227,10 +227,10 @@ class _TaskTileState extends ConsumerState<TaskTile> {
                                     value: subtask.isCompleted,
                                     onChanged: (val) {
                                       ref.read(taskProvider.notifier).toggleSubtaskCompletion(
-                                            widget.task.id,
-                                            subtask.uuid,
-                                            val ?? false,
-                                          );
+                                        widget.task.id,
+                                        subtask.uuid,
+                                        val ?? false,
+                                      );
                                     },
                                   ),
                                   
@@ -239,17 +239,17 @@ class _TaskTileState extends ConsumerState<TaskTile> {
                                   // Subtask Title
                                   Expanded(
                                     child: Text(
-                                      subtask.title ?? '', // Null-safe fallback!
+                                      subtask.title ?? '',
                                       style: TextStyle(
-                                        fontSize: 15, // Slightly smaller than main task
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w400,
                                         color: subtask.isCompleted ? Colors.grey : null,
                                         decoration: subtask.isCompleted
-                                            ? TextDecoration.lineThrough
-                                            : null,
+                                          ? TextDecoration.lineThrough
+                                          : null,
                                         fontStyle: subtask.isCompleted
-                                            ? FontStyle.italic
-                                            : null,
+                                          ? FontStyle.italic
+                                          : null,
                                       ),
                                     ),
                                   ),
