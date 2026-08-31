@@ -135,227 +135,235 @@ class _ModalState extends ConsumerState<Modal> {
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom + 20,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                //toggle
-                IgnorePointer(
-                  ignoring: widget.isUpdating ?? false,
-                  child: Opacity(
-                    opacity: (widget.isUpdating ?? false) ? 0.5 : 1.0,
-                    child: BuildToggle(
-                      isHabitMode: isHabitMode,
-                      onToggle: (val) {
-                        setState(() {
-                          isHabitMode = val;
-                        });
-                      },
+
+
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  //toggle
+                  IgnorePointer(
+                    ignoring: widget.isUpdating ?? false,
+                    child: Opacity(
+                      opacity: (widget.isUpdating ?? false) ? 0.5 : 1.0,
+                      child: BuildToggle(
+                        isHabitMode: isHabitMode,
+                        onToggle: (val) {
+                          setState(() {
+                            isHabitMode = val;
+                          });
+                        },
+                      ),
                     ),
                   ),
-                ),
-
-                const SizedBox(height: 40),
-
-                //name text fields
-                BuildTextField(
-                  controller: isHabitMode
-                      ? _habitNameController
-                      : _taskTitleController,
-                  placeholder: isHabitMode
-                      ? "e.g. Reading"
-                      : "e.g. Complete Maths Assignment",
-                ),
-
-                const SizedBox(height: 20),
-
-                //description text field
-                BuildTextField(
-                  controller: isHabitMode
-                      ? _habitDescController
-                      : _taskDescController,
-                  placeholder: isHabitMode
-                      ? "e.g. read for 15 mins"
-                      : "description",
-                  isItalic: true,
-                  isDescription: true,
-                ),
-
-                const SizedBox(height: 30),
-
-                //rest of the field based on the toggle
-                if (isHabitMode)
-                  BuildHabitForm(
-                    isPremium: isPremium,
-                    onPremiumLockedTap: () async {
-                      await ref.read(premiumProvider.notifier).showPaywall();
-                    },
-                    currentPriority: _selectedHabitPriority,
-                    currentGoal: _selectedGoal,
-                    currentReminder: _habitReminder,
-                    onPriorityChanged: (newPriority) {
-                      setState(() => _selectedHabitPriority = newPriority);
-                    },
-                    onGoalChanged: (newGoal) {
-                      setState(() => _selectedGoal = newGoal);
-                    },
-                    onDateTimeSelected: (newHabitTime) {
-                      setState(() => _habitReminder = newHabitTime);
-                    },
-                  )
-                else
-                  BuildTaskForm(
-                    isPremium: isPremium,
-                    onPremiumLockedTap: () async {
-                      await ref.read(premiumProvider.notifier).showPaywall();
-                    },
-                    currentStartDate: _selectedDate,
-                    currentPriority: _selectedTaskPriority,
-                    currentReminder: _taskReminder,
-                    isCalendarSyncEnabled: _syncToCalendar,
-
-                    subtaskControllers: _subtaskControllers,
-                    subtaskFocusNodes: _subtaskFocusNodes,
-                    onAddSubtaskController: () {
-                      setState(() {
-                        _subtaskControllers.add(TextEditingController());
-                        _subtaskFocusNodes.add(FocusNode());
-                      });
-                    },
-
-                    onDateChanged: (newDate) {
-                      setState(() => _selectedDate = newDate);
-                    },
-                    onPriorityChanged: (newPriority) {
-                      setState(() => _selectedTaskPriority = newPriority);
-                    },
-                    onDateTimeSelected: (newTaskTime) {
-                      setState(() => _taskReminder = newTaskTime);
-                    },
-                    onCalendarSyncChanged: (val) {
-                      setState(() => _syncToCalendar = val);
-                    },
+              
+                  const SizedBox(height: 40),
+              
+                  //name text fields
+                  BuildTextField(
+                    controller: isHabitMode
+                        ? _habitNameController
+                        : _taskTitleController,
+                    placeholder: isHabitMode
+                        ? "e.g. Reading"
+                        : "e.g. Complete Maths Assignment",
                   ),
-
-                const SizedBox(height: 20),
-
-                //save button
-                Button(
-                  text:
-                      (widget.taskToEdit != null || widget.habitToEdit != null)
-                      ? "Save"
-                      : "Create",
-
-                  isLoading: _isLoading,
-                  onTap: () async {
-                    //grab info from controller
-                    String taskTitle = _taskTitleController.text;
-                    String taskDesc = _taskDescController.text;
-                    String habitName = _habitNameController.text;
-                    String habitDesc = _habitDescController.text;
-
-                    List<String> finalSubtasks = _subtaskControllers
-                      .map((controller) => controller.text.trim())
-                      .where((text) => text.isNotEmpty)
-                      .toList();
-
-                    debugPrint("==== DEBUG ====");
-                    debugPrint("EXTRACTED SUBTASKS: $finalSubtasks");
-
-                    //make sure it's not empty
-                    if (isHabitMode && habitName.isEmpty) return;
-                    if (!isHabitMode && taskTitle.isEmpty) return;
-
-                    //triggering loading state
-                    setState(() {
-                      _isLoading = true;
-                    });
-
-                    try {
-                      // save info to db based on toggle mode
-                      if (isHabitMode) {
-                        await ref
-                            .read(habitProvider.notifier)
-                            .handleSaveHabit(
-                              existingHabit: widget.habitToEdit,
-                              name: habitName,
-                              description: habitDesc,
-                              priority: _selectedHabitPriority,
-                              goal: _selectedGoal,
-                              startDate: _selectedDate,
-                              reminderTime: _habitReminder,
-                            );
-                      } else {
-                        await ref
-                            .read(taskProvider.notifier)
-                            .handleSaveTask(
-                              existingTask: widget.taskToEdit,
-                              title: taskTitle,
-                              description: taskDesc,
-                              priority: _selectedTaskPriority,
-                              dueDate: _selectedDate,
-                              reminder: _taskReminder,
-                              subtasks: finalSubtasks,
-                            );
-
-                        // check the toggle state and sync to Google Calendar
-                        if (_syncToCalendar) {
-                          final calendarTime =
-                              _taskReminder ??
-                              DateTime(
-                                _selectedDate.year,
-                                _selectedDate.month,
-                                _selectedDate.day,
-                                9,
-                                0,
+              
+                  const SizedBox(height: 20),
+              
+                  //description text field
+                  BuildTextField(
+                    controller: isHabitMode
+                        ? _habitDescController
+                        : _taskDescController,
+                    placeholder: isHabitMode
+                        ? "e.g. read for 15 mins"
+                        : "description",
+                    isItalic: true,
+                    isDescription: true,
+                  ),
+              
+                  const SizedBox(height: 30),
+              
+                  //rest of the field based on the toggle
+                  if (isHabitMode)
+                    BuildHabitForm(
+                      isPremium: isPremium,
+                      onPremiumLockedTap: () async {
+                        await ref.read(premiumProvider.notifier).showPaywall();
+                      },
+                      currentPriority: _selectedHabitPriority,
+                      currentGoal: _selectedGoal,
+                      currentReminder: _habitReminder,
+                      onPriorityChanged: (newPriority) {
+                        setState(() => _selectedHabitPriority = newPriority);
+                      },
+                      onGoalChanged: (newGoal) {
+                        setState(() => _selectedGoal = newGoal);
+                      },
+                      onDateTimeSelected: (newHabitTime) {
+                        setState(() => _habitReminder = newHabitTime);
+                      },
+                    )
+                  else
+                    BuildTaskForm(
+                      isPremium: isPremium,
+                      onPremiumLockedTap: () async {
+                        await ref.read(premiumProvider.notifier).showPaywall();
+                      },
+                      currentStartDate: _selectedDate,
+                      currentPriority: _selectedTaskPriority,
+                      currentReminder: _taskReminder,
+                      isCalendarSyncEnabled: _syncToCalendar,
+              
+                      subtaskControllers: _subtaskControllers,
+                      subtaskFocusNodes: _subtaskFocusNodes,
+                      onAddSubtaskController: () {
+                        setState(() {
+                          _subtaskControllers.add(TextEditingController());
+                          _subtaskFocusNodes.add(FocusNode());
+                        });
+                      },
+              
+                      onDateChanged: (newDate) {
+                        setState(() => _selectedDate = newDate);
+                      },
+                      onPriorityChanged: (newPriority) {
+                        setState(() => _selectedTaskPriority = newPriority);
+                      },
+                      onDateTimeSelected: (newTaskTime) {
+                        setState(() => _taskReminder = newTaskTime);
+                      },
+                      onCalendarSyncChanged: (val) {
+                        setState(() => _syncToCalendar = val);
+                      },
+                    ),
+              
+                  const SizedBox(height: 20),
+              
+                  //save button
+                  Button(
+                    text:
+                        (widget.taskToEdit != null || widget.habitToEdit != null)
+                        ? "Save"
+                        : "Create",
+              
+                    isLoading: _isLoading,
+                    onTap: () async {
+                      //grab info from controller
+                      String taskTitle = _taskTitleController.text;
+                      String taskDesc = _taskDescController.text;
+                      String habitName = _habitNameController.text;
+                      String habitDesc = _habitDescController.text;
+              
+                      List<String> finalSubtasks = _subtaskControllers
+                        .map((controller) => controller.text.trim())
+                        .where((text) => text.isNotEmpty)
+                        .toList();
+              
+                      debugPrint("==== DEBUG ====");
+                      debugPrint("EXTRACTED SUBTASKS: $finalSubtasks");
+              
+                      //make sure it's not empty
+                      if (isHabitMode && habitName.isEmpty) return;
+                      if (!isHabitMode && taskTitle.isEmpty) return;
+              
+                      //triggering loading state
+                      setState(() {
+                        _isLoading = true;
+                      });
+              
+                      try {
+                        // save info to db based on toggle mode
+                        if (isHabitMode) {
+                          await ref
+                              .read(habitProvider.notifier)
+                              .handleSaveHabit(
+                                existingHabit: widget.habitToEdit,
+                                name: habitName,
+                                description: habitDesc,
+                                priority: _selectedHabitPriority,
+                                goal: _selectedGoal,
+                                startDate: _selectedDate,
+                                reminderTime: _habitReminder,
                               );
-
-                          try {
-                            final isSynced = await CalendarService()
-                                .addTaskToCalendar(
-                                  title: taskTitle,
-                                  description: taskDesc,
-                                  dueDate: calendarTime,
+                        } else {
+                          await ref
+                              .read(taskProvider.notifier)
+                              .handleSaveTask(
+                                existingTask: widget.taskToEdit,
+                                title: taskTitle,
+                                description: taskDesc,
+                                priority: _selectedTaskPriority,
+                                dueDate: _selectedDate,
+                                reminder: _taskReminder,
+                                subtasks: finalSubtasks,
+                              );
+              
+                          // check the toggle state and sync to Google Calendar
+                          if (_syncToCalendar) {
+                            final calendarTime =
+                                _taskReminder ??
+                                DateTime(
+                                  _selectedDate.year,
+                                  _selectedDate.month,
+                                  _selectedDate.day,
+                                  9,
+                                  0,
                                 );
-
-                            if (context.mounted) {
-                              showImproovToast(
-                                context,
-                                isSynced
-                                    ? "GGs! The task is synced :)"
-                                    : "Sadly, couldn't sync to Calendar :(",
-                                isSuccess: isSynced,
-                              );
-                            }
-                          } catch (e) {
-                            if (context.mounted) {
-                              showImproovToast(
-                                context,
-                                "CRASH: ${e.toString()}",
-                                isSuccess: false,
-                              );
+              
+                            try {
+                              final isSynced = await CalendarService()
+                                  .addTaskToCalendar(
+                                    title: taskTitle,
+                                    description: taskDesc,
+                                    dueDate: calendarTime,
+                                  );
+              
+                              if (context.mounted) {
+                                showImproovToast(
+                                  context,
+                                  isSynced
+                                      ? "GGs! The task is synced :)"
+                                      : "Sadly, couldn't sync to Calendar :(",
+                                  isSuccess: isSynced,
+                                );
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                showImproovToast(
+                                  context,
+                                  "CRASH: ${e.toString()}",
+                                  isSuccess: false,
+                                );
+                              }
                             }
                           }
                         }
+              
+                        //close modal
+                        if (!context.mounted) return;
+                        Navigator.pop(context);
+                      } catch (e) {
+                        setState(() {
+                          _isLoading = false;
+                        });
                       }
-
-                      //close modal
-                      if (!context.mounted) return;
-                      Navigator.pop(context);
-                    } catch (e) {
-                      setState(() {
-                        _isLoading = false;
-                      });
-                    }
-                  },
-                ),
-
-                const SizedBox(height: 30),
-
-                //cross
-                BuildCross(),
-
-                const SizedBox(height: 30),
-              ],
+                    },
+                  ),
+              
+                  const SizedBox(height: 30),
+              
+                  //cross
+                  BuildCross(),
+              
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
           ),
         ),

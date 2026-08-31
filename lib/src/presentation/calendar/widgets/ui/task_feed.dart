@@ -136,8 +136,8 @@ class _TaskFeedState extends ConsumerState<TaskFeed> {
                       padding: const EdgeInsets.only(bottom: 12),
                       child: Column(
                         children: dateTasks
-                            .map((t) => _buildTaskTile(context, t, ref))
-                            .toList(),
+                          .map((t) => _buildTaskTile(context, t, ref))
+                          .toList(),
                       ),
                     ),
                   ],

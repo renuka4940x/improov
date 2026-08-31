@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:improov/src/core/constants/app_style.dart';
 import 'package:improov/src/core/util/provider/calendar_month_provider.dart';
 import 'package:improov/src/features/tasks/provider/task_notifier.dart';
 import 'package:improov/src/presentation/calendar/widgets/ui/calendar_view.dart';
@@ -91,10 +90,6 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
           return ListView(
             padding: const EdgeInsets.all(12),
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text("Calendar", style: AppStyle.title(context)),
-              ),
 
               CalendarView(
                 targetMonth: selectedMonth,
@@ -120,8 +115,8 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                 tasks: incompleteTasks,
                 onToggle: (task) {
                   ref
-                      .read(taskProvider.notifier)
-                      .updateTaskCompletion(task.id, !task.isCompleted);
+                    .read(taskProvider.notifier)
+                    .updateTaskCompletion(task.id, !task.isCompleted);
                 },
               ),
             ],
