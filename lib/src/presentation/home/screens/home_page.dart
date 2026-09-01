@@ -6,13 +6,32 @@ import 'package:improov/src/features/habits/provider/habit_notifier.dart';
 import 'package:improov/src/features/habits/widgets/habit_tile.dart';
 import 'package:improov/src/features/tasks/widget/task_tile.dart';
 import 'package:improov/src/core/widgets/build_title.dart';
+import 'package:improov/src/data/models/habit/habit.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    //watch notifiers
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+  // Toggle states for the accordions
+  bool _showAllHabits = false;
+  bool _showAllTasks = false;
+
+  // Helper to check if a habit is completed today so we can filter the list
+  bool _isHabitCompletedToday(Habit habit) {
+    final DateTime today = DateTime.now();
+    return habit.completedDays.any((date) =>
+        date.year == today.year &&
+        date.month == today.month &&
+        date.day == today.day);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final habitsAsync = ref.watch(habitProvider);
     final tasksAsync = ref.watch(taskProvider);
 
@@ -25,68 +44,193 @@ class HomePage extends ConsumerWidget {
         bottom: false,
         child: CustomScrollView(
           slivers: [
-            //show the Habit Header
-            const SliverToBoxAdapter(child: BuildTitle(title: "Habits")),
-
-            //habit section
-            habitsAsync.when(
-              data: (habits) => habits.isEmpty
-                  ? const SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 25, bottom: 20),
-                        child: Text(
-                          "none, for now~",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic,
+            // --- HABIT HEADER WITH ACCORDION & SUB-DIVIDER ---
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0,),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const BuildTitle(title: "Habits"),
+                        if (hasHabits)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: IconButton(
+                              onPressed: () {
+                                setState(() => _showAllHabits = !_showAllHabits);
+                              },
+                              icon: Icon(
+                                _showAllHabits
+                                    ? PhosphorIconsRegular.caretUp
+                                    : PhosphorIconsRegular.caretDown,
+                                color: Colors.grey.shade600,
+                                size: 20,
+                              ),
+                              splashRadius: 20,
+                            ),
                           ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Divider(
+                      height: 1,
+                      color: Colors.grey.withOpacity(0.3),
+                      thickness: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                ],
+              ),
+            ),
+
+            // --- HABIT SECTION ---
+            habitsAsync.when(
+              data: (habits) {
+                if (habits.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 25, bottom: 20),
+                      child: Text(
+                        "none, for now~",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
                         ),
                       ),
-                    )
-                  : SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final habit = habits[index];
-                        return HabitTile(
-                          habit: habit,
-                          onChanged: (val) => ref
-                              .read(habitProvider.notifier)
-                              .updateHabitCompletion(habit.id, val ?? false),
-                        );
-                      }, childCount: habits.length),
                     ),
+                  );
+                }
+
+                // Filter logic
+                final incompleteHabits = habits.where((h) => !_isHabitCompletedToday(h)).toList();
+                final displayedHabits = _showAllHabits ? habits : incompleteHabits;
+
+                if (displayedHabits.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 25, bottom: 20),
+                      child: Text(
+                        "all done for today!",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final habit = displayedHabits[index];
+                    return HabitTile(
+                      habit: habit,
+                      onChanged: (val) => ref
+                          .read(habitProvider.notifier)
+                          .updateHabitCompletion(habit.id, val ?? false),
+                    );
+                  }, childCount: displayedHabits.length),
+                );
+              },
               loading: () => const SliverToBoxAdapter(
                 child: Center(child: CircularProgressIndicator()),
               ),
               error: (err, _) => SliverToBoxAdapter(child: Text("Error: $err")),
             ),
 
-            const SliverToBoxAdapter(child: BuildTitle(title: "Tasks")),
-
-            //task section
-            tasksAsync.when(
-              data: (tasks) => tasks.isEmpty
-                  ? const SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 25, bottom: 20),
-                      ),
-                    )
-                  : SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final task = tasks[index];
-                        return TaskTile(
-                          task: task,
-                          onChanged: (val) => ref
-                              .read(taskProvider.notifier)
-                              .updateTaskCompletion(task.id, val ?? false),
-                          isCompleted: task.isCompleted,
-                        );
-                      }, childCount: tasks.length),
+            // --- TASK HEADER WITH ACCORDION & SUB-DIVIDER ---
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const BuildTitle(title: "Tasks"),
+                      if (hasTasks)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() => _showAllTasks = !_showAllTasks);
+                            },
+                            icon: Icon(
+                              _showAllTasks
+                                  ? PhosphorIconsRegular.caretUp
+                                  : PhosphorIconsRegular.caretDown,
+                              color: Colors.grey.shade600,
+                              size: 20,
+                            ),
+                            splashRadius: 20,
+                          ),
+                        ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Divider(
+                      height: 1,
+                      color: Colors.grey.withOpacity(0.3),
+                      thickness: 1,
                     ),
+                  ),
+                  const SizedBox(height: 8.0),
+                ],
+              ),
+            ),
+
+            // --- TASK SECTION ---
+            tasksAsync.when(
+              data: (tasks) {
+                if (tasks.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 25, bottom: 20),
+                    ),
+                  );
+                }
+
+                // Filter logic
+                final incompleteTasks = tasks.where((t) => !t.isCompleted).toList();
+                final displayedTasks = _showAllTasks ? tasks : incompleteTasks;
+
+                if (displayedTasks.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 25, bottom: 20),
+                      child: Text(
+                        "all tasks cleared!",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final task = displayedTasks[index];
+                    return TaskTile(
+                      key: ValueKey(task.id),
+                      task: task,
+                      onChanged: (val) => ref
+                          .read(taskProvider.notifier)
+                          .updateTaskCompletion(task.id, val ?? false),
+                      isCompleted: task.isCompleted,
+                    );
+                  }, childCount: displayedTasks.length),
+                );
+              },
               loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
               error: (err, _) => SliverToBoxAdapter(child: Text("Error: $err")),
             ),
 
-            //svg section
+            // --- EMPTY STATE SVG SECTION ---
             if (habitsAsync.hasValue &&
                 tasksAsync.hasValue &&
                 habitsAsync.value!.isEmpty &&
@@ -118,7 +262,7 @@ class HomePage extends ConsumerWidget {
                 ),
               ),
 
-            //padding to not let fab cover last item
+            // Padding to not let FAB cover last item
             if (hasHabits || hasTasks)
               const SliverToBoxAdapter(child: SizedBox(height: 80)),
           ],

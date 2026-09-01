@@ -105,14 +105,6 @@ class _StreakPageState extends ConsumerState<StreakPage> {
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(
-                  "Streaks",
-                  style: AppStyle.title(context),
-                ),
-              ),
-              const SizedBox(height: 8),
               
               //calendar view
               GlobalCalendarGrid(

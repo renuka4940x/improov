@@ -98,7 +98,7 @@ class HabitTile extends ConsumerWidget {
           );
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Material(
             type: MaterialType.transparency,
             child: Container(
@@ -164,31 +164,34 @@ class HabitTile extends ConsumerWidget {
                     ),
                   ),
                   //streak
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/dark_icons/streak.svg',
-                        width: 14,
-                        height: 14,
-                        colorFilter: ColorFilter.mode(
-                          isCompletedToday 
-                            ? Theme.of(context).colorScheme.tertiary
-                            : (isUrgent ? Colors.red.shade300 : Colors.grey),
-                          BlendMode.srcIn,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/icons/dark_icons/streak.svg',
+                          width: 14,
+                          height: 14,
+                          colorFilter: ColorFilter.mode(
+                            isCompletedToday 
+                              ? Theme.of(context).colorScheme.tertiary
+                              : (isUrgent ? Colors.red.shade300 : Colors.grey),
+                            BlendMode.srcIn,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        habit.displayedStreak.toString(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: isCompletedToday 
-                          ? Theme.of(context).colorScheme.inversePrimary.withAlpha(190)
-                          : Colors.grey,
-                        ),
-                      )
-                    ],
+                        const SizedBox(width: 5),
+                        Text(
+                          habit.displayedStreak.toString(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: isCompletedToday 
+                            ? Theme.of(context).colorScheme.inversePrimary.withAlpha(190)
+                            : Colors.grey,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ],
               ),

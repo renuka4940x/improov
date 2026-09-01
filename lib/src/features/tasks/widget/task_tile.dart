@@ -28,7 +28,7 @@ class TaskTile extends ConsumerStatefulWidget {
 }
 
 class _TaskTileState extends ConsumerState<TaskTile> {
-  bool _isExpanded = true;
+  bool _isExpanded = false;
 
   void onEditPressed(BuildContext context) {
     showModalBottomSheet(
